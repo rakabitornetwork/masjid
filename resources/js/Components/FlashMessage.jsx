@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Trash2 } from 'lucide-react';
 
 export default function FlashMessage() {
     const { flash } = usePage().props;
@@ -8,18 +8,22 @@ export default function FlashMessage() {
         return null;
     }
 
+    const message = flash.success || flash.error;
     const isSuccess = Boolean(flash.success);
+    const isDeleted = /hapus|dihapus/i.test(message || '');
+    const isDanger = !isSuccess || isDeleted;
+    const Icon = isDeleted ? Trash2 : isSuccess ? CheckCircle2 : AlertCircle;
 
     return (
         <div
             className={`mb-3 flex items-start gap-2.5 rounded-lg border px-3 py-2 text-xs font-semibold shadow-sm ${
-                isSuccess
-                    ? 'border-teal-200 bg-teal-50 text-teal-900'
-                    : 'border-rose-200 bg-rose-50 text-rose-900'
+                isDanger
+                    ? 'border-rose-200 bg-rose-50 text-rose-900'
+                    : 'border-teal-200 bg-teal-50 text-teal-900'
             }`}
         >
-            {isSuccess ? <CheckCircle2 className="mt-0.5 h-3.5 w-3.5" /> : <AlertCircle className="mt-0.5 h-3.5 w-3.5" />}
-            <span>{flash.success || flash.error}</span>
+            <Icon className="mt-0.5 h-3.5 w-3.5" />
+            <span>{message}</span>
         </div>
     );
 }
