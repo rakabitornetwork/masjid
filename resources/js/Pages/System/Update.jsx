@@ -108,6 +108,10 @@ export default function Update({
                         setDisplayLatestCommit(event.latestCommit);
                         setDisplayGithubStatus(event.githubStatus);
                         setDisplayUpdateAvailable(event.updateAvailable);
+
+                        window.setTimeout(() => {
+                            window.location.reload();
+                        }, 1800);
                     }
 
                     setTerminalEntries((entries) => [...entries, event]);
