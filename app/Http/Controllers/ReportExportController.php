@@ -17,6 +17,7 @@ use App\Models\WaqfAsset;
 use App\Models\WhatsappNotification;
 use App\Models\ZakatCollection;
 use App\Models\ZakatDistribution;
+use App\Models\ZakatParticipant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -71,6 +72,10 @@ class ReportExportController extends Controller
         'zakat-penerimaan' => [
             'label' => 'Penerimaan Zakat',
             'description' => 'Export data muzakki dan penerimaan zakat.',
+        ],
+        'muzakki-mustahik' => [
+            'label' => 'Database Muzakki & Mustahik',
+            'description' => 'Export profil pemberi dan penerima zakat beserta kategori, alamat, dan status aktif.',
         ],
         'zakat-penyaluran' => [
             'label' => 'Penyaluran Zakat',
@@ -335,6 +340,23 @@ class ReportExportController extends Controller
                     $collection->rice_amount,
                     $collection->payment_method,
                     $collection->status,
+                ]),
+            ],
+            'muzakki-mustahik' => [
+                ['Jenis Data', 'Nama', 'Telepon', 'NIK/Identitas', 'Alamat', 'Jumlah Keluarga', 'Tipe Muzakki', 'Kategori Mustahik', 'Pekerjaan', 'Penghasilan', 'Aktif', 'Catatan'],
+                ZakatParticipant::orderBy('role')->orderBy('name')->get()->map(fn (ZakatParticipant $participant): array => [
+                    $participant->role,
+                    $participant->name,
+                    $participant->phone,
+                    $participant->identity_number,
+                    $participant->address,
+                    $participant->family_count,
+                    $participant->muzakki_type,
+                    $participant->mustahik_category,
+                    $participant->occupation,
+                    $participant->income_range,
+                    $participant->is_active ? 'Ya' : 'Tidak',
+                    $participant->notes,
                 ]),
             ],
             'zakat-penyaluran' => [

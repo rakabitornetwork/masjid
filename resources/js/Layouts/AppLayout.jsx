@@ -53,6 +53,7 @@ const navigation = [
     { label: 'Inventaris', href: '/inventaris', icon: Boxes, permission: 'inventory' },
     { label: 'Perawatan', href: '/perawatan-inventaris', icon: Wrench, permission: 'inventory' },
     { label: 'Zakat', href: '/zakat', icon: HandCoins, permission: 'programs' },
+    { label: 'Muzakki & Mustahik', href: '/muzakki-mustahik', icon: UsersRound, permission: 'programs' },
     { label: 'Qurban', href: '/qurban', icon: Beef, permission: 'programs' },
     { label: 'Wakaf', href: '/wakaf', icon: Gift, permission: 'programs' },
     { label: 'Program Sosial', href: '/program-sosial', icon: HandHeart, permission: 'programs' },

@@ -23,6 +23,7 @@ use App\Models\WaqfAsset;
 use App\Models\WhatsappNotification;
 use App\Models\ZakatCollection;
 use App\Models\ZakatDistribution;
+use App\Models\ZakatParticipant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -151,6 +152,28 @@ class DatabaseSeeder extends Seeder
             'payment_method' => 'transfer',
             'donated_at' => now()->toDateString(),
             'status' => 'confirmed',
+        ]);
+
+        ZakatParticipant::updateOrCreate(['name' => 'Keluarga Ahmad Ridwan', 'role' => 'muzakki'], [
+            'phone' => '0812-1000-0001',
+            'address' => 'Komplek sekitar masjid',
+            'family_count' => 4,
+            'muzakki_type' => 'family',
+            'occupation' => 'Wiraswasta',
+            'income_range' => 'above_5m',
+            'is_active' => true,
+            'notes' => 'Contoh data master muzakki.',
+        ]);
+
+        ZakatParticipant::updateOrCreate(['name' => 'Keluarga Bapak Hasan', 'role' => 'mustahik'], [
+            'phone' => '0812-5000-0001',
+            'address' => 'Lingkungan sekitar masjid',
+            'family_count' => 5,
+            'mustahik_category' => 'fakir_miskin',
+            'occupation' => 'Buruh harian',
+            'income_range' => 'under_1m',
+            'is_active' => true,
+            'notes' => 'Contoh data master mustahik.',
         ]);
 
         ZakatCollection::updateOrCreate(['muzakki_name' => 'Keluarga Ahmad Ridwan', 'received_at' => now()->toDateString()], [

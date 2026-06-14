@@ -120,6 +120,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Admin dapat menandai pesan sebagai terkirim setelah proses kirim dilakukan.
 - Notifikasi WhatsApp ikut masuk ke export laporan dan backup data aplikasi.
 
+### Zakat dan Database Muzakki/Mustahik
+
+- Pencatatan penerimaan zakat fitrah, zakat maal, fidyah, dan infaq zakat.
+- Pencatatan penyaluran zakat untuk mustahik dengan nominal uang, beras, jadwal, status, dan catatan.
+- Database master Muzakki & Mustahik menyimpan nama, nomor WA, identitas, alamat, jumlah keluarga, tipe muzakki, kategori mustahik, pekerjaan, penghasilan, status aktif, dan catatan.
+- Data zakat dan database Muzakki & Mustahik ikut masuk ke export laporan dan backup data aplikasi.
+
 ### Manajemen Wakaf
 
 - Pencatatan wakif, kontak, aset wakaf, kategori, deskripsi, nilai estimasi, tanggal terima, nomor sertifikat, lokasi, status, dan catatan.
@@ -145,7 +152,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 ### Export, Backup, dan Restore
 
-- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, keluarga jamaah, inventaris, perawatan inventaris, donasi, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, qurban, wakaf, dan program sosial.
+- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, keluarga jamaah, inventaris, perawatan inventaris, donasi, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, database muzakki/mustahik, qurban, wakaf, dan program sosial.
 - Backup data aplikasi dari menu `Backup Data` dalam format JSON.
 - Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
 - Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.
@@ -168,7 +175,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 
-- ZISWAF lanjutan: sedekah khusus dan database muzakki/mustahik lebih detail.
+- ZISWAF lanjutan: sedekah khusus dan penghubung otomatis database muzakki/mustahik ke transaksi zakat.
 - Inventaris aset masjid dan fasilitas lanjutan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
 - Integrasi WhatsApp Business/API untuk pengiriman otomatis.

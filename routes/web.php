@@ -30,6 +30,7 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\WaqfAssetController;
 use App\Http\Controllers\WhatsappNotificationController;
 use App\Http\Controllers\ZakatController;
+use App\Http\Controllers\ZakatParticipantController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -161,6 +162,11 @@ Route::middleware('auth')->group(function (): void {
         Route::delete('zakat/penerimaan/{collection}', [ZakatController::class, 'destroyCollection'])->name('zakat.collections.destroy');
         Route::post('zakat/penyaluran', [ZakatController::class, 'storeDistribution'])->name('zakat.distributions.store');
         Route::delete('zakat/penyaluran/{distribution}', [ZakatController::class, 'destroyDistribution'])->name('zakat.distributions.destroy');
+
+        Route::resource('muzakki-mustahik', ZakatParticipantController::class)
+            ->parameters(['muzakki-mustahik' => 'zakatParticipant'])
+            ->names('zakat-participants')
+            ->except(['create', 'edit', 'show']);
 
         Route::resource('qurban', QurbanParticipantController::class)
             ->parameters(['qurban' => 'qurbanParticipant'])
