@@ -7,6 +7,7 @@ import {
     Building2,
     CalendarCheck,
     CalendarDays,
+    ChevronDown,
     Clock,
     DatabaseBackup,
     Download,
@@ -24,6 +25,7 @@ import {
     MessageCircle,
     RefreshCw,
     Newspaper,
+    Search,
     HandHeart,
     ShieldCheck,
     Users,
@@ -38,40 +40,99 @@ import { useEffect, useRef, useState } from 'react';
 import ApplicationLogo from '../Components/ApplicationLogo';
 import FlashMessage from '../Components/FlashMessage';
 
-const navigation = [
-    { label: 'Dashboard', href: '/dashboard', icon: Gauge, permission: null },
-    { label: 'Profil Masjid', href: '/profil-masjid', icon: Building2, permission: 'profile' },
-    { label: 'Pengurus', href: '/pengurus', icon: UsersRound, permission: 'people' },
-    { label: 'Jamaah', href: '/jamaah', icon: UserRoundCheck, permission: 'people' },
-    { label: 'Keluarga', href: '/keluarga-jamaah', icon: Users, permission: 'people' },
-    { label: 'Pengumuman', href: '/pengumuman', icon: Megaphone, permission: 'content' },
-    { label: 'Artikel', href: '/artikel', icon: Newspaper, permission: 'content' },
-    { label: 'Notifikasi WA', href: '/notifikasi-wa', icon: MessageCircle, permission: 'content' },
-    { label: 'Jadwal', href: '/jadwal', icon: CalendarDays, permission: 'content' },
-    { label: 'Booking Fasilitas', href: '/booking-fasilitas', icon: CalendarCheck, permission: 'content' },
-    { label: 'Fasilitas', href: '/fasilitas-masjid', icon: Building2, permission: 'inventory' },
-    { label: 'Jadwal Sholat', href: '/jadwal-sholat', icon: Clock, permission: 'content' },
-    { label: 'Arsip Surat', href: '/arsip-surat', icon: Files, permission: 'content' },
-    { label: 'Inventaris', href: '/inventaris', icon: Boxes, permission: 'inventory' },
-    { label: 'Perawatan', href: '/perawatan-inventaris', icon: Wrench, permission: 'inventory' },
-    { label: 'Zakat', href: '/zakat', icon: HandCoins, permission: 'programs' },
-    { label: 'Muzakki & Mustahik', href: '/muzakki-mustahik', icon: UsersRound, permission: 'programs' },
-    { label: 'Qurban', href: '/qurban', icon: Beef, permission: 'programs' },
-    { label: 'Wakaf', href: '/wakaf', icon: Gift, permission: 'programs' },
-    { label: 'Program Sosial', href: '/program-sosial', icon: HandHeart, permission: 'programs' },
-    { label: 'Akun Kas', href: '/keuangan/akun', icon: WalletCards, permission: 'finance' },
-    { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark, permission: 'finance' },
-    { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote, permission: 'finance' },
-    { label: 'Donasi/Infaq', href: '/donasi', icon: HeartHandshake, permission: 'donations' },
-    { label: 'Sedekah Khusus', href: '/sedekah-khusus', icon: Heart, permission: 'donations' },
-    { label: 'Export Laporan', href: '/laporan/export', icon: Download, permission: 'reports' },
-    { label: 'User Manajemen', href: '/users', icon: ShieldCheck, permission: 'system' },
-    { label: 'Audit Log', href: '/audit-log', icon: History, permission: 'system' },
-    { label: 'Backup Data', href: '/backup-data', icon: DatabaseBackup, permission: 'system' },
-    { label: 'Gateway WA', href: '/pengaturan-gateway-wa', icon: MessageCircle, permission: 'system' },
-    { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw, permission: 'system' },
-    { label: 'Tentang Aplikasi', href: '/tentang-aplikasi', icon: Info, permission: null },
+const navigationGroups = [
+    {
+        key: 'main',
+        label: 'Utama',
+        items: [
+            { label: 'Dashboard', href: '/dashboard', icon: Gauge, permission: null },
+            { label: 'Profil Masjid', href: '/profil-masjid', icon: Building2, permission: 'profile' },
+            { label: 'Tentang Aplikasi', href: '/tentang-aplikasi', icon: Info, permission: null },
+        ],
+    },
+    {
+        key: 'people',
+        label: 'Data Masjid',
+        items: [
+            { label: 'Pengurus', href: '/pengurus', icon: UsersRound, permission: 'people' },
+            { label: 'Jamaah', href: '/jamaah', icon: UserRoundCheck, permission: 'people' },
+            { label: 'Keluarga', href: '/keluarga-jamaah', icon: Users, permission: 'people' },
+            { label: 'Fasilitas', href: '/fasilitas-masjid', icon: Building2, permission: 'inventory' },
+            { label: 'Inventaris', href: '/inventaris', icon: Boxes, permission: 'inventory' },
+            { label: 'Perawatan', href: '/perawatan-inventaris', icon: Wrench, permission: 'inventory' },
+        ],
+    },
+    {
+        key: 'content',
+        label: 'Konten & Layanan',
+        items: [
+            { label: 'Pengumuman', href: '/pengumuman', icon: Megaphone, permission: 'content' },
+            { label: 'Artikel', href: '/artikel', icon: Newspaper, permission: 'content' },
+            { label: 'Notifikasi WA', href: '/notifikasi-wa', icon: MessageCircle, permission: 'content' },
+            { label: 'Jadwal', href: '/jadwal', icon: CalendarDays, permission: 'content' },
+            { label: 'Jadwal Sholat', href: '/jadwal-sholat', icon: Clock, permission: 'content' },
+            { label: 'Booking Fasilitas', href: '/booking-fasilitas', icon: CalendarCheck, permission: 'content' },
+            { label: 'Arsip Surat', href: '/arsip-surat', icon: Files, permission: 'content' },
+        ],
+    },
+    {
+        key: 'programs',
+        label: 'Program Umat',
+        items: [
+            { label: 'Zakat', href: '/zakat', icon: HandCoins, permission: 'programs' },
+            { label: 'Muzakki & Mustahik', href: '/muzakki-mustahik', icon: UsersRound, permission: 'programs' },
+            { label: 'Qurban', href: '/qurban', icon: Beef, permission: 'programs' },
+            { label: 'Wakaf', href: '/wakaf', icon: Gift, permission: 'programs' },
+            { label: 'Program Sosial', href: '/program-sosial', icon: HandHeart, permission: 'programs' },
+        ],
+    },
+    {
+        key: 'finance',
+        label: 'Keuangan',
+        items: [
+            { label: 'Akun Kas', href: '/keuangan/akun', icon: WalletCards, permission: 'finance' },
+            { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark, permission: 'finance' },
+            { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote, permission: 'finance' },
+            { label: 'Donasi/Infaq', href: '/donasi', icon: HeartHandshake, permission: 'donations' },
+            { label: 'Sedekah Khusus', href: '/sedekah-khusus', icon: Heart, permission: 'donations' },
+            { label: 'Export Laporan', href: '/laporan/export', icon: Download, permission: 'reports' },
+        ],
+    },
+    {
+        key: 'system',
+        label: 'Sistem',
+        items: [
+            { label: 'User Manajemen', href: '/users', icon: ShieldCheck, permission: 'system' },
+            { label: 'Audit Log', href: '/audit-log', icon: History, permission: 'system' },
+            { label: 'Backup Data', href: '/backup-data', icon: DatabaseBackup, permission: 'system' },
+            { label: 'Gateway WA', href: '/pengaturan-gateway-wa', icon: MessageCircle, permission: 'system' },
+            { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw, permission: 'system' },
+        ],
+    },
 ];
+
+const menuSearchScore = (item, searchTerm) => {
+    const label = item.label.toLowerCase();
+    const href = item.href.toLowerCase();
+
+    if (label === searchTerm) {
+        return 0;
+    }
+
+    if (label.startsWith(searchTerm)) {
+        return 1;
+    }
+
+    if (label.includes(searchTerm)) {
+        return 2 + label.indexOf(searchTerm) / 100;
+    }
+
+    if (href.includes(searchTerm)) {
+        return 4;
+    }
+
+    return 9;
+};
 
 export default function AppLayout({ title, children, actions = null }) {
     const { auth, app = {} } = usePage().props;
@@ -79,18 +140,76 @@ export default function AppLayout({ title, children, actions = null }) {
     const [time, setTime] = useState(new Date());
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [sidebarScrolling, setSidebarScrolling] = useState(false);
+    const [menuSearch, setMenuSearch] = useState('');
+    const [openGroupKeys, setOpenGroupKeys] = useState(() => {
+        try {
+            const saved = JSON.parse(window.localStorage.getItem('masjid-sidebar-open-groups') || '[]');
+
+            return Array.isArray(saved) && saved.length > 0 ? saved : ['main'];
+        } catch {
+            return ['main'];
+        }
+    });
     const sidebarScrollTimeoutRef = useRef(null);
     const mosqueName = app.name || 'Masjid';
     const mosqueSubtitle = app.tagline || 'Management';
     const currentYear = time.getFullYear();
     const permissions = auth?.permissions || [];
-    const visibleNavigation = navigation.filter((item) => !item.permission || permissions.includes(item.permission));
+    const permissionKey = permissions.join('|');
+    const isActive = (href) => path === href || (href !== '/dashboard' && path.startsWith(href + '/'));
+    const canView = (item) => !item.permission || permissions.includes(item.permission);
+    const searchTerm = menuSearch.trim().toLowerCase();
+    const hasMenuSearch = searchTerm.length > 0;
+    const activeGroupKeys = navigationGroups
+        .filter((group) => group.items.some((item) => canView(item) && isActive(item.href)))
+        .map((group) => group.key);
+    const visibleGroups = navigationGroups
+        .map((group) => {
+            const items = group.items
+                .filter(canView)
+                .filter((item) => {
+                    if (!hasMenuSearch) {
+                        return true;
+                    }
+
+                    return `${item.label} ${item.href}`.toLowerCase().includes(searchTerm);
+                })
+                .sort((a, b) => {
+                    if (!hasMenuSearch) {
+                        return 0;
+                    }
+
+                    return menuSearchScore(a, searchTerm) - menuSearchScore(b, searchTerm) || a.label.localeCompare(b.label);
+                });
+
+            return {
+                ...group,
+                items,
+            };
+        })
+        .filter((group) => group.items.length > 0);
 
     useEffect(() => {
         const timer = window.setInterval(() => setTime(new Date()), 1000);
 
         return () => window.clearInterval(timer);
     }, []);
+
+    useEffect(() => {
+        if (activeGroupKeys.length === 0) {
+            return;
+        }
+
+        setOpenGroupKeys((keys) => [...new Set([...keys, ...activeGroupKeys])]);
+    }, [path, permissionKey]);
+
+    useEffect(() => {
+        if (hasMenuSearch) {
+            return;
+        }
+
+        window.localStorage.setItem('masjid-sidebar-open-groups', JSON.stringify(openGroupKeys));
+    }, [hasMenuSearch, openGroupKeys]);
 
     useEffect(() => {
         return () => {
@@ -100,11 +219,13 @@ export default function AppLayout({ title, children, actions = null }) {
         };
     }, []);
 
-    const isActive = (href) => path === href || (href !== '/dashboard' && path.startsWith(href + '/'));
-
     const logout = (event) => {
         event.preventDefault();
         router.post('/logout');
+    };
+
+    const toggleGroup = (groupKey) => {
+        setOpenGroupKeys((keys) => (keys.includes(groupKey) ? keys.filter((key) => key !== groupKey) : [...keys, groupKey]));
     };
 
     const handleSidebarScroll = () => {
@@ -156,30 +277,74 @@ export default function AppLayout({ title, children, actions = null }) {
                             </button>
                         </div>
 
+                        <div className="border-b border-white/10 p-2">
+                            <label className="relative block">
+                                <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-emerald-100/65" />
+                                <input
+                                    type="search"
+                                    value={menuSearch}
+                                    onChange={(event) => setMenuSearch(event.target.value)}
+                                    placeholder="Cari menu..."
+                                    className="w-full rounded-lg border border-white/10 bg-white/10 py-2 pr-2.5 pl-8 text-xs font-semibold text-white outline-none placeholder:text-emerald-50/55 focus:border-emerald-200/35 focus:bg-white/15"
+                                />
+                            </label>
+                        </div>
+
                         <nav
                             className={`sidebar-scrollbar flex-1 space-y-1 overflow-y-auto p-2 ${sidebarScrolling ? 'sidebar-scrollbar-visible' : ''}`}
                             onScroll={handleSidebarScroll}
                         >
-                            {visibleNavigation.map((item) => {
-                                const Icon = item.icon;
-                                const active = isActive(item.href);
+                            {visibleGroups.map((group) => {
+                                const opened = hasMenuSearch || openGroupKeys.includes(group.key);
+                                const groupActive = activeGroupKeys.includes(group.key);
 
                                 return (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        onClick={() => setSidebarOpen(false)}
-                                        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-all duration-150 ${
-                                            active
-                                                ? 'bg-gradient-to-r from-emerald-400/25 to-amber-300/20 text-white shadow-sm shadow-emerald-950/15 ring-1 ring-emerald-100/20'
-                                                : 'text-emerald-50/80 hover:bg-white/10 hover:text-white'
-                                        }`}
-                                    >
-                                        <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-amber-200' : 'text-emerald-100/65'}`} />
-                                        {item.label}
-                                    </Link>
+                                    <div key={group.key} className="rounded-xl border border-white/5 bg-emerald-950/10">
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleGroup(group.key)}
+                                            className={`flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-[10px] font-black uppercase tracking-[0.14em] transition ${
+                                                groupActive ? 'text-amber-100' : 'text-emerald-50/75 hover:bg-white/5 hover:text-white'
+                                            }`}
+                                        >
+                                            <span className="truncate">{group.label}</span>
+                                            <span className="flex items-center gap-1.5">
+                                                <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] tracking-normal text-emerald-50/75">{group.items.length}</span>
+                                                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${opened ? 'rotate-180' : ''}`} />
+                                            </span>
+                                        </button>
+                                        {opened && (
+                                            <div className="space-y-1 px-1.5 pb-1.5">
+                                                {group.items.map((item) => {
+                                                    const Icon = item.icon;
+                                                    const active = isActive(item.href);
+
+                                                    return (
+                                                        <Link
+                                                            key={item.href}
+                                                            href={item.href}
+                                                            onClick={() => setSidebarOpen(false)}
+                                                            className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-semibold transition-all duration-150 ${
+                                                                active
+                                                                    ? 'bg-gradient-to-r from-emerald-400/25 to-amber-300/20 text-white shadow-sm shadow-emerald-950/15 ring-1 ring-emerald-100/20'
+                                                                    : 'text-emerald-50/80 hover:bg-white/10 hover:text-white'
+                                                            }`}
+                                                        >
+                                                            <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-amber-200' : 'text-emerald-100/65'}`} />
+                                                            <span className="truncate">{item.label}</span>
+                                                        </Link>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
                                 );
                             })}
+                            {visibleGroups.length === 0 && (
+                                <p className="rounded-xl border border-dashed border-emerald-100/15 bg-white/5 p-3 text-center text-[11px] font-semibold leading-5 text-emerald-50/70">
+                                    Tidak ada menu yang cocok.
+                                </p>
+                            )}
                         </nav>
                     </div>
 
