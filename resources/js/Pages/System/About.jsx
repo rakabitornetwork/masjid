@@ -1,25 +1,19 @@
-import { CheckCircle2, Code2, GitCommit, Globe2, Heart, Info, Layers3, Rocket, Server, ShieldCheck, Sparkles, Zap } from 'lucide-react';
+import { CheckCircle2, Code2, GitCommit, Heart, Info, Layers3, Rocket, Server, ShieldCheck, Sparkles, Zap } from 'lucide-react';
 import AppLayout from '../../Layouts/AppLayout';
 
 export default function About({ application, stack, features }) {
-    const stats = [
-        { label: 'Versi Terpasang', value: application.version, icon: Rocket, tone: 'amber' },
-        { label: 'Commit Aktif', value: application.commit, icon: GitCommit, tone: 'sky', mono: true },
-        { label: 'Environment', value: application.environment, icon: Server, tone: 'emerald' },
-        { label: 'Timezone', value: application.timezone, icon: Globe2, tone: 'violet' },
-    ];
-
     return (
         <AppLayout title="Tentang Aplikasi">
-            <section className="overflow-hidden rounded-3xl border border-white/70 bg-white shadow-xl shadow-blue-950/5">
-                <div className="relative isolate overflow-hidden bg-[radial-gradient(circle_at_12%_12%,rgba(250,204,21,0.32),transparent_26%),radial-gradient(circle_at_84%_18%,rgba(56,189,248,0.28),transparent_30%),linear-gradient(135deg,#064e3b_0%,#0f766e_45%,#1d4ed8_100%)] p-6 text-white lg:p-8">
-                    <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
-                    <div className="absolute bottom-0 right-8 h-24 w-24 rounded-full bg-amber-300/20 blur-xl" />
+            <section className="overflow-hidden rounded-3xl border border-teal-100/70 bg-white shadow-xl shadow-blue-950/5">
+                <div className="relative isolate overflow-hidden bg-gradient-to-br from-emerald-800 via-teal-700 to-blue-800 p-6 text-white lg:p-8">
+                    <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.10)_0%,transparent_34%,rgba(255,255,255,0.08)_100%)]" />
+                    <div className="absolute -right-14 -top-14 h-44 w-44 rounded-full bg-sky-300/18 blur-2xl" />
+                    <div className="absolute -bottom-16 left-1/3 h-40 w-40 rounded-full bg-emerald-300/18 blur-2xl" />
 
                     <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                         <div className="max-w-3xl">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/12 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-amber-100 shadow-sm backdrop-blur">
-                                <Sparkles className="h-3.5 w-3.5 text-amber-200" />
+                            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/25 bg-amber-300/16 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-amber-50 shadow-sm backdrop-blur">
+                                <Sparkles className="h-3.5 w-3.5 text-amber-300" />
                                 {application.theme}
                             </div>
                             <h1 className="mt-4 text-3xl font-black tracking-tight lg:text-4xl">{application.name}</h1>
@@ -32,19 +26,13 @@ export default function About({ application, stack, features }) {
                             </div>
                         </div>
 
-                        <div className="rounded-2xl border border-white/15 bg-white/12 p-4 text-left shadow-2xl shadow-slate-950/15 backdrop-blur">
-                            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100">Status Sistem</p>
+                        <div className="rounded-2xl border border-sky-200/25 bg-sky-950/20 p-4 text-left shadow-2xl shadow-slate-950/15 backdrop-blur">
+                            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-sky-100">Status Sistem</p>
                             <p className="mt-2 text-2xl font-black">{application.environment}</p>
-                            <p className="mt-1 text-xs font-semibold text-white/70">Runtime aktif dan konfigurasi terbaca dari server.</p>
+                            <p className="mt-1 text-xs font-semibold text-sky-50/75">Runtime aktif dan konfigurasi terbaca dari server.</p>
                         </div>
                     </div>
                 </div>
-            </section>
-
-            <section className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                {stats.map((item) => (
-                    <MetricCard key={item.label} {...item} />
-                ))}
             </section>
 
             <section className="mt-4 grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
@@ -94,57 +82,30 @@ export default function About({ application, stack, features }) {
 
 function Badge({ icon: Icon, label, tone = 'emerald' }) {
     const tones = {
-        amber: 'bg-amber-300/18 text-amber-50 ring-amber-200/25',
-        sky: 'bg-sky-300/18 text-sky-50 ring-sky-200/25',
-        rose: 'bg-rose-300/18 text-rose-50 ring-rose-200/25',
-        emerald: 'bg-emerald-300/18 text-emerald-50 ring-emerald-200/25',
-    };
-
-    return (
-        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ring-1 ${tones[tone] || tones.emerald}`}>
-            <Icon className="h-3.5 w-3.5" />
-            {label}
-        </span>
-    );
-}
-
-function MetricCard({ icon: Icon, label, mono = false, tone = 'emerald', value }) {
-    const tones = {
         amber: {
-            card: 'border-amber-100 bg-amber-50',
-            icon: 'from-amber-500 to-orange-500',
-            text: 'text-amber-700',
+            badge: 'bg-amber-400/18 text-amber-50 ring-amber-200/30',
+            icon: 'text-amber-300',
         },
         sky: {
-            card: 'border-sky-100 bg-sky-50',
-            icon: 'from-sky-500 to-blue-600',
-            text: 'text-sky-700',
+            badge: 'bg-sky-400/18 text-sky-50 ring-sky-200/30',
+            icon: 'text-sky-300',
+        },
+        rose: {
+            badge: 'bg-rose-400/18 text-rose-50 ring-rose-200/30',
+            icon: 'text-rose-300',
         },
         emerald: {
-            card: 'border-emerald-100 bg-emerald-50',
-            icon: 'from-emerald-500 to-teal-600',
-            text: 'text-emerald-700',
-        },
-        violet: {
-            card: 'border-violet-100 bg-violet-50',
-            icon: 'from-violet-500 to-indigo-600',
-            text: 'text-violet-700',
+            badge: 'bg-emerald-400/18 text-emerald-50 ring-emerald-200/30',
+            icon: 'text-emerald-300',
         },
     };
     const selectedTone = tones[tone] || tones.emerald;
 
     return (
-        <div className={`rounded-2xl border ${selectedTone.card} p-4 shadow-sm shadow-slate-950/5`}>
-            <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                    <p className={`text-[10px] font-black uppercase tracking-[0.16em] ${selectedTone.text}`}>{label}</p>
-                    <p className={`mt-2 truncate text-lg font-black text-slate-950 ${mono ? 'font-mono' : ''}`}>{value || '-'}</p>
-                </div>
-                <div className={`rounded-xl bg-gradient-to-br ${selectedTone.icon} p-2.5 text-white shadow-lg shadow-slate-950/10`}>
-                    <Icon className="h-4 w-4" />
-                </div>
-            </div>
-        </div>
+        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ring-1 backdrop-blur ${selectedTone.badge}`}>
+            <Icon className={`h-3.5 w-3.5 ${selectedTone.icon}`} />
+            {label}
+        </span>
     );
 }
 
