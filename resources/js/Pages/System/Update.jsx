@@ -112,7 +112,7 @@ export default function Update({
                             <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-teal-700">Informasi Update Terbaru</p>
                             <h3 className="mt-1 text-base font-extrabold tracking-tight text-slate-950">{latestUpdate.title}</h3>
                             <p className="mt-1 text-[10px] font-semibold text-slate-500">Tanggal rilis: {latestUpdate.date}</p>
-                            <p className="mt-3 max-w-2xl text-xs font-medium leading-5 text-slate-600">{latestUpdate.summary}</p>
+                            <p className="mt-3 max-w-2xl whitespace-pre-line text-xs font-medium leading-5 text-slate-600">{latestUpdate.summary}</p>
                             <div className="mt-3 flex flex-wrap gap-2">
                                 <span
                                     className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.14em] ${

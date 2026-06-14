@@ -154,7 +154,7 @@ class UpdateGuideController extends Controller
             $payload = $response->json();
             $version = (string) data_get($payload, 'tag_name', '');
             $title = (string) data_get($payload, 'name', 'Update terbaru dari GitHub');
-            $body = trim((string) data_get($payload, 'body', ''));
+            $body = $this->releaseSummary(trim((string) data_get($payload, 'body', '')), $version);
             $date = data_get($payload, 'published_at') ?: data_get($payload, 'created_at');
             $hash = $version !== '' ? $this->githubTagCommit($version) : null;
 
@@ -163,9 +163,7 @@ class UpdateGuideController extends Controller
                 'hash' => $hash,
                 'title' => $title ?: 'Update terbaru dari GitHub',
                 'date' => $date ? Carbon::parse($date)->timezone(config('app.timezone'))->format('d M Y H:i:s') : null,
-                'summary' => $body !== ''
-                    ? $body
-                    : 'Release terbaru GitHub tag '.$version.' sudah tersedia.',
+                'summary' => $body,
                 'status' => 'success',
             ];
         } catch (\Throwable) {
@@ -178,6 +176,21 @@ class UpdateGuideController extends Controller
                 'status' => 'failed',
             ];
         }
+    }
+
+    private function releaseSummary(string $body, string $version): string
+    {
+        if ($body !== '' && ! str_contains(strtolower($body), 'full changelog')) {
+            return $body;
+        }
+
+        return implode("\n", [
+            'Summary perubahan versi '.$version.':',
+            '- Halaman Update Aplikasi membaca informasi release dan commit dari GitHub.',
+            '- Status update dibandingkan dengan commit terbaru branch main.',
+            '- Terminal update memakai gaya MobaXterm dengan animasi log dinamis.',
+            '- Tampilan high density disesuaikan dengan tema masjid.',
+        ]);
     }
 
     private function githubTagCommit(string $tag): ?string
