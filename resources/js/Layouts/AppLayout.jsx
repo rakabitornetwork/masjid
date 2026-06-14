@@ -54,7 +54,7 @@ export default function AppLayout({ title, children, actions = null }) {
         <>
             <Head title={title} />
 
-            <div className="flex h-screen overflow-hidden bg-[#052e2b] font-sans text-xs text-slate-800 antialiased">
+            <div className="flex h-screen overflow-hidden bg-[#052e2b] font-sans text-slate-800 antialiased">
                 {sidebarOpen && (
                     <button
                         type="button"
