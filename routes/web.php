@@ -25,6 +25,7 @@ use App\Http\Controllers\ReportExportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UpdateGuideController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\WhatsappNotificationController;
 use App\Http\Controllers\ZakatController;
 use Illuminate\Support\Facades\Route;
 
@@ -117,6 +118,13 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('booking-fasilitas', FacilityBookingController::class)
             ->parameters(['booking-fasilitas' => 'facilityBooking'])
             ->names('facility-bookings')
+            ->except(['create', 'edit', 'show']);
+
+        Route::post('notifikasi-wa/{whatsappNotification}/terkirim', [WhatsappNotificationController::class, 'markSent'])
+            ->name('whatsapp-notifications.mark-sent');
+        Route::resource('notifikasi-wa', WhatsappNotificationController::class)
+            ->parameters(['notifikasi-wa' => 'whatsappNotification'])
+            ->names('whatsapp-notifications')
             ->except(['create', 'edit', 'show']);
 
         Route::resource('inventaris', InventoryItemController::class)
