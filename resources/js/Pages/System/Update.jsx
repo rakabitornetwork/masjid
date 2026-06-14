@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { router } from '@inertiajs/react';
 import { CheckCircle2, ClipboardCheck, RefreshCw, Rocket, Sparkles, Terminal } from 'lucide-react';
 import AppLayout from '../../Layouts/AppLayout';
@@ -12,9 +12,41 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache`;
 
-export default function Update({ currentVersion, latestVersion, latestCommit, latestUpdate, updateResult }) {
+export default function Update({
+    currentVersion,
+    latestVersion,
+    currentCommit,
+    latestCommit,
+    updateAvailable,
+    githubStatus,
+    latestUpdate,
+    updateResult,
+}) {
     const [copied, setCopied] = useState(false);
     const [running, setRunning] = useState(false);
+    const [visibleLogCount, setVisibleLogCount] = useState(0);
+
+    useEffect(() => {
+        if (!updateResult?.logs?.length) {
+            setVisibleLogCount(0);
+            return;
+        }
+
+        setVisibleLogCount(0);
+
+        const timer = window.setInterval(() => {
+            setVisibleLogCount((count) => {
+                if (count >= updateResult.logs.length) {
+                    window.clearInterval(timer);
+                    return count;
+                }
+
+                return count + 1;
+            });
+        }, 420);
+
+        return () => window.clearInterval(timer);
+    }, [updateResult]);
 
     const copyUpdateCommands = async () => {
         if (navigator.clipboard) {
@@ -54,15 +86,15 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
         );
     };
 
-    const isLatest = currentVersion === latestVersion;
+    const isGithubConnected = githubStatus === 'success';
 
     return (
         <AppLayout title="Update Aplikasi">
             <section className="mb-4 grid gap-3 md:grid-cols-4">
                 <VersionTile label="Versi Terbaru" value={`v${latestVersion}`} />
-                <VersionTile label="Versi Terpasang" value={`v${currentVersion}`} />
-                <VersionTile label="Commit Terbaru" value={latestCommit} mono />
-                <VersionTile label="Status" value={isLatest ? 'Up to Date' : 'Perlu Update'} />
+                <VersionTile label="Commit Lokal" value={currentCommit} mono />
+                <VersionTile label="Commit GitHub" value={latestCommit} mono />
+                <VersionTile label="Status" value={!isGithubConnected ? 'GitHub Gagal' : updateAvailable ? 'Perlu Update' : 'Up to Date'} />
             </section>
 
             <section className="grid gap-4">
@@ -76,6 +108,22 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                             <h3 className="mt-1 text-base font-extrabold tracking-tight text-slate-950">{latestUpdate.title}</h3>
                             <p className="mt-1 text-[10px] font-semibold text-slate-500">Tanggal rilis: {latestUpdate.date}</p>
                             <p className="mt-3 max-w-2xl text-xs font-medium leading-5 text-slate-600">{latestUpdate.summary}</p>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                                <span
+                                    className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.14em] ${
+                                        isGithubConnected ? 'bg-teal-100 text-teal-700' : 'bg-rose-100 text-rose-700'
+                                    }`}
+                                >
+                                    GitHub: {isGithubConnected ? 'Terhubung' : 'Gagal Dibaca'}
+                                </span>
+                                <span
+                                    className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.14em] ${
+                                        updateAvailable ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'
+                                    }`}
+                                >
+                                    {updateAvailable ? 'Update tersedia' : 'Aplikasi terbaru'}
+                                </span>
+                            </div>
                         </div>
                         <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
                             <button
@@ -134,12 +182,11 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                                     {updateResult.finished_at}
                                 </span>
                             </div>
-                            <div className="max-h-[26rem] min-w-0 space-y-2 overflow-y-auto p-3 font-mono">
-                                {updateResult.logs.map((log, index) => (
+                            <div className="min-w-0 space-y-2 p-3 font-mono">
+                                {updateResult.logs.slice(0, visibleLogCount).map((log, index) => (
                                     <div
                                         key={`${log.command}-${index}`}
                                         className="terminal-line-in min-w-0 rounded-lg border border-slate-800 bg-slate-900/80 p-2.5"
-                                        style={{ animationDelay: `${index * 90}ms` }}
                                     >
                                         <div className="flex flex-wrap items-center justify-between gap-2">
                                             <code className="min-w-0 break-all text-[10px] font-bold text-teal-200">
@@ -154,16 +201,25 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                                             </span>
                                         </div>
                                         {(log.output || log.error) && (
-                                            <pre className="mt-2 max-h-44 max-w-full overflow-auto whitespace-pre-wrap break-words text-[10px] leading-5 text-slate-200">
+                                            <pre className="mt-2 max-w-full whitespace-pre-wrap break-words text-[10px] leading-5 text-slate-200">
                                                 <code>{log.output || log.error}</code>
                                             </pre>
                                         )}
                                     </div>
                                 ))}
-                                <div className="terminal-line-in flex items-center gap-1.5 text-[10px] font-bold text-teal-300">
-                                    <span>{updateResult.status === 'success' ? 'Update process completed' : 'Update process stopped'}</span>
-                                    <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-teal-300" />
-                                </div>
+                                {visibleLogCount < updateResult.logs.length && (
+                                    <div className="terminal-line-in flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/80 p-2.5 text-[10px] font-bold text-amber-300">
+                                        <RefreshCw className="h-3 w-3 animate-spin" />
+                                        <span>Menampilkan proses update...</span>
+                                        <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-amber-300" />
+                                    </div>
+                                )}
+                                {visibleLogCount >= updateResult.logs.length && (
+                                    <div className="terminal-line-in flex items-center gap-1.5 text-[10px] font-bold text-teal-300">
+                                        <span>{updateResult.status === 'success' ? 'Update process completed' : 'Update process stopped'}</span>
+                                        <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-teal-300" />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
