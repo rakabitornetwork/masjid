@@ -7,6 +7,7 @@ import {
     Building2,
     CalendarDays,
     Clock,
+    DatabaseBackup,
     Download,
     Gauge,
     HandCoins,
@@ -44,6 +45,7 @@ const navigation = [
     { label: 'Donasi/Infaq', href: '/donasi', icon: HeartHandshake, permission: 'donations' },
     { label: 'Export Laporan', href: '/laporan/export', icon: Download, permission: 'reports' },
     { label: 'User Admin', href: '/users', icon: ShieldCheck, permission: 'system' },
+    { label: 'Backup Data', href: '/backup-data', icon: DatabaseBackup, permission: 'system' },
     { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw, permission: 'system' },
 ];
 

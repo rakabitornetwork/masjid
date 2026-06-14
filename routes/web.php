@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CommitteeMemberController;
 use App\Http\Controllers\CongregantController;
 use App\Http\Controllers\DashboardController;
@@ -50,6 +51,10 @@ Route::middleware('auth')->group(function (): void {
         Route::get('update-aplikasi', UpdateGuideController::class)->name('updates.guide');
         Route::post('update-aplikasi/run', [UpdateGuideController::class, 'run'])->name('updates.run');
         Route::post('update-aplikasi/run-stream', [UpdateGuideController::class, 'stream'])->name('updates.stream');
+
+        Route::get('backup-data', [BackupController::class, 'index'])->name('backups.index');
+        Route::get('backup-data/download', [BackupController::class, 'download'])->name('backups.download');
+        Route::post('backup-data/restore', [BackupController::class, 'restore'])->name('backups.restore');
     });
 
     Route::middleware('role:admin,bendahara,viewer')->group(function (): void {

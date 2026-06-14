@@ -47,7 +47,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Nama masjid dan tagline.
 - Alamat, kota, provinsi, kode pos.
 - Kontak telepon, email, dan website.
-- Informasi rekening bank.
+- Logo/icon aplikasi untuk sidebar, navbar, login, dan favicon.
 - Visi, misi, tanggal berdiri, kapasitas jamaah, dan fasilitas.
 
 ### Kepengurusan
@@ -80,6 +80,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Metode pembayaran tunai, transfer, QRIS, dan e-wallet.
 - Status transaksi `draft` dan `posted`.
 - Ringkasan total pemasukan, pengeluaran, dan saldo bersih.
+
+### Export, Backup, dan Restore
+
+- Export laporan CSV untuk transaksi keuangan, jamaah, inventaris, donasi, zakat, dan qurban.
+- Backup data aplikasi dari menu `Backup Data` dalam format JSON.
+- Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
+- Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.
 
 ## Roadmap Fitur Lanjutan
 
