@@ -147,8 +147,8 @@ export default function Index({ members }) {
 
     return (
         <AppLayout title="Pengurus Masjid">
-            <div className="grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
-                <form onSubmit={submit} className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+            <div className="grid min-w-0 gap-4 xl:grid-cols-[0.85fr_1.15fr]">
+                <form onSubmit={submit} className="min-w-0 rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
                     <div className="mb-4 flex items-center gap-2.5">
                         <div className="rounded-lg bg-teal-100 p-2 text-teal-700">
                             <UsersRound className="h-4 w-4" />
@@ -164,7 +164,7 @@ export default function Index({ members }) {
                     <div className="grid gap-3 md:grid-cols-2">
                         <div className="md:col-span-2 rounded-xl border border-dashed border-teal-200 bg-teal-50/60 p-3">
                             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Foto Pengurus</p>
-                            <div className="mt-3 flex items-center gap-3">
+                            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
                                 <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white bg-white text-teal-600 shadow-sm">
                                     {avatarPreviewUrl ? (
                                         <img src={avatarPreviewUrl} alt="Foto pengurus" className="h-full w-full object-cover" />
@@ -226,7 +226,7 @@ export default function Index({ members }) {
                         </div>
                     </div>
 
-                    <div className="mt-4 flex gap-2">
+                    <div className="mt-4 flex flex-wrap gap-2">
                         <PrimaryButton disabled={processing} className="gap-2">
                             <Plus className="h-4 w-4" />
                             {editingId ? 'Simpan Perubahan' : 'Tambah Pengurus'}
@@ -240,12 +240,75 @@ export default function Index({ members }) {
                     </div>
                 </form>
 
-                <section className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                <section className="min-w-0 rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                         <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Daftar Pengurus</h3>
                         <p className="text-[11px] font-semibold text-slate-500">Tarik baris untuk mengatur urutan.</p>
                     </div>
-                    <div className="mt-3 overflow-x-auto">
+                    <div className="mt-3 space-y-2 md:hidden">
+                        {orderedMembers.map((member) => (
+                            <div
+                                key={member.id}
+                                draggable={orderedMembers.length > 1}
+                                onDragStart={(event) => handleDragStart(event, member)}
+                                onDragOver={(event) => handleDragOver(event, member)}
+                                onDrop={(event) => handleDrop(event, member)}
+                                onDragEnd={handleDragEnd}
+                                className={`rounded-xl border p-3 transition ${
+                                    draggedMemberId === member.id
+                                        ? 'border-amber-200 bg-amber-50 opacity-70'
+                                        : dragOverMemberId === member.id
+                                          ? 'border-emerald-200 bg-emerald-50'
+                                          : 'border-slate-100 bg-white'
+                                }`}
+                            >
+                                <div className="flex items-start gap-3">
+                                    <span
+                                        className="mt-1 inline-flex cursor-grab items-center rounded-lg border border-emerald-100 bg-emerald-50 p-1 text-emerald-700 active:cursor-grabbing"
+                                        title="Geser urutan"
+                                    >
+                                        <GripVertical className="h-4 w-4" />
+                                    </span>
+                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700 shadow-sm">
+                                        {member.avatar_path ? (
+                                            <img src={`/storage/${member.avatar_path}`} alt={member.name} className="h-full w-full object-cover" />
+                                        ) : (
+                                            <UserRound className="h-5 w-5" />
+                                        )}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-start justify-between gap-2">
+                                            <div className="min-w-0">
+                                                <p className="truncate text-sm font-extrabold text-slate-900">{member.name}</p>
+                                                <p className="truncate text-xs font-bold text-teal-700">{member.position}</p>
+                                            </div>
+                                            <span
+                                                className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-bold ${
+                                                    member.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'
+                                                }`}
+                                            >
+                                                {member.is_active ? 'Aktif' : 'Nonaktif'}
+                                            </span>
+                                        </div>
+                                        <p className="mt-1 text-[11px] font-semibold text-slate-500">
+                                            {date(member.period_start)} - {date(member.period_end)}
+                                        </p>
+                                        <p className="mt-0.5 truncate text-[11px] font-semibold text-slate-400">{member.email || member.phone || 'Kontak belum diisi'}</p>
+                                        <div className="mt-2 flex justify-end gap-2">
+                                            <button className="rounded-lg bg-emerald-50 p-2 text-emerald-700" type="button" onClick={() => edit(member)}>
+                                                <Edit3 className="h-4 w-4" />
+                                            </button>
+                                            <button className="rounded-lg bg-rose-50 p-2 text-rose-600" type="button" onClick={() => destroy(member)}>
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        {orderedMembers.length === 0 && <p className="rounded-xl border border-dashed border-teal-200 bg-teal-50/60 p-4 text-center text-xs font-semibold text-slate-500">Belum ada data pengurus.</p>}
+                    </div>
+                    <div className="mt-3 hidden overflow-x-auto md:block">
                         <table className="w-full min-w-[860px] text-left text-xs">
                             <thead className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
                                 <tr>

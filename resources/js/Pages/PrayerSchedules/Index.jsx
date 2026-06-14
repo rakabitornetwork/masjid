@@ -231,27 +231,27 @@ export default function Index({ profile }) {
         <AppLayout title="Jadwal Sholat Indonesia">
             <Head title="Jadwal Sholat Indonesia" />
 
-            <div className="space-y-5">
+            <div className="min-w-0 space-y-5">
                 {/* Header Widget */}
-                <div className="flex flex-col gap-4 rounded-2xl bg-gradient-to-r from-emerald-800 to-teal-900 p-5 text-white shadow-md sm:flex-row sm:items-center sm:justify-between lg:p-6">
-                    <div className="flex items-center gap-3.5">
-                        <div className="rounded-xl bg-white/10 p-3 backdrop-blur-md">
+                <div className="flex min-w-0 flex-col gap-4 rounded-2xl bg-gradient-to-r from-emerald-800 to-teal-900 p-4 text-white shadow-md sm:flex-row sm:items-center sm:justify-between lg:p-6">
+                    <div className="flex min-w-0 items-center gap-3">
+                        <div className="shrink-0 rounded-xl bg-white/10 p-3 backdrop-blur-md">
                             <Clock className="h-6 w-6 text-amber-200" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                             <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-100/70">Waktu Ibadah</span>
-                            <h2 className="text-lg font-black tracking-tight lg:text-xl">
+                            <h2 className="truncate text-base font-black tracking-tight sm:text-lg lg:text-xl">
                                 Jadwal Sholat Kemenag RI
                             </h2>
-                            <p className="mt-0.5 flex items-center gap-1 text-xs font-semibold text-emerald-50/80">
-                                <MapPin className="h-3.5 w-3.5 text-amber-300" />
-                                {city ? city.lokasi : 'Memuat lokasi...'}
+                            <p className="mt-0.5 flex min-w-0 items-center gap-1 text-xs font-semibold text-emerald-50/80">
+                                <MapPin className="h-3.5 w-3.5 shrink-0 text-amber-300" />
+                                <span className="truncate">{city ? city.lokasi : 'Memuat lokasi...'}</span>
                             </p>
                         </div>
                     </div>
 
                     {nextPrayer.name && (
-                        <div className="rounded-xl bg-white/10 px-4 py-3 text-right backdrop-blur-md sm:min-w-[180px]">
+                        <div className="rounded-xl bg-white/10 px-4 py-3 text-left backdrop-blur-md sm:min-w-[180px] sm:text-right">
                             <p className="text-[10px] font-bold uppercase tracking-wider text-amber-200">
                                 Selanjutnya: {nextPrayer.name} ({nextPrayer.time})
                             </p>
@@ -262,11 +262,11 @@ export default function Index({ profile }) {
                     )}
                 </div>
 
-                <div className="grid gap-5 lg:grid-cols-3">
+                <div className="grid min-w-0 gap-5 lg:grid-cols-3">
                     {/* Left Panel: Search & City Info */}
-                    <div className="space-y-4 lg:col-span-1">
+                    <div className="min-w-0 space-y-4 lg:col-span-1">
                         {/* Search Card */}
-                        <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                        <div className="min-w-0 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
                             <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
                                 Ganti Wilayah / Kota
                             </h3>
@@ -288,7 +288,7 @@ export default function Index({ profile }) {
                             )}
 
                             {searchResults.length > 0 && (
-                                <div className="mt-3 max-h-48 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50 p-1.5 space-y-1">
+                                <div className="mt-3 max-h-48 space-y-1 overflow-y-auto rounded-xl border border-slate-100 bg-slate-50 p-1.5">
                                     {searchResults.map((res) => (
                                         <button
                                             key={res.id}
@@ -297,7 +297,7 @@ export default function Index({ profile }) {
                                             className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-bold text-slate-700 hover:bg-emerald-600 hover:text-white transition"
                                         >
                                             <MapPin className="h-3.5 w-3.5 shrink-0 opacity-70" />
-                                            {res.lokasi}
+                                            <span className="truncate">{res.lokasi}</span>
                                         </button>
                                     ))}
                                 </div>
@@ -309,11 +309,11 @@ export default function Index({ profile }) {
                         </div>
 
                         {/* Calendar Quick Filter */}
-                        <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                        <div className="min-w-0 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
                             <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
                                 Pilih Periode Jadwal
                             </h3>
-                            <div className="mt-3 grid grid-cols-2 gap-3">
+                            <div className="mt-3 grid gap-3 sm:grid-cols-2">
                                 <div>
                                     <label className="text-[10px] font-bold uppercase text-slate-500">Bulan</label>
                                     <select
@@ -343,9 +343,9 @@ export default function Index({ profile }) {
                     </div>
 
                     {/* Right Panel: Daily Cards & Monthly Table */}
-                    <div className="space-y-4 lg:col-span-2">
+                    <div className="min-w-0 space-y-4 lg:col-span-2">
                         {/* Daily Timings Cards */}
-                        <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                        <div className="min-w-0 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
                             <h3 className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800">
                                 <Calendar className="h-4 w-4 text-emerald-600" />
                                 Hari Ini • {today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -354,7 +354,7 @@ export default function Index({ profile }) {
                             {loading && !todayData ? (
                                 <p className="mt-6 text-center text-xs font-bold text-slate-500">Memuat waktu sholat...</p>
                             ) : todayData ? (
-                                <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
                                     {['subuh', 'terbit', 'dzuhur', 'ashar', 'maghrib', 'isya'].map((key) => {
                                         const pName = key === 'dzuhur' ? 'Dzuhur' : key === 'ashar' ? 'Ashar' : key === 'maghrib' ? 'Maghrib' : key === 'isya' ? 'Isya' : key.charAt(0).toUpperCase() + key.slice(1);
                                         const Icon = prayerIcons[pName] || Sun;
@@ -400,7 +400,7 @@ export default function Index({ profile }) {
                         </div>
 
                         {/* Monthly Schedule Table */}
-                        <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                        <div className="min-w-0 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
                             <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
                                 Jadwal Bulanan • {months[month - 1]} {year}
                             </h3>
@@ -414,7 +414,32 @@ export default function Index({ profile }) {
                             {loading ? (
                                 <p className="mt-8 text-center text-xs font-bold text-slate-500">Memuat tabel jadwal...</p>
                             ) : schedule?.jadwal ? (
-                                <div className="mt-4 overflow-x-auto rounded-xl border border-slate-100">
+                                <>
+                                    <div className="mt-4 space-y-2 sm:hidden">
+                                        {schedule.jadwal.map((day) => {
+                                            const dayNum = parseInt(day.tanggal.split(',')[0]);
+                                            const isToday = dayNum === today.getDate() && month === currentMonth && year === currentYear;
+
+                                            return (
+                                                <div
+                                                    key={day.tanggal}
+                                                    className={`rounded-xl border p-3 ${
+                                                        isToday ? 'border-emerald-200 bg-emerald-50/70 text-emerald-950' : 'border-slate-100 bg-white text-slate-800'
+                                                    }`}
+                                                >
+                                                    <p className="text-xs font-extrabold text-slate-900">{day.tanggal}</p>
+                                                    <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] font-bold">
+                                                        <TimePill label="Subuh" value={day.subuh} />
+                                                        <TimePill label="Dzuhur" value={day.dzuhur} />
+                                                        <TimePill label="Ashar" value={day.ashar} />
+                                                        <TimePill label="Maghrib" value={day.maghrib} />
+                                                        <TimePill label="Isya" value={day.isya} />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                    <div className="mt-4 hidden overflow-x-auto rounded-xl border border-slate-100 sm:block">
                                     <table className="w-full text-left text-xs text-slate-700">
                                         <thead className="bg-slate-50 text-[10px] font-black uppercase tracking-wider text-slate-500 border-b border-slate-100">
                                             <tr>
@@ -451,7 +476,8 @@ export default function Index({ profile }) {
                                             })}
                                         </tbody>
                                     </table>
-                                </div>
+                                    </div>
+                                </>
                             ) : (
                                 <p className="mt-8 text-center text-xs font-semibold text-slate-500">Pilih wilayah untuk memuat jadwal.</p>
                             )}
@@ -460,5 +486,14 @@ export default function Index({ profile }) {
                 </div>
             </div>
         </AppLayout>
+    );
+}
+
+function TimePill({ label, value }) {
+    return (
+        <div className="rounded-lg bg-slate-50 px-2 py-1.5">
+            <p className="text-[9px] font-black uppercase tracking-wide text-slate-400">{label}</p>
+            <p className="font-mono text-xs font-black text-slate-800">{value}</p>
+        </div>
     );
 }
