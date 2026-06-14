@@ -6,6 +6,7 @@ use App\Models\Announcement;
 use App\Models\CommitteeMember;
 use App\Models\Congregant;
 use App\Models\DonationCampaign;
+use App\Models\DocumentArchive;
 use App\Models\FinancialAccount;
 use App\Models\FinancialCategory;
 use App\Models\InventoryItem;
@@ -231,6 +232,19 @@ class DatabaseSeeder extends Seeder
             'published_at' => now(),
             'is_pinned' => true,
             'status' => 'published',
+        ]);
+
+        DocumentArchive::updateOrCreate([
+            'title' => 'Undangan Rapat Koordinasi DKM',
+            'letter_number' => '001/DKM/VI/2026',
+        ], [
+            'type' => 'incoming',
+            'document_date' => now()->toDateString(),
+            'sender' => 'Forum DKM Kecamatan',
+            'recipient' => 'Ketua DKM Masjid Al-Ikhlas',
+            'category' => 'Undangan',
+            'status' => 'archived',
+            'notes' => 'Contoh arsip surat masuk untuk data awal aplikasi.',
         ]);
     }
 }

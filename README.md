@@ -72,6 +72,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Status `scheduled`, `done`, dan `canceled`.
 - Tambah, ubah, dan hapus jadwal.
 
+### Arsip Surat dan Dokumen
+
+- Pencatatan surat masuk, surat keluar, dokumen internal, dan dokumen lainnya.
+- Nomor surat, tanggal dokumen, pengirim, penerima, kategori, status, dan catatan.
+- Upload lampiran dokumen PDF, Word, Excel, JPG, atau PNG.
+- Arsip surat ikut masuk ke export laporan CSV dan backup data aplikasi.
+
 ### Keuangan Dasar
 
 - Akun kas, bank, QRIS, dan e-wallet.
@@ -95,7 +102,6 @@ Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 - Manajemen jamaah, keluarga, alamat RT/RW, dan segmentasi jamaah.
 - ZISWAF: zakat fitrah, zakat mal, infaq, sedekah, wakaf, muzakki, mustahik, dan distribusi.
 - Inventaris aset masjid, fasilitas, booking ruangan, dan riwayat perawatan.
-- Surat masuk/keluar dan arsip dokumen.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
 - Manajemen user, role, permission lebih detail, dan audit log.
 - Landing page publik, berita, agenda publik, dan integrasi notifikasi.

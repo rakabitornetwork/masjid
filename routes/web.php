@@ -8,6 +8,7 @@ use App\Http\Controllers\CongregantController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DonationCampaignController;
 use App\Http\Controllers\DonationEntryController;
+use App\Http\Controllers\DocumentArchiveController;
 use App\Http\Controllers\FinancialAccountController;
 use App\Http\Controllers\FinancialCategoryController;
 use App\Http\Controllers\FinancialTransactionController;
@@ -93,6 +94,11 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('jadwal', ScheduleController::class)
             ->parameters(['jadwal' => 'schedule'])
             ->names('schedules')
+            ->except(['create', 'edit', 'show']);
+
+        Route::resource('arsip-surat', DocumentArchiveController::class)
+            ->parameters(['arsip-surat' => 'documentArchive'])
+            ->names('document-archives')
             ->except(['create', 'edit', 'show']);
 
         Route::resource('inventaris', InventoryItemController::class)

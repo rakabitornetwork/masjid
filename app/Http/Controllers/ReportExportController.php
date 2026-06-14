@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Congregant;
 use App\Models\DonationCampaign;
+use App\Models\DocumentArchive;
 use App\Models\FinancialTransaction;
 use App\Models\InventoryItem;
 use App\Models\QurbanParticipant;
@@ -35,6 +36,10 @@ class ReportExportController extends Controller
         'donasi' => [
             'label' => 'Program Donasi',
             'description' => 'Export campaign, target, progres, dan status donasi.',
+        ],
+        'arsip-surat' => [
+            'label' => 'Arsip Surat',
+            'description' => 'Export surat masuk, surat keluar, dan dokumen internal.',
         ],
         'zakat-penerimaan' => [
             'label' => 'Penerimaan Zakat',
@@ -145,6 +150,20 @@ class ReportExportController extends Controller
                     $campaign->end_date?->format('Y-m-d'),
                     $campaign->status,
                     $campaign->is_featured ? 'ya' : 'tidak',
+                ]),
+            ],
+            'arsip-surat' => [
+                ['Tanggal', 'Jenis', 'Nomor Surat', 'Judul', 'Pengirim', 'Penerima', 'Kategori', 'Status', 'Lampiran'],
+                DocumentArchive::latest('document_date')->get()->map(fn (DocumentArchive $document): array => [
+                    $document->document_date?->format('Y-m-d'),
+                    $document->type,
+                    $document->letter_number,
+                    $document->title,
+                    $document->sender,
+                    $document->recipient,
+                    $document->category,
+                    $document->status,
+                    $document->attachment_path,
                 ]),
             ],
             'zakat-penerimaan' => [
