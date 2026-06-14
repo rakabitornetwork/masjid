@@ -328,16 +328,17 @@ class ReportExportController extends Controller
                 ]),
             ],
             'notifikasi-wa' => [
-                ['Judul', 'Kategori', 'Penerima', 'Nomor WA', 'Status', 'Jadwal Kirim', 'Terkirim', 'Pesan'],
-                WhatsappNotification::latest('scheduled_at')->latest()->get()->map(fn (WhatsappNotification $notification): array => [
+                ['Judul', 'Kategori', 'Penerima', 'Nomor WA', 'Status', 'Dibuat', 'Terkirim', 'Pesan', 'Catatan'],
+                WhatsappNotification::latest()->get()->map(fn (WhatsappNotification $notification): array => [
                     $notification->title,
                     $notification->category,
                     $notification->recipient_name,
                     $notification->recipient_phone,
                     $notification->status,
-                    $notification->scheduled_at?->format('Y-m-d H:i'),
+                    $notification->created_at?->format('Y-m-d H:i'),
                     $notification->sent_at?->format('Y-m-d H:i'),
                     $notification->message,
+                    $notification->notes,
                 ]),
             ],
             'booking-fasilitas' => [

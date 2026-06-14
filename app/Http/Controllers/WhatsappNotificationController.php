@@ -16,12 +16,10 @@ class WhatsappNotificationController extends Controller
     public function index(WhatsappCloudApiService $whatsapp): Response
     {
         return Inertia::render('WhatsappNotifications/Index', [
-            'notifications' => WhatsappNotification::latest('scheduled_at')->latest()->get()
+            'notifications' => WhatsappNotification::latest()->get()
                 ->map(fn (WhatsappNotification $notification): array => [
                     ...$notification->toArray(),
-                    'scheduled_at_input' => $notification->scheduled_at?->format('Y-m-d\TH:i'),
-                    'sent_at_input' => $notification->sent_at?->format('Y-m-d\TH:i'),
-                    'scheduled_at_display' => $notification->scheduled_at?->format('d M Y H:i'),
+                    'created_at_display' => $notification->created_at?->format('d M Y H:i'),
                     'sent_at_display' => $notification->sent_at?->format('d M Y H:i'),
                 ]),
             'api' => [
@@ -31,18 +29,23 @@ class WhatsappNotificationController extends Controller
             ],
             'summary' => [
                 'total' => WhatsappNotification::count(),
-                'draft' => WhatsappNotification::where('status', 'draft')->count(),
-                'scheduled' => WhatsappNotification::where('status', 'scheduled')->count(),
                 'sent' => WhatsappNotification::where('status', 'sent')->count(),
+                'failed' => WhatsappNotification::where('status', 'failed')->count(),
+                'pending_review' => WhatsappNotification::where('status', 'pending_review')->count(),
             ],
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, WhatsappCloudApiService $whatsapp): RedirectResponse
     {
-        WhatsappNotification::create($this->validatedData($request));
+        $notification = WhatsappNotification::create([
+            ...$this->validatedData($request),
+            'status' => 'draft',
+            'scheduled_at' => null,
+            'sent_at' => null,
+        ]);
 
-        return back()->with('success', 'Notifikasi WhatsApp berhasil ditambahkan.');
+        return $this->sendNotification($notification, $whatsapp);
     }
 
     public function update(Request $request, WhatsappNotification $whatsappNotification): RedirectResponse
@@ -71,12 +74,22 @@ class WhatsappNotificationController extends Controller
 
     public function sendApi(WhatsappNotification $whatsappNotification, WhatsappCloudApiService $whatsapp): RedirectResponse
     {
+        return $this->sendNotification($whatsappNotification, $whatsapp);
+    }
+
+    private function sendNotification(WhatsappNotification $whatsappNotification, WhatsappCloudApiService $whatsapp): RedirectResponse
+    {
         try {
             $response = $whatsapp->sendText($whatsappNotification->recipient_phone, $whatsappNotification->message);
         } catch (RuntimeException $exception) {
+            $this->markFailed($whatsappNotification, $exception->getMessage());
+
             return back()->with('error', $exception->getMessage());
         } catch (RequestException $exception) {
-            return back()->with('error', 'WhatsApp API gagal mengirim pesan: '.($exception->response?->body() ?: $exception->getMessage()));
+            $message = 'WhatsApp API gagal mengirim pesan: '.($exception->response?->body() ?: $exception->getMessage());
+            $this->markFailed($whatsappNotification, $message);
+
+            return back()->with('error', $message);
         }
 
         $messageId = data_get($response, 'messages.0.id') ?: data_get($response, 'data.message_id');
@@ -92,6 +105,8 @@ class WhatsappNotificationController extends Controller
 
         if ($whatsapp->provider() === 'baileys' && (! $deliveryConfirmed || $syncWarning)) {
             $whatsappNotification->update([
+                'status' => 'pending_review',
+                'sent_at' => null,
                 'notes' => $notes,
             ]);
 
@@ -107,6 +122,18 @@ class WhatsappNotificationController extends Controller
         return back()->with('success', 'Notifikasi WhatsApp berhasil dikirim melalui '.$whatsapp->providerLabel().'.');
     }
 
+    private function markFailed(WhatsappNotification $whatsappNotification, string $message): void
+    {
+        $whatsappNotification->update([
+            'status' => 'failed',
+            'sent_at' => null,
+            'notes' => trim(implode("\n", array_filter([
+                $whatsappNotification->notes,
+                'Gagal mengirim: '.$message,
+            ]))),
+        ]);
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -118,9 +145,6 @@ class WhatsappNotificationController extends Controller
             'recipient_name' => ['required', 'string', 'max:255'],
             'recipient_phone' => ['required', 'string', 'max:50'],
             'message' => ['required', 'string'],
-            'status' => ['required', 'in:draft,scheduled,sent,cancelled'],
-            'scheduled_at' => ['nullable', 'date'],
-            'sent_at' => ['nullable', 'date'],
             'notes' => ['nullable', 'string'],
         ]);
     }
