@@ -58,8 +58,15 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
 
     return (
         <AppLayout title="Update Aplikasi">
-            <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-                <article className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+            <section className="mb-4 grid gap-3 md:grid-cols-4">
+                <VersionTile label="Versi Terbaru" value={`v${latestVersion}`} />
+                <VersionTile label="Versi Terpasang" value={`v${currentVersion}`} />
+                <VersionTile label="Commit Terbaru" value={latestCommit} mono />
+                <VersionTile label="Status" value={isLatest ? 'Up to Date' : 'Perlu Update'} />
+            </section>
+
+            <section className="grid gap-4">
+                <article className="min-w-0 rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                         <div>
                             <div className="inline-flex rounded-lg bg-teal-100 p-2 text-teal-700">
@@ -91,7 +98,7 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                         </div>
                     </div>
 
-                    <div className="mt-4 rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-teal-50 to-amber-50 p-3 shadow-sm">
+                    <div className="mt-4 min-w-0 rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-teal-50 to-amber-50 p-3 shadow-sm">
                         <div className="mb-2 flex items-center justify-between gap-2">
                             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-800">
                                 Perintah yang disalin atau dijalankan tombol update
@@ -100,13 +107,13 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                                 Masjid Update
                             </span>
                         </div>
-                        <pre className="overflow-x-auto rounded-lg border border-emerald-100 bg-white/85 p-3 text-[11px] font-semibold leading-6 text-emerald-900">
+                        <pre className="max-w-full overflow-x-auto rounded-lg border border-emerald-100 bg-white/85 p-3 text-[11px] font-semibold leading-6 text-emerald-900">
                             <code>{updateCommands}</code>
                         </pre>
                     </div>
 
                     {updateResult && (
-                        <div className="mt-4 overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-md shadow-slate-950/20">
+                        <div className="mt-4 min-w-0 overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-md shadow-slate-950/20">
                             <div className="flex items-center justify-between gap-2.5 border-b border-slate-800 bg-slate-900 px-3 py-2">
                                 <div>
                                     <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-teal-300">
@@ -127,15 +134,15 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                                     {updateResult.finished_at}
                                 </span>
                             </div>
-                            <div className="max-h-[26rem] space-y-2 overflow-y-auto p-3 font-mono">
+                            <div className="max-h-[26rem] min-w-0 space-y-2 overflow-y-auto p-3 font-mono">
                                 {updateResult.logs.map((log, index) => (
                                     <div
                                         key={`${log.command}-${index}`}
-                                        className="terminal-line-in rounded-lg border border-slate-800 bg-slate-900/80 p-2.5"
+                                        className="terminal-line-in min-w-0 rounded-lg border border-slate-800 bg-slate-900/80 p-2.5"
                                         style={{ animationDelay: `${index * 90}ms` }}
                                     >
                                         <div className="flex flex-wrap items-center justify-between gap-2">
-                                            <code className="text-[10px] font-bold text-teal-200">
+                                            <code className="min-w-0 break-all text-[10px] font-bold text-teal-200">
                                                 <span className="text-amber-300">$</span> {log.command}
                                             </code>
                                             <span
@@ -147,7 +154,7 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                                             </span>
                                         </div>
                                         {(log.output || log.error) && (
-                                            <pre className="mt-2 max-h-44 overflow-auto whitespace-pre-wrap text-[10px] leading-5 text-slate-200">
+                                            <pre className="mt-2 max-h-44 max-w-full overflow-auto whitespace-pre-wrap break-words text-[10px] leading-5 text-slate-200">
                                                 <code>{log.output || log.error}</code>
                                             </pre>
                                         )}
@@ -162,41 +169,21 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                     )}
                 </article>
 
-                <article className="rounded-xl border border-white/10 bg-gradient-to-br from-blue-800 via-blue-700 to-sky-600 p-4 text-white shadow-sm">
-                    <div className="flex items-center justify-between gap-2.5">
-                        <div className="rounded-lg bg-white/15 p-2">
-                            <Rocket className="h-4 w-4" />
-                        </div>
-                        <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.14em]">
-                            {isLatest ? 'Up to Date' : 'Perlu Update'}
-                        </span>
-                    </div>
-
-                    <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-100">Versi Terbaru</p>
-                    <h3 className="mt-1 text-2xl font-extrabold tracking-tight">v{latestVersion}</h3>
-
-                    <div className="mt-5 grid gap-2.5">
-                        <div className="rounded-lg bg-white/15 p-3 backdrop-blur">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">Versi Terpasang</p>
-                            <p className="mt-0.5 text-base font-extrabold">v{currentVersion}</p>
-                        </div>
-                        <div className="rounded-lg bg-white/15 p-3 backdrop-blur">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">Repository</p>
-                            <p className="mt-0.5 break-all text-[11px] font-bold">github.com/rakabitornetwork/masjid</p>
-                        </div>
-                        <div className="rounded-lg bg-white/15 p-3 backdrop-blur">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">Commit Terbaru</p>
-                            <p className="mt-0.5 font-mono text-base font-extrabold">{latestCommit}</p>
-                        </div>
-                        <div className="rounded-lg bg-white/15 p-3 backdrop-blur">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">Catatan</p>
-                            <p className="mt-0.5 text-[11px] font-semibold leading-5">
-                                Tombol update dapat menjalankan proses langsung dari aplikasi atau menyalin perintah untuk dijalankan manual via SSH.
-                            </p>
-                        </div>
-                    </div>
-                </article>
             </section>
         </AppLayout>
+    );
+}
+
+function VersionTile({ label, value, mono = false }) {
+    return (
+        <div className="min-w-0 rounded-xl border border-white/70 bg-gradient-to-br from-blue-800 via-blue-700 to-sky-600 p-3 text-white shadow-sm">
+            <div className="flex items-center gap-2">
+                <div className="rounded-lg bg-white/15 p-1.5">
+                    <Rocket className="h-3.5 w-3.5" />
+                </div>
+                <p className="truncate text-[9px] font-bold uppercase tracking-[0.16em] text-blue-100">{label}</p>
+            </div>
+            <p className={`mt-2 truncate text-sm font-extrabold ${mono ? 'font-mono' : ''}`}>{value}</p>
+        </div>
     );
 }
