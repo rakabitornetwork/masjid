@@ -28,7 +28,7 @@ export default function Login() {
         <>
             <Head title="Login Admin" />
 
-            <main className="flex min-h-screen items-center justify-center p-4">
+            <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-4">
                 <section className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-white/70 bg-white/90 shadow-2xl shadow-blue-950/15 backdrop-blur lg:grid-cols-[1.05fr_0.95fr]">
                     <div className="relative hidden min-h-[520px] overflow-hidden bg-blue-950 p-8 text-white lg:block">
                         <img
@@ -119,6 +119,9 @@ export default function Login() {
                         </form>
                     </div>
                 </section>
+                <footer className="text-center text-[11px] font-semibold text-slate-500">
+                    Aplikasi manajemen masjid ini dibuat oleh Amon dengan hati untuk Ummat.
+                </footer>
             </main>
         </>
     );
