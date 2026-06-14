@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\Announcement;
 use App\Models\CommitteeMember;
+use App\Models\Congregant;
 use App\Models\FinancialAccount;
 use App\Models\FinancialCategory;
+use App\Models\InventoryItem;
 use App\Models\MosqueProfile;
 use App\Models\Schedule;
 use App\Models\User;
@@ -55,6 +57,47 @@ class DatabaseSeeder extends Seeder
         CommitteeMember::updateOrCreate(['name' => 'Siti Aminah', 'position' => 'Bendahara'], [
             'phone' => '0812-0000-0002',
             'sort_order' => 2,
+            'is_active' => true,
+        ]);
+
+        Congregant::updateOrCreate(['name' => 'Ahmad Ridwan', 'phone' => '0812-1000-0001'], [
+            'family_head' => 'Ahmad Ridwan',
+            'gender' => 'male',
+            'address' => 'Jl. Masjid Raya No. 12',
+            'neighborhood' => 'RT 01/RW 02',
+            'occupation' => 'Wiraswasta',
+            'marital_status' => 'married',
+            'is_active' => true,
+        ]);
+
+        Congregant::updateOrCreate(['name' => 'Nur Aisyah', 'phone' => '0812-1000-0002'], [
+            'family_head' => 'Ahmad Ridwan',
+            'gender' => 'female',
+            'address' => 'Jl. Masjid Raya No. 12',
+            'neighborhood' => 'RT 01/RW 02',
+            'occupation' => 'Guru',
+            'marital_status' => 'married',
+            'is_active' => true,
+        ]);
+
+        InventoryItem::updateOrCreate(['name' => 'Sound System Utama'], [
+            'category' => 'Elektronik',
+            'quantity' => 1,
+            'unit' => 'set',
+            'condition' => 'good',
+            'location' => 'Ruang Utama',
+            'estimated_value' => 8500000,
+            'maintenance_due_at' => now()->addMonths(2)->toDateString(),
+            'is_active' => true,
+        ]);
+
+        InventoryItem::updateOrCreate(['name' => 'Karpet Shaf Jamaah'], [
+            'category' => 'Perlengkapan Ibadah',
+            'quantity' => 20,
+            'unit' => 'roll',
+            'condition' => 'good',
+            'location' => 'Ruang Utama',
+            'estimated_value' => 12000000,
             'is_active' => true,
         ]);
 
