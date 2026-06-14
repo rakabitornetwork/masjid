@@ -1,6 +1,6 @@
 import { router, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { Edit3, GripVertical, Plus, Trash2, UsersRound, X } from 'lucide-react';
+import { Camera, Edit3, GripVertical, Plus, Trash2, UserRound, UsersRound, X } from 'lucide-react';
 import { CheckboxInput, PrimaryButton, SecondaryButton, TextareaInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
 import { date } from '../../lib/formatters';
@@ -10,6 +10,7 @@ const emptyForm = {
     position: '',
     phone: '',
     email: '',
+    avatar: null,
     period_start: '',
     period_end: '',
     sort_order: 0,
@@ -18,11 +19,12 @@ const emptyForm = {
 };
 
 export default function Index({ members }) {
-    const { data, setData, post, put, processing, errors, reset } = useForm(emptyForm);
+    const { data, setData, post, processing, errors, reset, transform } = useForm(emptyForm);
     const [orderedMembers, setOrderedMembers] = useState(members);
     const [draggedMemberId, setDraggedMemberId] = useState(null);
     const [dragOverMemberId, setDragOverMemberId] = useState(null);
     const editingId = data.id || null;
+    const avatarPreviewUrl = data.avatar ? URL.createObjectURL(data.avatar) : data.avatar_path ? `/storage/${data.avatar_path}` : null;
 
     useEffect(() => {
         setOrderedMembers(members);
@@ -30,12 +32,31 @@ export default function Index({ members }) {
 
     const submit = (event) => {
         event.preventDefault();
-        editingId ? put(`/pengurus/${editingId}`, { onSuccess: () => resetForm() }) : post('/pengurus', { onSuccess: () => resetForm() });
+
+        if (editingId) {
+            transform((formData) => ({ ...formData, _method: 'put' }));
+            post(`/pengurus/${editingId}`, {
+                forceFormData: true,
+                preserveScroll: true,
+                onSuccess: () => resetForm(),
+                onFinish: () => transform((formData) => formData),
+            });
+
+            return;
+        }
+
+        transform((formData) => formData);
+        post('/pengurus', {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => resetForm(),
+        });
     };
 
     const edit = (member) => {
         setData({
             ...member,
+            avatar: null,
             period_start: member.period_start?.slice(0, 10) || '',
             period_end: member.period_end?.slice(0, 10) || '',
         });
@@ -141,6 +162,34 @@ export default function Index({ members }) {
                     </div>
 
                     <div className="grid gap-3 md:grid-cols-2">
+                        <div className="md:col-span-2 rounded-xl border border-dashed border-teal-200 bg-teal-50/60 p-3">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Foto Pengurus</p>
+                            <div className="mt-3 flex items-center gap-3">
+                                <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white bg-white text-teal-600 shadow-sm">
+                                    {avatarPreviewUrl ? (
+                                        <img src={avatarPreviewUrl} alt="Foto pengurus" className="h-full w-full object-cover" />
+                                    ) : (
+                                        <UserRound className="h-9 w-9" />
+                                    )}
+                                </div>
+                                <div className="min-w-0">
+                                    <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-teal-700">
+                                        <Camera className="h-4 w-4" />
+                                        Pilih Foto
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(event) => setData('avatar', event.target.files?.[0] || null)}
+                                        />
+                                    </label>
+                                    {errors.avatar && <p className="mt-2 text-[10px] font-semibold text-rose-600">{errors.avatar}</p>}
+                                    <p className="mt-2 text-[10px] font-semibold leading-5 text-slate-500">
+                                        Gunakan gambar JPG/PNG maksimal 2MB agar foto tampil jelas di daftar pengurus.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                         <TextInput label="Nama" value={data.name} onChange={(event) => setData('name', event.target.value)} error={errors.name} />
                         <TextInput
                             label="Jabatan"
@@ -197,7 +246,7 @@ export default function Index({ members }) {
                         <p className="text-[11px] font-semibold text-slate-500">Tarik baris untuk mengatur urutan.</p>
                     </div>
                     <div className="mt-3 overflow-x-auto">
-                        <table className="w-full min-w-[800px] text-left text-xs">
+                        <table className="w-full min-w-[860px] text-left text-xs">
                             <thead className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
                                 <tr>
                                     <th className="w-10 py-3">Urut</th>
@@ -233,7 +282,21 @@ export default function Index({ members }) {
                                                 <GripVertical className="h-4 w-4" />
                                             </span>
                                         </td>
-                                        <td className="py-2.5 font-bold text-slate-900">{member.name}</td>
+                                        <td className="py-2.5">
+                                            <div className="flex items-center gap-2.5">
+                                                <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700 shadow-sm">
+                                                    {member.avatar_path ? (
+                                                        <img src={`/storage/${member.avatar_path}`} alt={member.name} className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <UserRound className="h-5 w-5" />
+                                                    )}
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <p className="truncate font-bold text-slate-900">{member.name}</p>
+                                                    <p className="truncate text-[10px] font-semibold text-slate-400">{member.email || member.phone || 'Kontak belum diisi'}</p>
+                                                </div>
+                                            </div>
+                                        </td>
                                         <td>{member.position}</td>
                                         <td className="text-slate-500">
                                             {date(member.period_start)} - {date(member.period_end)}

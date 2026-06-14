@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
     'position',
     'phone',
     'email',
+    'avatar_path',
     'period_start',
     'period_end',
     'sort_order',

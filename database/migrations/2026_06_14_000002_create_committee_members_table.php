@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('position');
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
+            $table->string('avatar_path')->nullable();
             $table->date('period_start')->nullable();
             $table->date('period_end')->nullable();
             $table->unsignedInteger('sort_order')->default(0);

@@ -6,6 +6,7 @@ use App\Models\CommitteeMember;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,20 +21,44 @@ class CommitteeMemberController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        CommitteeMember::create($this->validatedData($request));
+        $data = $this->validatedData($request);
+
+        if ($request->hasFile('avatar')) {
+            $data['avatar_path'] = $request->file('avatar')->store('committee-members', 'public');
+        }
+
+        unset($data['avatar']);
+
+        CommitteeMember::create($data);
 
         return back()->with('success', 'Pengurus berhasil ditambahkan.');
     }
 
     public function update(Request $request, CommitteeMember $committeeMember): RedirectResponse
     {
-        $committeeMember->update($this->validatedData($request));
+        $data = $this->validatedData($request);
+
+        if ($request->hasFile('avatar')) {
+            if ($committeeMember->avatar_path) {
+                Storage::disk('public')->delete($committeeMember->avatar_path);
+            }
+
+            $data['avatar_path'] = $request->file('avatar')->store('committee-members', 'public');
+        }
+
+        unset($data['avatar']);
+
+        $committeeMember->update($data);
 
         return back()->with('success', 'Pengurus berhasil diperbarui.');
     }
 
     public function destroy(CommitteeMember $committeeMember): RedirectResponse
     {
+        if ($committeeMember->avatar_path) {
+            Storage::disk('public')->delete($committeeMember->avatar_path);
+        }
+
         $committeeMember->delete();
 
         return back()->with('success', 'Pengurus berhasil dihapus.');
@@ -68,6 +93,7 @@ class CommitteeMemberController extends Controller
             'position' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'email', 'max:255'],
+            'avatar' => ['nullable', 'image', 'max:2048'],
             'period_start' => ['nullable', 'date'],
             'period_end' => ['nullable', 'date', 'after_or_equal:period_start'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
