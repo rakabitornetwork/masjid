@@ -26,6 +26,7 @@ use App\Http\Controllers\ReportExportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UpdateGuideController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\WaqfAssetController;
 use App\Http\Controllers\WhatsappNotificationController;
 use App\Http\Controllers\ZakatController;
 use Illuminate\Support\Facades\Route;
@@ -163,6 +164,11 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('qurban', QurbanParticipantController::class)
             ->parameters(['qurban' => 'qurbanParticipant'])
             ->names('qurban')
+            ->except(['create', 'edit', 'show']);
+
+        Route::resource('wakaf', WaqfAssetController::class)
+            ->parameters(['wakaf' => 'waqfAsset'])
+            ->names('waqf-assets')
             ->except(['create', 'edit', 'show']);
     });
 

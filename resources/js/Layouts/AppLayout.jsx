@@ -28,6 +28,7 @@ import {
     UserRoundCheck,
     UsersRound,
     WalletCards,
+    Gift,
     Wrench,
     X,
 } from 'lucide-react';
@@ -52,6 +53,7 @@ const navigation = [
     { label: 'Perawatan', href: '/perawatan-inventaris', icon: Wrench, permission: 'inventory' },
     { label: 'Zakat', href: '/zakat', icon: HandCoins, permission: 'programs' },
     { label: 'Qurban', href: '/qurban', icon: Beef, permission: 'programs' },
+    { label: 'Wakaf', href: '/wakaf', icon: Gift, permission: 'programs' },
     { label: 'Akun Kas', href: '/keuangan/akun', icon: WalletCards, permission: 'finance' },
     { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark, permission: 'finance' },
     { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote, permission: 'finance' },

@@ -120,6 +120,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Admin dapat menandai pesan sebagai terkirim setelah proses kirim dilakukan.
 - Notifikasi WhatsApp ikut masuk ke export laporan dan backup data aplikasi.
 
+### Manajemen Wakaf
+
+- Pencatatan wakif, kontak, aset wakaf, kategori, deskripsi, nilai estimasi, tanggal terima, nomor sertifikat, lokasi, status, dan catatan.
+- Mendukung wakaf uang, tanah, bangunan, peralatan, kendaraan, kitab/buku, dan aset lainnya.
+- Ringkasan total wakaf, aset dikelola, aset produktif, dan nilai estimasi.
+- Data wakaf ikut masuk ke export laporan dan backup data aplikasi.
+
 ### Keuangan Dasar
 
 - Akun kas, bank, QRIS, dan e-wallet.
@@ -131,7 +138,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 ### Export, Backup, dan Restore
 
-- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, keluarga jamaah, inventaris, perawatan inventaris, donasi, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, dan qurban.
+- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, keluarga jamaah, inventaris, perawatan inventaris, donasi, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, qurban, dan wakaf.
 - Backup data aplikasi dari menu `Backup Data` dalam format JSON.
 - Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
 - Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.
@@ -147,7 +154,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 
-- ZISWAF: zakat fitrah, zakat mal, infaq, sedekah, wakaf, muzakki, mustahik, dan distribusi.
+- ZISWAF lanjutan: sedekah khusus, muzakki/mustahik lebih detail, dan distribusi program sosial.
 - Inventaris aset masjid dan fasilitas lanjutan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
 - Manajemen user, role, dan permission lebih detail.

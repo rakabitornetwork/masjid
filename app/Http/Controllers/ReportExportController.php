@@ -12,6 +12,7 @@ use App\Models\InventoryItem;
 use App\Models\InventoryMaintenance;
 use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
+use App\Models\WaqfAsset;
 use App\Models\WhatsappNotification;
 use App\Models\ZakatCollection;
 use App\Models\ZakatDistribution;
@@ -77,6 +78,10 @@ class ReportExportController extends Controller
         'qurban' => [
             'label' => 'Data Qurban',
             'description' => 'Export pekurban, hewan, pembayaran, dan distribusi.',
+        ],
+        'wakaf' => [
+            'label' => 'Data Wakaf',
+            'description' => 'Export wakif, aset wakaf, nilai estimasi, status, dan lokasi.',
         ],
     ];
 
@@ -354,6 +359,21 @@ class ReportExportController extends Controller
                     $participant->slaughter_status,
                     $participant->registered_at?->format('Y-m-d'),
                     $participant->slaughtered_at?->format('Y-m-d'),
+                ]),
+            ],
+            'wakaf' => [
+                ['Tanggal Terima', 'Wakif', 'Telepon', 'Aset', 'Kategori', 'Nilai Estimasi', 'Nomor Sertifikat', 'Lokasi', 'Status', 'Catatan'],
+                WaqfAsset::latest('received_at')->get()->map(fn (WaqfAsset $asset): array => [
+                    $asset->received_at?->format('Y-m-d'),
+                    $asset->wakif_name,
+                    $asset->wakif_phone,
+                    $asset->asset_name,
+                    $asset->category,
+                    $asset->estimated_value,
+                    $asset->certificate_number,
+                    $asset->location,
+                    $asset->status,
+                    $asset->notes,
                 ]),
             ],
         };

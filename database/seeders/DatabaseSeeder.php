@@ -18,6 +18,7 @@ use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Models\WaqfAsset;
 use App\Models\WhatsappNotification;
 use App\Models\ZakatCollection;
 use App\Models\ZakatDistribution;
@@ -176,6 +177,17 @@ class DatabaseSeeder extends Seeder
             'target_amount' => 3500000,
             'payment_status' => 'paid',
             'slaughter_status' => 'registered',
+        ]);
+
+        WaqfAsset::updateOrCreate(['asset_name' => 'Wakaf Al-Quran dan Rak Mushaf'], [
+            'wakif_name' => 'Hamba Allah',
+            'wakif_phone' => '0812-4000-0001',
+            'category' => 'book',
+            'description' => 'Mushaf Al-Quran dan rak penyimpanan untuk ruang utama masjid.',
+            'estimated_value' => 3500000,
+            'received_at' => now()->subMonth()->toDateString(),
+            'location' => 'Ruang Utama',
+            'status' => 'managed',
         ]);
 
         $cashAccount = FinancialAccount::updateOrCreate(['name' => 'Kas Tunai Masjid'], [
