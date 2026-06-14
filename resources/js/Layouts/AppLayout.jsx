@@ -161,9 +161,8 @@ export default function AppLayout({ title, children, actions = null }) {
                                 <span className="tabular-nums text-blue-950">
                                     {time.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                                 </span>
-                            </div>
-                            <div className="rounded-lg bg-amber-50 px-2.5 py-1 text-[10px] font-bold text-amber-700 ring-1 ring-amber-100">
-                                {auth?.user?.role || 'pengurus'}
+                                <span className="text-blue-200">|</span>
+                                <span>{time.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
                             </div>
                             {actions}
                         </div>
