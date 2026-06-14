@@ -350,9 +350,10 @@ class ReportExportController extends Controller
                 ]),
             ],
             'zakat-penerimaan' => [
-                ['Tanggal', 'Muzakki', 'Telepon', 'Jenis', 'Uang', 'Beras (kg)', 'Metode', 'Status'],
-                ZakatCollection::latest('received_at')->get()->map(fn (ZakatCollection $collection): array => [
+                ['Tanggal', 'Database Muzakki', 'Muzakki', 'Telepon', 'Jenis', 'Uang', 'Beras (kg)', 'Metode', 'Status'],
+                ZakatCollection::with('participant')->latest('received_at')->get()->map(fn (ZakatCollection $collection): array => [
                     $collection->received_at?->format('Y-m-d'),
+                    $collection->participant?->name,
                     $collection->muzakki_name,
                     $collection->muzakki_phone,
                     $collection->type,
@@ -380,9 +381,10 @@ class ReportExportController extends Controller
                 ]),
             ],
             'zakat-penyaluran' => [
-                ['Tanggal', 'Mustahik', 'Kategori', 'Telepon', 'Alamat', 'Uang', 'Beras (kg)', 'Status'],
-                ZakatDistribution::latest('distributed_at')->get()->map(fn (ZakatDistribution $distribution): array => [
+                ['Tanggal', 'Database Mustahik', 'Mustahik', 'Kategori', 'Telepon', 'Alamat', 'Uang', 'Beras (kg)', 'Status'],
+                ZakatDistribution::with('participant')->latest('distributed_at')->get()->map(fn (ZakatDistribution $distribution): array => [
                     $distribution->distributed_at?->format('Y-m-d'),
+                    $distribution->participant?->name,
                     $distribution->mustahik_name,
                     $distribution->mustahik_category,
                     $distribution->phone,

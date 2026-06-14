@@ -169,7 +169,7 @@ class DatabaseSeeder extends Seeder
             'notes' => 'Contoh catatan sedekah khusus.',
         ]);
 
-        ZakatParticipant::updateOrCreate(['name' => 'Keluarga Ahmad Ridwan', 'role' => 'muzakki'], [
+        $muzakkiParticipant = ZakatParticipant::updateOrCreate(['name' => 'Keluarga Ahmad Ridwan', 'role' => 'muzakki'], [
             'phone' => '0812-1000-0001',
             'address' => 'Komplek sekitar masjid',
             'family_count' => 4,
@@ -180,7 +180,7 @@ class DatabaseSeeder extends Seeder
             'notes' => 'Contoh data master muzakki.',
         ]);
 
-        ZakatParticipant::updateOrCreate(['name' => 'Keluarga Bapak Hasan', 'role' => 'mustahik'], [
+        $mustahikParticipant = ZakatParticipant::updateOrCreate(['name' => 'Keluarga Bapak Hasan', 'role' => 'mustahik'], [
             'phone' => '0812-5000-0001',
             'address' => 'Lingkungan sekitar masjid',
             'family_count' => 5,
@@ -192,6 +192,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         ZakatCollection::updateOrCreate(['muzakki_name' => 'Keluarga Ahmad Ridwan', 'received_at' => now()->toDateString()], [
+            'zakat_participant_id' => $muzakkiParticipant->id,
+            'muzakki_phone' => $muzakkiParticipant->phone,
             'type' => 'fitrah',
             'money_amount' => 180000,
             'rice_amount' => 0,
@@ -200,7 +202,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         ZakatDistribution::updateOrCreate(['mustahik_name' => 'Keluarga Bapak Hasan', 'distributed_at' => now()->toDateString()], [
+            'zakat_participant_id' => $mustahikParticipant->id,
             'mustahik_category' => 'fakir_miskin',
+            'phone' => $mustahikParticipant->phone,
             'money_amount' => 150000,
             'rice_amount' => 5,
             'status' => 'distributed',

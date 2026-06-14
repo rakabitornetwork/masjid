@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\ZakatCollection;
 use App\Models\ZakatDistribution;
+use App\Models\ZakatParticipant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,8 +21,16 @@ class ZakatController extends Controller
         $distributionRice = (float) ZakatDistribution::where('status', 'distributed')->sum('rice_amount');
 
         return Inertia::render('Zakat/Index', [
-            'collections' => ZakatCollection::latest('received_at')->latest()->limit(30)->get(),
-            'distributions' => ZakatDistribution::latest('distributed_at')->latest()->limit(30)->get(),
+            'collections' => ZakatCollection::with('participant')->latest('received_at')->latest()->limit(30)->get(),
+            'distributions' => ZakatDistribution::with('participant')->latest('distributed_at')->latest()->limit(30)->get(),
+            'muzakkiOptions' => ZakatParticipant::where('is_active', true)
+                ->whereIn('role', ['muzakki', 'both'])
+                ->orderBy('name')
+                ->get(['id', 'name', 'phone', 'muzakki_type']),
+            'mustahikOptions' => ZakatParticipant::where('is_active', true)
+                ->whereIn('role', ['mustahik', 'both'])
+                ->orderBy('name')
+                ->get(['id', 'name', 'phone', 'address', 'family_count', 'mustahik_category']),
             'summary' => [
                 'collection_money' => $collectionMoney,
                 'distribution_money' => $distributionMoney,
@@ -35,6 +45,11 @@ class ZakatController extends Controller
     public function storeCollection(Request $request): RedirectResponse
     {
         ZakatCollection::create($request->validate([
+            'zakat_participant_id' => [
+                'nullable',
+                Rule::exists('zakat_participants', 'id')
+                    ->where(fn ($query) => $query->where('is_active', true)->whereIn('role', ['muzakki', 'both'])),
+            ],
             'muzakki_name' => ['required', 'string', 'max:255'],
             'muzakki_phone' => ['nullable', 'string', 'max:50'],
             'type' => ['required', 'in:fitrah,maal,fidyah,infaq_zakat'],
@@ -52,6 +67,11 @@ class ZakatController extends Controller
     public function storeDistribution(Request $request): RedirectResponse
     {
         ZakatDistribution::create($request->validate([
+            'zakat_participant_id' => [
+                'nullable',
+                Rule::exists('zakat_participants', 'id')
+                    ->where(fn ($query) => $query->where('is_active', true)->whereIn('role', ['mustahik', 'both'])),
+            ],
             'mustahik_name' => ['required', 'string', 'max:255'],
             'mustahik_category' => ['required', 'string', 'max:100'],
             'phone' => ['nullable', 'string', 'max:50'],

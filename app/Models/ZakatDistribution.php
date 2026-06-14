@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
+    'zakat_participant_id',
     'mustahik_name',
     'mustahik_category',
     'phone',
@@ -30,5 +32,10 @@ class ZakatDistribution extends Model
             'rice_amount' => 'float',
             'distributed_at' => 'date',
         ];
+    }
+
+    public function participant(): BelongsTo
+    {
+        return $this->belongsTo(ZakatParticipant::class, 'zakat_participant_id');
     }
 }

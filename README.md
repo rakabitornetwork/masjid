@@ -125,6 +125,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Pencatatan penerimaan zakat fitrah, zakat maal, fidyah, dan infaq zakat.
 - Pencatatan penyaluran zakat untuk mustahik dengan nominal uang, beras, jadwal, status, dan catatan.
 - Database master Muzakki & Mustahik menyimpan nama, nomor WA, identitas, alamat, jumlah keluarga, tipe muzakki, kategori mustahik, pekerjaan, penghasilan, status aktif, dan catatan.
+- Form penerimaan dan penyaluran zakat dapat memilih database Muzakki/Mustahik agar data nama, nomor WA, kategori, dan alamat otomatis terisi serta relasinya tersimpan.
 - Data zakat dan database Muzakki & Mustahik ikut masuk ke export laporan dan backup data aplikasi.
 
 ### Sedekah Khusus
@@ -182,7 +183,6 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 
-- ZISWAF lanjutan: penghubung otomatis database muzakki/mustahik ke transaksi zakat.
 - Inventaris aset masjid dan fasilitas lanjutan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
 - Integrasi WhatsApp Business/API untuk pengiriman otomatis.

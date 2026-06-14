@@ -7,8 +7,9 @@ import { date, label, money } from '../../lib/formatters';
 
 const today = new Date().toISOString().slice(0, 10);
 
-export default function Index({ collections, distributions, summary }) {
+export default function Index({ collections, distributions, muzakkiOptions = [], mustahikOptions = [], summary }) {
     const collectionForm = useForm({
+        zakat_participant_id: '',
         muzakki_name: '',
         muzakki_phone: '',
         type: 'fitrah',
@@ -20,6 +21,7 @@ export default function Index({ collections, distributions, summary }) {
         notes: '',
     });
     const distributionForm = useForm({
+        zakat_participant_id: '',
         mustahik_name: '',
         mustahik_category: 'fakir_miskin',
         phone: '',
@@ -35,6 +37,30 @@ export default function Index({ collections, distributions, summary }) {
         event.preventDefault();
         collectionForm.post('/zakat/penerimaan', {
             onSuccess: () => collectionForm.reset(),
+        });
+    };
+
+    const selectMuzakki = (participantId) => {
+        const participant = muzakkiOptions.find((item) => String(item.id) === String(participantId));
+
+        collectionForm.setData({
+            ...collectionForm.data,
+            zakat_participant_id: participantId,
+            muzakki_name: participant?.name || collectionForm.data.muzakki_name,
+            muzakki_phone: participant?.phone || collectionForm.data.muzakki_phone,
+        });
+    };
+
+    const selectMustahik = (participantId) => {
+        const participant = mustahikOptions.find((item) => String(item.id) === String(participantId));
+
+        distributionForm.setData({
+            ...distributionForm.data,
+            zakat_participant_id: participantId,
+            mustahik_name: participant?.name || distributionForm.data.mustahik_name,
+            mustahik_category: participant?.mustahik_category || distributionForm.data.mustahik_category,
+            phone: participant?.phone || distributionForm.data.phone,
+            address: participant?.address || distributionForm.data.address,
         });
     };
 
@@ -70,6 +96,16 @@ export default function Index({ collections, distributions, summary }) {
                     <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Penerimaan Zakat</p>
                     <h3 className="text-sm font-extrabold text-slate-950">Catat Muzakki</h3>
                     <div className="mt-3 grid gap-3 md:grid-cols-2">
+                        <div className="md:col-span-2">
+                            <SelectInput label="Pilih Database Muzakki" value={collectionForm.data.zakat_participant_id || ''} onChange={(event) => selectMuzakki(event.target.value)} error={collectionForm.errors.zakat_participant_id}>
+                                <option value="">Input manual / belum terhubung</option>
+                                {muzakkiOptions.map((participant) => (
+                                    <option key={participant.id} value={participant.id}>
+                                        {participant.name} {participant.phone ? `- ${participant.phone}` : ''}
+                                    </option>
+                                ))}
+                            </SelectInput>
+                        </div>
                         <TextInput label="Nama Muzakki" value={collectionForm.data.muzakki_name} onChange={(event) => collectionForm.setData('muzakki_name', event.target.value)} error={collectionForm.errors.muzakki_name} />
                         <TextInput label="Telepon" value={collectionForm.data.muzakki_phone || ''} onChange={(event) => collectionForm.setData('muzakki_phone', event.target.value)} error={collectionForm.errors.muzakki_phone} />
                         <SelectInput label="Jenis Zakat" value={collectionForm.data.type} onChange={(event) => collectionForm.setData('type', event.target.value)} error={collectionForm.errors.type}>
@@ -106,6 +142,16 @@ export default function Index({ collections, distributions, summary }) {
                     <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Penyaluran Zakat</p>
                     <h3 className="text-sm font-extrabold text-slate-950">Catat Mustahik</h3>
                     <div className="mt-3 grid gap-3 md:grid-cols-2">
+                        <div className="md:col-span-2">
+                            <SelectInput label="Pilih Database Mustahik" value={distributionForm.data.zakat_participant_id || ''} onChange={(event) => selectMustahik(event.target.value)} error={distributionForm.errors.zakat_participant_id}>
+                                <option value="">Input manual / belum terhubung</option>
+                                {mustahikOptions.map((participant) => (
+                                    <option key={participant.id} value={participant.id}>
+                                        {participant.name} {participant.phone ? `- ${participant.phone}` : ''}
+                                    </option>
+                                ))}
+                            </SelectInput>
+                        </div>
                         <TextInput label="Nama Mustahik" value={distributionForm.data.mustahik_name} onChange={(event) => distributionForm.setData('mustahik_name', event.target.value)} error={distributionForm.errors.mustahik_name} />
                         <SelectInput label="Kategori" value={distributionForm.data.mustahik_category} onChange={(event) => distributionForm.setData('mustahik_category', event.target.value)} error={distributionForm.errors.mustahik_category}>
                             <option value="fakir_miskin">Fakir/Miskin</option>
@@ -159,6 +205,7 @@ function History({ title, items, type, onDelete }) {
                                 <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-teal-700">
                                     {type === 'collection' ? label(item.type) : label(item.mustahik_category)} • {date(type === 'collection' ? item.received_at : item.distributed_at)}
                                 </p>
+                                {item.participant && <p className="mt-1 text-[10px] font-bold text-emerald-700">Terhubung: {item.participant.name}</p>}
                             </div>
                             <button className="text-rose-600" type="button" onClick={() => onDelete(item)}>
                                 <Trash2 className="h-4 w-4" />
