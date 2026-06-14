@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\Process\Process;
@@ -14,7 +15,7 @@ class ApplicationInfoController extends Controller
         return Inertia::render('System/About', [
             'application' => [
                 'name' => 'Aplikasi Manajemen Masjid',
-                'version' => $this->currentGitVersion() ?? env('APP_VERSION', '1.1'),
+                'version' => $this->currentApplicationVersion(),
                 'commit' => $this->currentGitCommit() ?? 'Tidak terbaca',
                 'description' => 'Sistem admin terpadu untuk membantu pengurus masjid mengelola operasional, jamaah, keuangan, program ibadah, ZISWAF, inventaris, fasilitas, laporan, backup, dan update aplikasi.',
                 'theme' => 'High Density Premium Masjid',
@@ -47,6 +48,24 @@ class ApplicationInfoController extends Controller
         ]);
     }
 
+    private function currentApplicationVersion(): string
+    {
+        $gitVersion = $this->currentGitVersion();
+
+        if ($gitVersion) {
+            return $gitVersion;
+        }
+
+        $currentCommit = $this->currentGitCommit();
+        $latestMainCommit = $this->latestGithubMainCommit();
+
+        if ($currentCommit && $latestMainCommit && $currentCommit === $latestMainCommit) {
+            return $this->latestGithubReleaseVersion() ?? (string) env('APP_VERSION', '1.1');
+        }
+
+        return $this->latestGithubReleaseVersion() ?? (string) env('APP_VERSION', '1.1');
+    }
+
     private function currentGitVersion(): ?string
     {
         $process = new Process(['git', 'describe', '--tags', '--abbrev=0'], base_path(), timeout: 10);
@@ -69,5 +88,45 @@ class ApplicationInfoController extends Controller
         }
 
         return trim($process->getOutput()) ?: null;
+    }
+
+    private function latestGithubReleaseVersion(): ?string
+    {
+        try {
+            $response = Http::timeout(8)
+                ->acceptJson()
+                ->withUserAgent('masjid-management-about')
+                ->get('https://api.github.com/repos/rakabitornetwork/masjid/releases/latest');
+
+            if (! $response->successful()) {
+                return null;
+            }
+
+            $version = trim((string) data_get($response->json(), 'tag_name', ''));
+
+            return $version !== '' ? $version : null;
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    private function latestGithubMainCommit(): ?string
+    {
+        try {
+            $response = Http::timeout(8)
+                ->acceptJson()
+                ->withUserAgent('masjid-management-about')
+                ->get('https://api.github.com/repos/rakabitornetwork/masjid/commits/main');
+
+            if (! $response->successful()) {
+                return null;
+            }
+
+            $hash = data_get($response->json(), 'sha');
+
+            return $hash ? substr((string) $hash, 0, 7) : null;
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }
