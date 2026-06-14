@@ -42,18 +42,18 @@ export default function Accounts({ accounts }) {
     return (
         <AppLayout title="Akun Kas & Bank">
             <div className="grid gap-4 xl:grid-cols-[0.8fr_1.2fr]">
-                <form onSubmit={submit} className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <div className="mb-5 flex items-center gap-3">
-                        <div className="rounded-2xl bg-emerald-100 p-3 text-emerald-700">
-                            <WalletCards className="h-5 w-5" />
+                <form onSubmit={submit} className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <div className="mb-4 flex items-center gap-2.5">
+                        <div className="rounded-lg bg-teal-100 p-2 text-teal-700">
+                            <WalletCards className="h-4 w-4" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">{editingId ? 'Ubah Akun' : 'Tambah Akun'}</p>
-                            <h3 className="text-lg font-black text-slate-950">Kas, Bank, QRIS, E-Wallet</h3>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">{editingId ? 'Ubah Akun' : 'Tambah Akun'}</p>
+                            <h3 className="text-sm font-extrabold text-slate-950">Kas, Bank, QRIS, E-Wallet</h3>
                         </div>
                     </div>
 
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-3 md:grid-cols-2">
                         <TextInput label="Nama Akun" value={data.name} onChange={(event) => setData('name', event.target.value)} error={errors.name} />
                         <SelectInput label="Jenis" value={data.type} onChange={(event) => setData('type', event.target.value)} error={errors.type}>
                             <option value="cash">Kas Tunai</option>
@@ -93,7 +93,7 @@ export default function Accounts({ accounts }) {
                         </div>
                     </div>
 
-                    <div className="mt-5 flex gap-2">
+                    <div className="mt-4 flex gap-2">
                         <PrimaryButton disabled={processing} className="gap-2">
                             <Plus className="h-4 w-4" />
                             {editingId ? 'Simpan Perubahan' : 'Tambah Akun'}
@@ -109,24 +109,24 @@ export default function Accounts({ accounts }) {
 
                 <section className="grid gap-4 md:grid-cols-2">
                     {accounts.map((account) => (
-                        <article key={account.id} className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                            <div className="flex items-start justify-between gap-3">
+                        <article key={account.id} className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                            <div className="flex items-start justify-between gap-2.5">
                                 <div>
-                                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">{label(account.type)}</p>
-                                    <h3 className="mt-1 text-lg font-black text-slate-950">{account.name}</h3>
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">{label(account.type)}</p>
+                                    <h3 className="mt-0.5 text-sm font-extrabold text-slate-950">{account.name}</h3>
                                 </div>
-                                <span className={`rounded-full px-2 py-1 text-xs font-bold ${account.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${account.is_active ? 'bg-teal-100 text-teal-700' : 'bg-slate-100 text-slate-500'}`}>
                                     {account.is_active ? 'Aktif' : 'Nonaktif'}
                                 </span>
                             </div>
-                            <p className="mt-4 text-2xl font-black text-slate-950">{money(account.balance)}</p>
-                            <p className="mt-1 text-sm text-slate-500">Saldo awal: {money(account.opening_balance)}</p>
+                            <p className="mt-3 text-base font-extrabold text-slate-950">{money(account.balance)}</p>
+                            <p className="mt-0.5 text-[10px] font-semibold text-slate-500">Saldo awal: {money(account.opening_balance)}</p>
                             {(account.bank_name || account.account_number) && (
-                                <p className="mt-3 rounded-2xl bg-emerald-50 p-3 text-sm text-slate-600">
+                                <p className="mt-2 rounded-lg bg-teal-50 p-2.5 text-xs font-medium text-slate-600">
                                     {account.bank_name} {account.account_number} {account.account_holder && `a.n. ${account.account_holder}`}
                                 </p>
                             )}
-                            <div className="mt-4 flex gap-2">
+                            <div className="mt-3 flex gap-2">
                                 <SecondaryButton type="button" onClick={() => edit(account)} className="gap-2">
                                     <Edit3 className="h-4 w-4" />
                                     Edit
@@ -138,7 +138,7 @@ export default function Accounts({ accounts }) {
                             </div>
                         </article>
                     ))}
-                    {accounts.length === 0 && <p className="rounded-[1.75rem] bg-white/85 p-6 text-center text-sm text-slate-500 md:col-span-2">Belum ada akun kas/bank.</p>}
+                    {accounts.length === 0 && <p className="rounded-xl bg-white p-4 text-center text-xs font-semibold text-slate-500 shadow-sm md:col-span-2">Belum ada akun kas/bank.</p>}
                 </section>
             </div>
         </AppLayout>

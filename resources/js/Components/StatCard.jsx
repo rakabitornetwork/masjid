@@ -7,16 +7,16 @@ export default function StatCard({ title, value, helper, icon: Icon, tone = 'eme
     };
 
     return (
-        <div className="rounded-[1.5rem] border border-white/70 bg-white/85 p-4 shadow-xl shadow-emerald-950/5">
-            <div className="flex items-start justify-between gap-3">
+        <div className="rounded-xl border border-slate-100 bg-white p-3.5 shadow-sm">
+            <div className="flex items-start justify-between gap-2.5">
                 <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">{title}</p>
-                    <p className="mt-2 text-2xl font-black tracking-tight text-slate-950">{value}</p>
-                    {helper && <p className="mt-1 text-xs font-medium text-slate-500">{helper}</p>}
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">{title}</p>
+                    <p className="mt-1.5 text-xl font-extrabold tracking-tight text-slate-950">{value}</p>
+                    {helper && <p className="mt-0.5 text-[10px] font-semibold text-slate-500">{helper}</p>}
                 </div>
                 {Icon && (
-                    <div className={`rounded-2xl bg-gradient-to-br p-3 text-white shadow-lg ${tones[tone].split(' ').slice(0, 2).join(' ')}`}>
-                        <Icon className="h-5 w-5" />
+                    <div className={`rounded-lg bg-gradient-to-br p-2 text-white shadow-sm ${tones[tone].split(' ').slice(0, 2).join(' ')}`}>
+                        <Icon className="h-3.5 w-3.5" />
                     </div>
                 )}
             </div>

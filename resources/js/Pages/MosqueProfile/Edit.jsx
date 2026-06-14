@@ -32,18 +32,18 @@ export default function Edit({ profile, facilitiesText }) {
     return (
         <AppLayout title="Profil Masjid">
             <form onSubmit={submit} className="grid gap-4 xl:grid-cols-[1fr_0.8fr]">
-                <section className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <div className="mb-5 flex items-center gap-3">
-                        <div className="rounded-2xl bg-emerald-100 p-3 text-emerald-700">
-                            <Building2 className="h-5 w-5" />
+                <section className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <div className="mb-4 flex items-center gap-2.5">
+                        <div className="rounded-lg bg-teal-100 p-2 text-teal-700">
+                            <Building2 className="h-4 w-4" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Identitas</p>
-                            <h3 className="text-lg font-black text-slate-950">Data Utama Masjid</h3>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Identitas</p>
+                            <h3 className="text-sm font-extrabold text-slate-950">Data Utama Masjid</h3>
                         </div>
                     </div>
 
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-3 md:grid-cols-2">
                         <TextInput label="Nama Masjid" value={data.name} onChange={(event) => setData('name', event.target.value)} error={errors.name} />
                         <TextInput
                             label="Tagline"
@@ -91,9 +91,9 @@ export default function Edit({ profile, facilitiesText }) {
                 </section>
 
                 <section className="space-y-4">
-                    <div className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                        <h3 className="text-lg font-black text-slate-950">Kontak & Rekening</h3>
-                        <div className="mt-4 grid gap-4">
+                    <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                        <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Kontak & Rekening</h3>
+                        <div className="mt-3 grid gap-3">
                             <TextInput label="Telepon" value={data.phone} onChange={(event) => setData('phone', event.target.value)} error={errors.phone} />
                             <TextInput label="Email" value={data.email} onChange={(event) => setData('email', event.target.value)} error={errors.email} />
                             <TextInput
@@ -117,9 +117,9 @@ export default function Edit({ profile, facilitiesText }) {
                         </div>
                     </div>
 
-                    <div className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                        <h3 className="text-lg font-black text-slate-950">Visi, Misi, Fasilitas</h3>
-                        <div className="mt-4 grid gap-4">
+                    <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                        <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Visi, Misi, Fasilitas</h3>
+                        <div className="mt-3 grid gap-3">
                             <TextareaInput label="Visi" value={data.vision} onChange={(event) => setData('vision', event.target.value)} error={errors.vision} />
                             <TextareaInput label="Misi" value={data.mission} onChange={(event) => setData('mission', event.target.value)} error={errors.mission} />
                             <TextareaInput

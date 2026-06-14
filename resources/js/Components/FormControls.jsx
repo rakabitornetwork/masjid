@@ -1,12 +1,12 @@
 const baseInput =
-    'mt-1 w-full rounded-xl border border-emerald-100 bg-white/90 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100';
+    'mt-1 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-900 shadow-xs outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-100';
 
 export function Field({ label, error, children }) {
     return (
-        <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+        <label className="block text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
             {label}
             {children}
-            {error && <span className="mt-1 block text-xs font-medium normal-case tracking-normal text-rose-600">{error}</span>}
+            {error && <span className="mt-1 block text-[10px] font-semibold normal-case tracking-normal text-rose-600">{error}</span>}
         </label>
     );
 }
@@ -39,12 +39,12 @@ export function SelectInput({ label, error, children, ...props }) {
 
 export function CheckboxInput({ label, checked, onChange }) {
     return (
-        <label className="flex items-center gap-2 rounded-xl border border-emerald-100 bg-white/80 px-3 py-2 text-sm font-medium text-slate-700">
+        <label className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700">
             <input
                 type="checkbox"
                 checked={checked}
                 onChange={(event) => onChange(event.target.checked)}
-                className="h-4 w-4 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500"
+                className="h-3.5 w-3.5 rounded border-teal-300 text-teal-600 focus:ring-teal-500"
             />
             {label}
         </label>
@@ -54,7 +54,7 @@ export function CheckboxInput({ label, checked, onChange }) {
 export function PrimaryButton({ children, className = '', ...props }) {
     return (
         <button
-            className={`inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+            className={`inline-flex items-center justify-center rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm shadow-teal-700/15 transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
             {...props}
         >
             {children}
@@ -65,7 +65,7 @@ export function PrimaryButton({ children, className = '', ...props }) {
 export function SecondaryButton({ children, className = '', ...props }) {
     return (
         <button
-            className={`inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-white px-4 py-2 text-sm font-bold text-emerald-700 transition hover:bg-emerald-50 ${className}`}
+            className={`inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50 ${className}`}
             {...props}
         >
             {children}

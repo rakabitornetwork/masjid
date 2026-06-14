@@ -11,25 +11,27 @@
 @layer base {
     :root {
         color-scheme: light;
-        background: #f7fee7;
+        background: #061a40;
+    }
+
+    html {
+        font-size: 14px;
     }
 
     body {
         min-height: 100vh;
-        background:
-            radial-gradient(circle at top left, rgba(16, 185, 129, 0.18), transparent 28rem),
-            radial-gradient(circle at top right, rgba(250, 204, 21, 0.2), transparent 24rem),
-            linear-gradient(135deg, #f8fafc 0%, #ecfdf5 48%, #fefce8 100%);
+        background: #061a40;
         color: #0f172a;
+        font-size: 0.75rem;
     }
 
     * {
         scrollbar-width: thin;
-        scrollbar-color: #10b981 #d1fae5;
+        scrollbar-color: #2563eb #dbeafe;
     }
 
     ::selection {
-        background: #bbf7d0;
-        color: #064e3b;
+        background: #bfdbfe;
+        color: #172554;
     }
 }

@@ -47,20 +47,20 @@ export default function Index({ members }) {
     return (
         <AppLayout title="Pengurus Masjid">
             <div className="grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
-                <form onSubmit={submit} className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <div className="mb-5 flex items-center gap-3">
-                        <div className="rounded-2xl bg-emerald-100 p-3 text-emerald-700">
-                            <UsersRound className="h-5 w-5" />
+                <form onSubmit={submit} className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <div className="mb-4 flex items-center gap-2.5">
+                        <div className="rounded-lg bg-teal-100 p-2 text-teal-700">
+                            <UsersRound className="h-4 w-4" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">
                                 {editingId ? 'Ubah Data' : 'Tambah Data'}
                             </p>
-                            <h3 className="text-lg font-black text-slate-950">Pengurus / Takmir</h3>
+                            <h3 className="text-sm font-extrabold text-slate-950">Pengurus / Takmir</h3>
                         </div>
                     </div>
 
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-3 md:grid-cols-2">
                         <TextInput label="Nama" value={data.name} onChange={(event) => setData('name', event.target.value)} error={errors.name} />
                         <TextInput
                             label="Jabatan"
@@ -97,7 +97,7 @@ export default function Index({ members }) {
                         </div>
                     </div>
 
-                    <div className="mt-5 flex gap-2">
+                    <div className="mt-4 flex gap-2">
                         <PrimaryButton disabled={processing} className="gap-2">
                             <Plus className="h-4 w-4" />
                             {editingId ? 'Simpan Perubahan' : 'Tambah Pengurus'}
@@ -111,11 +111,11 @@ export default function Index({ members }) {
                     </div>
                 </form>
 
-                <section className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <h3 className="text-lg font-black text-slate-950">Daftar Pengurus</h3>
-                    <div className="mt-4 overflow-x-auto">
-                        <table className="w-full min-w-[760px] text-left text-sm">
-                            <thead className="text-xs uppercase tracking-[0.16em] text-slate-400">
+                <section className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Daftar Pengurus</h3>
+                    <div className="mt-3 overflow-x-auto">
+                        <table className="w-full min-w-[760px] text-left text-xs">
+                            <thead className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
                                 <tr>
                                     <th className="py-3">Nama</th>
                                     <th>Jabatan</th>
@@ -127,7 +127,7 @@ export default function Index({ members }) {
                             <tbody className="divide-y divide-emerald-50">
                                 {members.map((member) => (
                                     <tr key={member.id}>
-                                        <td className="py-3 font-bold text-slate-900">{member.name}</td>
+                                        <td className="py-2.5 font-bold text-slate-900">{member.name}</td>
                                         <td>{member.position}</td>
                                         <td className="text-slate-500">
                                             {date(member.period_start)} - {date(member.period_end)}

@@ -51,18 +51,18 @@ export default function Index({ schedules }) {
     return (
         <AppLayout title="Jadwal Ibadah & Kegiatan">
             <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
-                <form onSubmit={submit} className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <div className="mb-5 flex items-center gap-3">
-                        <div className="rounded-2xl bg-sky-100 p-3 text-sky-700">
-                            <CalendarDays className="h-5 w-5" />
+                <form onSubmit={submit} className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <div className="mb-4 flex items-center gap-2.5">
+                        <div className="rounded-lg bg-sky-100 p-2 text-sky-700">
+                            <CalendarDays className="h-4 w-4" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">{editingId ? 'Ubah Jadwal' : 'Tambah Jadwal'}</p>
-                            <h3 className="text-lg font-black text-slate-950">Jumat, Kajian, dan Kegiatan</h3>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">{editingId ? 'Ubah Jadwal' : 'Tambah Jadwal'}</p>
+                            <h3 className="text-sm font-extrabold text-slate-950">Jumat, Kajian, dan Kegiatan</h3>
                         </div>
                     </div>
 
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-3 md:grid-cols-2">
                         <div className="md:col-span-2">
                             <TextInput label="Judul" value={data.title} onChange={(event) => setData('title', event.target.value)} error={errors.title} />
                         </div>
@@ -114,7 +114,7 @@ export default function Index({ schedules }) {
                         </div>
                     </div>
 
-                    <div className="mt-5 flex gap-2">
+                    <div className="mt-4 flex gap-2">
                         <PrimaryButton disabled={processing} className="gap-2">
                             <Plus className="h-4 w-4" />
                             {editingId ? 'Simpan Perubahan' : 'Tambah Jadwal'}
@@ -128,22 +128,22 @@ export default function Index({ schedules }) {
                     </div>
                 </form>
 
-                <section className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <h3 className="text-lg font-black text-slate-950">Kalender Ringkas</h3>
-                    <div className="mt-4 space-y-3">
+                <section className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Kalender Ringkas</h3>
+                    <div className="mt-3 space-y-2.5">
                         {schedules.map((schedule) => (
-                            <article key={schedule.id} className="rounded-2xl border border-emerald-50 bg-white p-4">
+                            <article key={schedule.id} className="rounded-lg border border-slate-100 bg-white p-3">
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
-                                        <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">
                                             {date(schedule.date)} • {time(schedule.start_time)} - {time(schedule.end_time)}
                                         </p>
-                                        <h4 className="mt-1 font-black text-slate-950">{schedule.title}</h4>
-                                        <p className="mt-1 text-sm text-slate-500">
+                                        <h4 className="mt-1 text-xs font-extrabold text-slate-950">{schedule.title}</h4>
+                                        <p className="mt-1 text-[10px] font-medium text-slate-500">
                                             {label(schedule.type)} • {schedule.location || 'Masjid'} • {label(schedule.status)}
                                         </p>
                                         {(schedule.khatib || schedule.imam || schedule.speaker) && (
-                                            <p className="mt-2 text-sm text-slate-600">
+                                            <p className="mt-2 text-xs font-medium text-slate-600">
                                                 {schedule.speaker && `Pembicara: ${schedule.speaker} `}
                                                 {schedule.khatib && `Khatib: ${schedule.khatib} `}
                                                 {schedule.imam && `Imam: ${schedule.imam}`}
@@ -161,7 +161,7 @@ export default function Index({ schedules }) {
                                 </div>
                             </article>
                         ))}
-                        {schedules.length === 0 && <p className="rounded-2xl bg-emerald-50 p-5 text-center text-sm text-slate-500">Belum ada jadwal.</p>}
+                        {schedules.length === 0 && <p className="rounded-lg bg-teal-50 p-4 text-center text-xs font-semibold text-slate-500">Belum ada jadwal.</p>}
                     </div>
                 </section>
             </div>

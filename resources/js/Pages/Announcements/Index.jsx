@@ -47,20 +47,20 @@ export default function Index({ announcements }) {
     return (
         <AppLayout title="Pengumuman">
             <div className="grid gap-4 xl:grid-cols-[0.85fr_1.15fr]">
-                <form onSubmit={submit} className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <div className="mb-5 flex items-center gap-3">
-                        <div className="rounded-2xl bg-amber-100 p-3 text-amber-700">
-                            <Megaphone className="h-5 w-5" />
+                <form onSubmit={submit} className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <div className="mb-4 flex items-center gap-2.5">
+                        <div className="rounded-lg bg-amber-100 p-2 text-amber-700">
+                            <Megaphone className="h-4 w-4" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">
                                 {editingId ? 'Ubah Pengumuman' : 'Tambah Pengumuman'}
                             </p>
-                            <h3 className="text-lg font-black text-slate-950">Informasi Jamaah</h3>
+                            <h3 className="text-sm font-extrabold text-slate-950">Informasi Jamaah</h3>
                         </div>
                     </div>
 
-                    <div className="grid gap-4">
+                    <div className="grid gap-3">
                         <TextInput label="Judul" value={data.title} onChange={(event) => setData('title', event.target.value)} error={errors.title} />
                         <div className="grid gap-4 md:grid-cols-2">
                             <SelectInput label="Kategori" value={data.category} onChange={(event) => setData('category', event.target.value)} error={errors.category}>
@@ -93,7 +93,7 @@ export default function Index({ announcements }) {
                         <CheckboxInput label="Pin di dashboard" checked={Boolean(data.is_pinned)} onChange={(value) => setData('is_pinned', value)} />
                     </div>
 
-                    <div className="mt-5 flex gap-2">
+                    <div className="mt-4 flex gap-2">
                         <PrimaryButton disabled={processing} className="gap-2">
                             <Plus className="h-4 w-4" />
                             {editingId ? 'Simpan Perubahan' : 'Tambah Pengumuman'}
@@ -107,18 +107,18 @@ export default function Index({ announcements }) {
                     </div>
                 </form>
 
-                <section className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <h3 className="text-lg font-black text-slate-950">Daftar Pengumuman</h3>
-                    <div className="mt-4 space-y-3">
+                <section className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Daftar Pengumuman</h3>
+                    <div className="mt-3 space-y-2.5">
                         {announcements.map((announcement) => (
-                            <article key={announcement.id} className="rounded-2xl border border-emerald-50 bg-white p-4">
+                            <article key={announcement.id} className="rounded-lg border border-slate-100 bg-white p-3">
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <h4 className="font-black text-slate-950">{announcement.title}</h4>
+                                        <h4 className="text-xs font-extrabold text-slate-950">{announcement.title}</h4>
                                             {announcement.is_pinned && <Pin className="h-4 w-4 text-amber-500" />}
                                         </div>
-                                        <p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
+                                        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
                                             {label(announcement.category)} • {label(announcement.status)} • {date(announcement.published_at)}
                                         </p>
                                     </div>
@@ -131,10 +131,10 @@ export default function Index({ announcements }) {
                                         </button>
                                     </div>
                                 </div>
-                                <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">{announcement.body}</p>
+                                <p className="mt-2 line-clamp-3 text-xs font-medium leading-5 text-slate-600">{announcement.body}</p>
                             </article>
                         ))}
-                        {announcements.length === 0 && <p className="rounded-2xl bg-emerald-50 p-5 text-center text-sm text-slate-500">Belum ada pengumuman.</p>}
+                        {announcements.length === 0 && <p className="rounded-lg bg-teal-50 p-4 text-center text-xs font-semibold text-slate-500">Belum ada pengumuman.</p>}
                     </div>
                 </section>
             </div>

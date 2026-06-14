@@ -79,19 +79,19 @@ export default function Transactions({ transactions, accounts, categories, summa
             </section>
 
             <div className="mt-4 grid gap-4 xl:grid-cols-[0.82fr_1.18fr]">
-                <form onSubmit={submit} className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <div className="mb-5">
-                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">{editingId ? 'Ubah Transaksi' : 'Tambah Transaksi'}</p>
-                        <h3 className="text-lg font-black text-slate-950">Pemasukan / Pengeluaran</h3>
+                <form onSubmit={submit} className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <div className="mb-4">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">{editingId ? 'Ubah Transaksi' : 'Tambah Transaksi'}</p>
+                        <h3 className="text-sm font-extrabold text-slate-950">Pemasukan / Pengeluaran</h3>
                     </div>
 
                     {(accounts.length === 0 || categories.length === 0) && (
-                        <p className="mb-4 rounded-2xl bg-amber-50 p-4 text-sm text-amber-800">
+                        <p className="mb-3 rounded-lg bg-amber-50 p-3 text-xs font-semibold text-amber-800">
                             Tambahkan akun kas/bank dan kategori aktif terlebih dahulu sebelum mencatat transaksi.
                         </p>
                     )}
 
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-3 md:grid-cols-2">
                         <SelectInput label="Jenis" value={data.type} onChange={(event) => changeType(event.target.value)} error={errors.type}>
                             <option value="income">Pemasukan</option>
                             <option value="expense">Pengeluaran</option>
@@ -169,7 +169,7 @@ export default function Transactions({ transactions, accounts, categories, summa
                         </div>
                     </div>
 
-                    <div className="mt-5 flex gap-2">
+                    <div className="mt-4 flex gap-2">
                         <PrimaryButton disabled={processing || accounts.length === 0 || categories.length === 0} className="gap-2">
                             <Plus className="h-4 w-4" />
                             {editingId ? 'Simpan Perubahan' : 'Tambah Transaksi'}
@@ -183,11 +183,11 @@ export default function Transactions({ transactions, accounts, categories, summa
                     </div>
                 </form>
 
-                <section className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <h3 className="text-lg font-black text-slate-950">Riwayat Transaksi</h3>
-                    <div className="mt-4 overflow-x-auto">
-                        <table className="w-full min-w-[900px] text-left text-sm">
-                            <thead className="text-xs uppercase tracking-[0.16em] text-slate-400">
+                <section className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Riwayat Transaksi</h3>
+                    <div className="mt-3 overflow-x-auto">
+                        <table className="w-full min-w-[900px] text-left text-xs">
+                            <thead className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
                                 <tr>
                                     <th className="py-3">Tanggal</th>
                                     <th>Deskripsi</th>
@@ -200,10 +200,10 @@ export default function Transactions({ transactions, accounts, categories, summa
                             <tbody className="divide-y divide-emerald-50">
                                 {transactions.map((transaction) => (
                                     <tr key={transaction.id}>
-                                        <td className="py-3 text-slate-500">{date(transaction.transaction_date)}</td>
+                                        <td className="py-2.5 text-xs text-slate-500">{date(transaction.transaction_date)}</td>
                                         <td>
-                                            <p className="font-bold text-slate-900">{transaction.description}</p>
-                                            <p className="text-xs text-slate-500">
+                                            <p className="text-xs font-bold text-slate-900">{transaction.description}</p>
+                                            <p className="text-[10px] text-slate-500">
                                                 {label(transaction.type)} • {label(transaction.payment_method)} • {label(transaction.status)}
                                             </p>
                                         </td>

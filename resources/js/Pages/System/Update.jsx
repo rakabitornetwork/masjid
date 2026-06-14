@@ -59,22 +59,22 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
     return (
         <AppLayout title="Update Aplikasi">
             <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-                <article className="rounded-[2rem] border border-white/70 bg-white/85 p-6 shadow-xl shadow-emerald-950/5">
-                    <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                <article className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                         <div>
-                            <div className="inline-flex rounded-2xl bg-emerald-100 p-3 text-emerald-700">
-                                <Sparkles className="h-6 w-6" />
+                            <div className="inline-flex rounded-lg bg-teal-100 p-2 text-teal-700">
+                                <Sparkles className="h-4 w-4" />
                             </div>
-                            <p className="mt-5 text-xs font-bold uppercase tracking-[0.22em] text-emerald-700">Informasi Update Terbaru</p>
-                            <h3 className="mt-2 text-3xl font-black tracking-tight text-slate-950">{latestUpdate.title}</h3>
-                            <p className="mt-2 text-sm font-semibold text-slate-500">Tanggal rilis: {latestUpdate.date}</p>
-                            <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600">{latestUpdate.summary}</p>
+                            <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-teal-700">Informasi Update Terbaru</p>
+                            <h3 className="mt-1 text-base font-extrabold tracking-tight text-slate-950">{latestUpdate.title}</h3>
+                            <p className="mt-1 text-[10px] font-semibold text-slate-500">Tanggal rilis: {latestUpdate.date}</p>
+                            <p className="mt-3 max-w-2xl text-xs font-medium leading-5 text-slate-600">{latestUpdate.summary}</p>
                         </div>
                         <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
                             <button
                                 type="button"
                                 onClick={copyUpdateCommands}
-                                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-white px-5 py-3 text-sm font-black text-emerald-700 shadow-lg shadow-emerald-600/10 transition hover:bg-emerald-50"
+                                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
                             >
                                 {copied ? <ClipboardCheck className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
                                 {copied ? 'Perintah Disalin' : 'Salin Perintah'}
@@ -83,7 +83,7 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                                 type="button"
                                 onClick={runUpdate}
                                 disabled={running}
-                                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-emerald-600/25 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm shadow-teal-700/15 transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
                             >
                                 <RefreshCw className={`h-4 w-4 ${running ? 'animate-spin' : ''}`} />
                                 {running ? 'Menjalankan Update...' : 'Jalankan Update'}
@@ -91,49 +91,49 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                         </div>
                     </div>
 
-                    <div className="mt-6 rounded-2xl bg-slate-950 p-4">
-                        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">
+                    <div className="mt-4 rounded-xl bg-slate-950 p-3">
+                        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-teal-300">
                             Perintah yang disalin atau dijalankan tombol update
                         </p>
-                        <pre className="overflow-x-auto text-sm leading-7 text-emerald-100">
+                        <pre className="overflow-x-auto text-[11px] leading-6 text-teal-100">
                             <code>{updateCommands}</code>
                         </pre>
                     </div>
 
                     {updateResult && (
-                        <div className="mt-6 rounded-2xl border border-emerald-100 bg-white p-4">
-                            <div className="flex items-center justify-between gap-3">
+                        <div className="mt-4 rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
+                            <div className="flex items-center justify-between gap-2.5">
                                 <div>
-                                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Hasil Update Terakhir</p>
-                                    <h4 className="mt-1 font-black text-slate-950">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Hasil Update Terakhir</p>
+                                    <h4 className="mt-0.5 text-xs font-extrabold text-slate-950">
                                         {updateResult.status === 'success' ? 'Update berhasil' : 'Update gagal'}
                                     </h4>
                                 </div>
                                 <span
-                                    className={`rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.14em] ${
+                                    className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.14em] ${
                                         updateResult.status === 'success'
-                                            ? 'bg-emerald-100 text-emerald-700'
+                                            ? 'bg-teal-100 text-teal-700'
                                             : 'bg-rose-100 text-rose-700'
                                     }`}
                                 >
                                     {updateResult.finished_at}
                                 </span>
                             </div>
-                            <div className="mt-4 space-y-3">
+                            <div className="mt-3 space-y-2">
                                 {updateResult.logs.map((log, index) => (
-                                    <div key={`${log.command}-${index}`} className="rounded-2xl bg-slate-950 p-3">
+                                    <div key={`${log.command}-${index}`} className="rounded-lg bg-slate-950 p-2.5">
                                         <div className="flex flex-wrap items-center justify-between gap-2">
-                                            <code className="text-xs font-bold text-emerald-200">{log.command}</code>
+                                            <code className="text-[10px] font-bold text-teal-200">{log.command}</code>
                                             <span
                                                 className={`rounded-full px-2 py-1 text-[11px] font-black ${
-                                                    log.exitCode === 0 ? 'bg-emerald-400/20 text-emerald-100' : 'bg-rose-400/20 text-rose-100'
+                                                    log.exitCode === 0 ? 'bg-teal-400/20 text-teal-100' : 'bg-rose-400/20 text-rose-100'
                                                 }`}
                                             >
                                                 exit {log.exitCode}
                                             </span>
                                         </div>
                                         {(log.output || log.error) && (
-                                            <pre className="mt-3 max-h-44 overflow-auto whitespace-pre-wrap text-xs leading-6 text-slate-200">
+                                            <pre className="mt-2 max-h-44 overflow-auto whitespace-pre-wrap text-[10px] leading-5 text-slate-200">
                                                 <code>{log.output || log.error}</code>
                                             </pre>
                                         )}
@@ -144,35 +144,35 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                     )}
                 </article>
 
-                <article className="rounded-[2rem] border border-white/70 bg-gradient-to-br from-emerald-600 via-teal-600 to-amber-500 p-6 text-white shadow-xl shadow-emerald-950/10">
-                    <div className="flex items-center justify-between gap-3">
-                        <div className="rounded-2xl bg-white/15 p-3">
-                            <Rocket className="h-6 w-6" />
+                <article className="rounded-xl border border-white/10 bg-gradient-to-br from-blue-800 via-blue-700 to-sky-600 p-4 text-white shadow-sm">
+                    <div className="flex items-center justify-between gap-2.5">
+                        <div className="rounded-lg bg-white/15 p-2">
+                            <Rocket className="h-4 w-4" />
                         </div>
-                        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-black uppercase tracking-[0.16em]">
+                        <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.14em]">
                             {isLatest ? 'Up to Date' : 'Perlu Update'}
                         </span>
                     </div>
 
-                    <p className="mt-8 text-xs font-bold uppercase tracking-[0.22em] text-emerald-100">Versi Terbaru</p>
-                    <h3 className="mt-2 text-5xl font-black tracking-tight">v{latestVersion}</h3>
+                    <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-100">Versi Terbaru</p>
+                    <h3 className="mt-1 text-2xl font-extrabold tracking-tight">v{latestVersion}</h3>
 
-                    <div className="mt-8 grid gap-3">
-                        <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100">Versi Terpasang</p>
-                            <p className="mt-1 text-2xl font-black">v{currentVersion}</p>
+                    <div className="mt-5 grid gap-2.5">
+                        <div className="rounded-lg bg-white/15 p-3 backdrop-blur">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">Versi Terpasang</p>
+                            <p className="mt-0.5 text-base font-extrabold">v{currentVersion}</p>
                         </div>
-                        <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100">Repository</p>
-                            <p className="mt-1 break-all text-sm font-bold">github.com/rakabitornetwork/masjid</p>
+                        <div className="rounded-lg bg-white/15 p-3 backdrop-blur">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">Repository</p>
+                            <p className="mt-0.5 break-all text-[11px] font-bold">github.com/rakabitornetwork/masjid</p>
                         </div>
-                        <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100">Commit Terbaru</p>
-                            <p className="mt-1 font-mono text-2xl font-black">{latestCommit}</p>
+                        <div className="rounded-lg bg-white/15 p-3 backdrop-blur">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">Commit Terbaru</p>
+                            <p className="mt-0.5 font-mono text-base font-extrabold">{latestCommit}</p>
                         </div>
-                        <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100">Catatan</p>
-                            <p className="mt-1 text-sm font-semibold leading-6">
+                        <div className="rounded-lg bg-white/15 p-3 backdrop-blur">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">Catatan</p>
+                            <p className="mt-0.5 text-[11px] font-semibold leading-5">
                                 Tombol update dapat menjalankan proses langsung dari aplikasi atau menyalin perintah untuk dijalankan manual via SSH.
                             </p>
                         </div>

@@ -15,39 +15,39 @@ export default function Dashboard({ profile, stats, accounts, recentTransactions
             </section>
 
             <section className="mt-4 grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
-                <div className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-                    <div className="flex items-center justify-between gap-3">
+                <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                    <div className="flex items-center justify-between gap-2.5">
                         <div>
-                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Profil Masjid</p>
-                            <h3 className="text-xl font-black text-slate-950">{profile?.name || 'Nama masjid belum diatur'}</h3>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Profil Masjid</p>
+                            <h3 className="text-sm font-extrabold text-slate-950">{profile?.name || 'Nama masjid belum diatur'}</h3>
                         </div>
-                        <Link href="/profil-masjid" className="rounded-xl bg-emerald-600 px-3 py-2 text-xs font-bold text-white">
+                        <Link href="/profil-masjid" className="rounded-lg bg-teal-600 px-2.5 py-1.5 text-[10px] font-bold text-white">
                             Edit Profil
                         </Link>
                     </div>
-                    <div className="mt-4 grid gap-3 md:grid-cols-3">
+                    <div className="mt-3 grid gap-2.5 md:grid-cols-3">
                         <Info label="Tagline" value={profile?.tagline || 'Belum diisi'} />
                         <Info label="Kontak" value={profile?.phone || 'Belum diisi'} />
                         <Info label="Kapasitas" value={profile?.capacity ? `${profile.capacity} jamaah` : 'Belum diisi'} />
                     </div>
-                    <p className="mt-4 rounded-2xl bg-emerald-50 p-4 text-sm leading-6 text-slate-600">
+                    <p className="mt-3 rounded-lg bg-teal-50 p-3 text-xs font-medium leading-5 text-slate-600">
                         {profile?.address || 'Lengkapi alamat, rekening, visi, misi, dan fasilitas masjid untuk membuat dashboard lebih informatif.'}
                     </p>
                 </div>
 
-                <div className="rounded-[1.75rem] border border-white/70 bg-slate-950 p-5 text-white shadow-xl shadow-emerald-950/10">
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-200">Akun Kas / Bank</p>
-                    <div className="mt-4 space-y-3">
-                        {accounts.length === 0 && <p className="text-sm text-slate-300">Belum ada akun kas atau bank.</p>}
+                <div className="rounded-xl border border-slate-900 bg-slate-950 p-4 text-white shadow-sm">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-200">Akun Kas / Bank</p>
+                    <div className="mt-3 space-y-2">
+                        {accounts.length === 0 && <p className="text-xs text-slate-300">Belum ada akun kas atau bank.</p>}
                         {accounts.map((account) => (
-                            <div key={account.id} className="rounded-2xl bg-white/10 p-3">
+                            <div key={account.id} className="rounded-lg bg-white/10 p-2.5">
                                 <div className="flex items-center justify-between gap-2">
                                     <p className="font-bold">{account.name}</p>
-                                    <span className="rounded-full bg-emerald-400/20 px-2 py-1 text-[11px] font-bold text-emerald-100">
+                                    <span className="rounded-full bg-teal-400/20 px-2 py-0.5 text-[10px] font-bold text-teal-100">
                                         {label(account.type)}
                                     </span>
                                 </div>
-                                <p className="mt-2 text-xl font-black text-amber-200">{money(account.balance)}</p>
+                                <p className="mt-1.5 text-base font-extrabold text-amber-200">{money(account.balance)}</p>
                             </div>
                         ))}
                     </div>
@@ -100,44 +100,44 @@ export default function Dashboard({ profile, stats, accounts, recentTransactions
 
 function Info({ label, value }) {
     return (
-        <div className="rounded-2xl border border-emerald-100 bg-white p-3">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">{label}</p>
-            <p className="mt-1 text-sm font-bold text-slate-800">{value}</p>
+        <div className="rounded-lg border border-slate-100 bg-white p-2.5">
+            <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">{label}</p>
+            <p className="mt-0.5 text-xs font-bold text-slate-800">{value}</p>
         </div>
     );
 }
 
 function Panel({ title, icon: Icon, href, children }) {
     return (
-        <div className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
-            <div className="mb-4 flex items-center justify-between">
+        <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+            <div className="mb-3 flex items-center justify-between border-b border-slate-50 pb-2">
                 <div className="flex items-center gap-2">
-                    <Icon className="h-4 w-4 text-emerald-600" />
-                    <h3 className="font-black text-slate-950">{title}</h3>
+                    <Icon className="h-3.5 w-3.5 text-teal-600" />
+                    <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">{title}</h3>
                 </div>
-                <Link href={href} className="text-xs font-bold text-emerald-700">
+                <Link href={href} className="text-[10px] font-bold text-teal-700">
                     Kelola
                 </Link>
             </div>
-            <div className="space-y-3">{children}</div>
+            <div className="space-y-2">{children}</div>
         </div>
     );
 }
 
 function ListItem({ title, meta, value, valueClass = 'text-slate-600' }) {
     return (
-        <div className="rounded-2xl border border-emerald-50 bg-white p-3">
-            <div className="flex items-start justify-between gap-3">
+        <div className="rounded-lg border border-slate-100 bg-white p-2.5">
+            <div className="flex items-start justify-between gap-2.5">
                 <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-slate-900">{title}</p>
-                    <p className="mt-1 text-xs text-slate-500">{meta}</p>
+                    <p className="truncate text-xs font-bold text-slate-900">{title}</p>
+                    <p className="mt-0.5 text-[10px] font-medium text-slate-500">{meta}</p>
                 </div>
-                <p className={`shrink-0 text-xs font-black ${valueClass}`}>{value}</p>
+                <p className={`shrink-0 text-[10px] font-black ${valueClass}`}>{value}</p>
             </div>
         </div>
     );
 }
 
 function Empty({ children }) {
-    return <p className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/60 p-4 text-sm text-slate-500">{children}</p>;
+    return <p className="rounded-lg border border-dashed border-teal-200 bg-teal-50/60 p-3 text-xs font-semibold text-slate-500">{children}</p>;
 }
