@@ -68,11 +68,11 @@ export default function AppLayout({ title, children, actions = null }) {
                 )}
 
                 <aside
-                    className={`fixed inset-y-0 left-0 z-40 flex h-screen w-56 shrink-0 flex-col justify-between border-r border-emerald-200/10 bg-[radial-gradient(circle_at_16%_0%,rgba(250,204,21,0.22),transparent_28%),radial-gradient(circle_at_82%_22%,rgba(45,212,191,0.22),transparent_30%),linear-gradient(180deg,#064e3b_0%,#065f46_42%,#0f766e_72%,#164e3f_100%)] shadow-2xl shadow-emerald-950/35 transition-transform duration-200 lg:relative lg:translate-x-0 ${
+                    className={`fixed inset-y-0 left-0 z-40 flex h-dvh w-56 shrink-0 flex-col justify-between border-r border-emerald-200/10 bg-[radial-gradient(circle_at_16%_0%,rgba(250,204,21,0.22),transparent_28%),radial-gradient(circle_at_82%_22%,rgba(45,212,191,0.22),transparent_30%),linear-gradient(180deg,#064e3b_0%,#065f46_42%,#0f766e_72%,#164e3f_100%)] shadow-2xl shadow-emerald-950/35 transition-transform duration-200 lg:relative lg:translate-x-0 ${
                         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
                 >
-                    <div className="min-h-0">
+                    <div className="min-h-0 flex flex-col flex-1">
                         <div className="flex h-14 items-center justify-between border-b border-white/10 px-4">
                             <div className="flex min-w-0 items-center gap-2.5">
                                 <ApplicationLogo className="h-8 w-8 shrink-0 rounded-xl" />
@@ -90,7 +90,7 @@ export default function AppLayout({ title, children, actions = null }) {
                             </button>
                         </div>
 
-                        <nav className="max-h-[calc(100vh-9rem)] space-y-1 overflow-y-auto p-2">
+                        <nav className="flex-1 space-y-1 overflow-y-auto p-2">
                             {navigation.map((item) => {
                                 const Icon = item.icon;
                                 const active = isActive(item.href);
