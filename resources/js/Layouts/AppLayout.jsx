@@ -142,7 +142,7 @@ export default function AppLayout({ title, children, actions = null }) {
                 </aside>
 
                 <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(16,185,129,0.16),transparent_28rem),linear-gradient(135deg,#eff6ff_0%,#f8fafc_46%,#dbeafe_100%)]">
-                    <header className="flex h-14 shrink-0 items-center justify-between border-b border-transparent bg-transparent px-4 shadow-none backdrop-blur-none lg:border-blue-100/70 lg:bg-white/86 lg:shadow-sm lg:shadow-blue-900/5 lg:backdrop-blur-md lg:px-6">
+                    <header className="absolute left-0 right-0 top-0 z-20 flex h-14 shrink-0 items-center justify-between border-b border-white/5 bg-white/10 px-4 shadow-none backdrop-blur-md lg:relative lg:border-blue-100/70 lg:bg-white/86 lg:shadow-sm lg:shadow-blue-900/5 lg:backdrop-blur-md lg:px-6">
                         <div className="flex min-w-0 items-center">
                             <button
                                 type="button"
@@ -179,7 +179,7 @@ export default function AppLayout({ title, children, actions = null }) {
                         </div>
                     </header>
 
-                    <main className="min-h-0 flex-1 overflow-y-auto p-4 pb-12 lg:p-5 lg:pb-14">
+                    <main className="min-h-0 flex-1 overflow-y-auto p-4 pt-18 pb-12 lg:p-5 lg:pb-14">
                         <FlashMessage />
                         {children}
                         <footer className="mt-6 flex flex-wrap items-center justify-center gap-1 text-center text-[10px] font-medium text-slate-400">
