@@ -1,5 +1,5 @@
 import { router, useForm } from '@inertiajs/react';
-import { Edit3, Plus, Trash2, UserRoundCheck, UsersRound, WalletCards, X } from 'lucide-react';
+import { Edit3, MessageCircle, Plus, Trash2, UserRoundCheck, UsersRound, WalletCards, X } from 'lucide-react';
 import StatCard from '../../Components/StatCard';
 import { CheckboxInput, PrimaryButton, SecondaryButton, SelectInput, TextareaInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
@@ -18,6 +18,7 @@ const emptyForm = {
     income_range: '',
     is_active: true,
     notes: '',
+    send_whatsapp: true,
 };
 
 const roleLabels = {
@@ -32,7 +33,7 @@ const roleTone = {
     both: 'bg-teal-100 text-teal-700',
 };
 
-export default function Index({ participants, summary }) {
+export default function Index({ participants, summary, api }) {
     const { data, setData, post, put, processing, errors, reset } = useForm(emptyForm);
     const editingId = data.id || null;
 
@@ -50,6 +51,7 @@ export default function Index({ participants, summary }) {
             muzakki_type: participant.muzakki_type || 'personal',
             mustahik_category: participant.mustahik_category || 'fakir_miskin',
             is_active: Boolean(participant.is_active),
+            send_whatsapp: false,
         });
     };
 
@@ -94,6 +96,29 @@ export default function Index({ participants, summary }) {
                         <CheckboxInput label="Data aktif" checked={Boolean(data.is_active)} onChange={(checked) => setData('is_active', checked)} />
                         <TextInput label="Nama" value={data.name} onChange={(event) => setData('name', event.target.value)} error={errors.name} />
                         <TextInput label="Nomor WA" value={data.phone || ''} onChange={(event) => setData('phone', event.target.value)} error={errors.phone} />
+                        {!editingId && (
+                            <div className="md:col-span-2 rounded-xl border border-teal-100 bg-teal-50/70 p-3">
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                                    <div className="flex items-start gap-2.5">
+                                        <div className="rounded-lg bg-emerald-100 p-2 text-emerald-700">
+                                            <MessageCircle className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Konfirmasi WhatsApp</p>
+                                            <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
+                                                Kirim pesan otomatis ke nomor WA setelah data berhasil ditambahkan. Riwayatnya akan masuk ke menu Notifikasi WhatsApp.
+                                            </p>
+                                            <p className={`mt-1 text-[11px] font-bold ${api?.enabled ? 'text-emerald-700' : 'text-amber-700'}`}>
+                                                {api?.enabled ? `Gateway aktif: ${api.provider}` : 'Gateway WhatsApp belum aktif, data tetap bisa disimpan.'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="shrink-0">
+                                        <CheckboxInput label="Kirim WA" checked={Boolean(data.send_whatsapp)} onChange={(checked) => setData('send_whatsapp', checked)} />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         <TextInput label="NIK / Identitas" value={data.identity_number || ''} onChange={(event) => setData('identity_number', event.target.value)} error={errors.identity_number} />
                         <TextInput label="Jumlah Keluarga" type="number" min="1" value={data.family_count || 1} onChange={(event) => setData('family_count', event.target.value)} error={errors.family_count} />
                         <SelectInput label="Tipe Muzakki" value={data.muzakki_type || 'personal'} onChange={(event) => setData('muzakki_type', event.target.value)} error={errors.muzakki_type}>
