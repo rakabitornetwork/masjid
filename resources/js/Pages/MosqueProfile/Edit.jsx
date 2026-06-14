@@ -14,9 +14,6 @@ export default function Edit({ profile, facilitiesText }) {
         phone: profile?.phone || '',
         email: profile?.email || '',
         website: profile?.website || '',
-        bank_name: profile?.bank_name || '',
-        bank_account_number: profile?.bank_account_number || '',
-        bank_account_holder: profile?.bank_account_holder || '',
         vision: profile?.vision || '',
         mission: profile?.mission || '',
         founded_at: profile?.founded_at?.slice(0, 10) || '',
@@ -92,28 +89,10 @@ export default function Edit({ profile, facilitiesText }) {
 
                 <section className="space-y-4">
                     <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
-                        <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Kontak & Rekening</h3>
+                        <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Kontak</h3>
                         <div className="mt-3 grid gap-3">
                             <TextInput label="Telepon" value={data.phone} onChange={(event) => setData('phone', event.target.value)} error={errors.phone} />
                             <TextInput label="Email" value={data.email} onChange={(event) => setData('email', event.target.value)} error={errors.email} />
-                            <TextInput
-                                label="Nama Bank"
-                                value={data.bank_name}
-                                onChange={(event) => setData('bank_name', event.target.value)}
-                                error={errors.bank_name}
-                            />
-                            <TextInput
-                                label="Nomor Rekening"
-                                value={data.bank_account_number}
-                                onChange={(event) => setData('bank_account_number', event.target.value)}
-                                error={errors.bank_account_number}
-                            />
-                            <TextInput
-                                label="Atas Nama"
-                                value={data.bank_account_holder}
-                                onChange={(event) => setData('bank_account_holder', event.target.value)}
-                                error={errors.bank_account_holder}
-                            />
                         </div>
                     </div>
 
