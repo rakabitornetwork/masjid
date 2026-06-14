@@ -25,6 +25,7 @@ const navigation = [
     { label: 'Pengurus', href: '/pengurus', icon: UsersRound },
     { label: 'Pengumuman', href: '/pengumuman', icon: Megaphone },
     { label: 'Jadwal', href: '/jadwal', icon: CalendarDays },
+    { label: 'Jadwal Sholat', href: '/jadwal-sholat', icon: Clock },
     { label: 'Akun Kas', href: '/keuangan/akun', icon: WalletCards },
     { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark },
     { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote },

@@ -37,6 +37,12 @@ Route::middleware('auth')->group(function (): void {
     Route::get('profil-masjid', [MosqueProfileController::class, 'edit'])->name('mosque-profile.edit');
     Route::put('profil-masjid', [MosqueProfileController::class, 'update'])->name('mosque-profile.update');
 
+    Route::get('jadwal-sholat', function () {
+        return Inertia\Inertia::render('PrayerSchedules/Index', [
+            'profile' => \App\Models\MosqueProfile::first(),
+        ]);
+    })->name('prayer-schedules.index');
+
     Route::post('pengurus/urutkan', [CommitteeMemberController::class, 'reorder'])->name('committee-members.reorder');
     Route::resource('pengurus', CommitteeMemberController::class)
         ->parameters(['pengurus' => 'committeeMember'])
