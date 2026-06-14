@@ -18,10 +18,10 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     public const ROLE_PERMISSIONS = [
-        'admin' => ['system', 'profile', 'people', 'content', 'finance', 'inventory', 'donations', 'reports'],
-        'bendahara' => ['finance', 'donations', 'reports'],
-        'sekretaris' => ['profile', 'people', 'content', 'inventory'],
-        'takmir' => ['people', 'content', 'inventory'],
+        'admin' => ['system', 'profile', 'people', 'content', 'finance', 'inventory', 'donations', 'programs', 'reports'],
+        'bendahara' => ['finance', 'donations', 'programs', 'reports'],
+        'sekretaris' => ['profile', 'people', 'content', 'inventory', 'programs'],
+        'takmir' => ['people', 'content', 'inventory', 'programs'],
         'viewer' => ['reports'],
     ];
 

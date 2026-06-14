@@ -14,8 +14,10 @@ use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\MosqueProfileController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\QurbanParticipantController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UpdateGuideController;
+use App\Http\Controllers\ZakatController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -88,6 +90,19 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('donasi', DonationCampaignController::class)
             ->parameters(['donasi' => 'donationCampaign'])
             ->names('donations')
+            ->except(['create', 'edit', 'show']);
+    });
+
+    Route::middleware('role:admin,bendahara,sekretaris,takmir')->group(function (): void {
+        Route::get('zakat', [ZakatController::class, 'index'])->name('zakat.index');
+        Route::post('zakat/penerimaan', [ZakatController::class, 'storeCollection'])->name('zakat.collections.store');
+        Route::delete('zakat/penerimaan/{collection}', [ZakatController::class, 'destroyCollection'])->name('zakat.collections.destroy');
+        Route::post('zakat/penyaluran', [ZakatController::class, 'storeDistribution'])->name('zakat.distributions.store');
+        Route::delete('zakat/penyaluran/{distribution}', [ZakatController::class, 'destroyDistribution'])->name('zakat.distributions.destroy');
+
+        Route::resource('qurban', QurbanParticipantController::class)
+            ->parameters(['qurban' => 'qurbanParticipant'])
+            ->names('qurban')
             ->except(['create', 'edit', 'show']);
     });
 

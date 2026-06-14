@@ -10,8 +10,11 @@ use App\Models\FinancialAccount;
 use App\Models\FinancialCategory;
 use App\Models\InventoryItem;
 use App\Models\MosqueProfile;
+use App\Models\QurbanParticipant;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Models\ZakatCollection;
+use App\Models\ZakatDistribution;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -118,6 +121,33 @@ class DatabaseSeeder extends Seeder
             'payment_method' => 'transfer',
             'donated_at' => now()->toDateString(),
             'status' => 'confirmed',
+        ]);
+
+        ZakatCollection::updateOrCreate(['muzakki_name' => 'Keluarga Ahmad Ridwan', 'received_at' => now()->toDateString()], [
+            'type' => 'fitrah',
+            'money_amount' => 180000,
+            'rice_amount' => 0,
+            'payment_method' => 'cash',
+            'status' => 'received',
+        ]);
+
+        ZakatDistribution::updateOrCreate(['mustahik_name' => 'Keluarga Bapak Hasan', 'distributed_at' => now()->toDateString()], [
+            'mustahik_category' => 'fakir_miskin',
+            'money_amount' => 150000,
+            'rice_amount' => 5,
+            'status' => 'distributed',
+            'address' => 'Lingkungan sekitar masjid',
+        ]);
+
+        QurbanParticipant::updateOrCreate(['participant_name' => 'H. Ahmad Fauzi', 'registered_at' => now()->toDateString()], [
+            'phone' => '0812-2000-0001',
+            'animal_type' => 'cow',
+            'share_count' => 1,
+            'group_name' => 'Sapi A',
+            'amount_paid' => 3500000,
+            'target_amount' => 3500000,
+            'payment_status' => 'paid',
+            'slaughter_status' => 'registered',
         ]);
 
         $cashAccount = FinancialAccount::updateOrCreate(['name' => 'Kas Tunai Masjid'], [

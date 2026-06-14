@@ -1,12 +1,14 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     Banknote,
+    Beef,
     Bell,
     Boxes,
     Building2,
     CalendarDays,
     Clock,
     Gauge,
+    HandCoins,
     HeartHandshake,
     Heart,
     Landmark,
@@ -32,6 +34,8 @@ const navigation = [
     { label: 'Jadwal', href: '/jadwal', icon: CalendarDays, permission: 'content' },
     { label: 'Jadwal Sholat', href: '/jadwal-sholat', icon: Clock, permission: 'content' },
     { label: 'Inventaris', href: '/inventaris', icon: Boxes, permission: 'inventory' },
+    { label: 'Zakat', href: '/zakat', icon: HandCoins, permission: 'programs' },
+    { label: 'Qurban', href: '/qurban', icon: Beef, permission: 'programs' },
     { label: 'Akun Kas', href: '/keuangan/akun', icon: WalletCards, permission: 'finance' },
     { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark, permission: 'finance' },
     { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote, permission: 'finance' },
