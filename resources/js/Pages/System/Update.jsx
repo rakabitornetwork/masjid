@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
-import { CheckCircle2, ClipboardCheck, RefreshCw, Rocket, Sparkles } from 'lucide-react';
+import { CheckCircle2, ClipboardCheck, RefreshCw, Rocket, Sparkles, Terminal } from 'lucide-react';
 import AppLayout from '../../Layouts/AppLayout';
 
 const updateCommands = `cd ~/public_html
@@ -91,39 +91,53 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                         </div>
                     </div>
 
-                    <div className="mt-4 rounded-xl bg-slate-950 p-3">
-                        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-teal-300">
-                            Perintah yang disalin atau dijalankan tombol update
-                        </p>
-                        <pre className="overflow-x-auto text-[11px] leading-6 text-teal-100">
+                    <div className="mt-4 rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-teal-50 to-amber-50 p-3 shadow-sm">
+                        <div className="mb-2 flex items-center justify-between gap-2">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-800">
+                                Perintah yang disalin atau dijalankan tombol update
+                            </p>
+                            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.14em] text-amber-700">
+                                Masjid Update
+                            </span>
+                        </div>
+                        <pre className="overflow-x-auto rounded-lg border border-emerald-100 bg-white/85 p-3 text-[11px] font-semibold leading-6 text-emerald-900">
                             <code>{updateCommands}</code>
                         </pre>
                     </div>
 
                     {updateResult && (
-                        <div className="mt-4 rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
-                            <div className="flex items-center justify-between gap-2.5">
+                        <div className="mt-4 overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-md shadow-slate-950/20">
+                            <div className="flex items-center justify-between gap-2.5 border-b border-slate-800 bg-slate-900 px-3 py-2">
                                 <div>
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Hasil Update Terakhir</p>
-                                    <h4 className="mt-0.5 text-xs font-extrabold text-slate-950">
+                                    <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-teal-300">
+                                        <Terminal className="h-3.5 w-3.5" />
+                                        Hasil Update Terakhir
+                                    </p>
+                                    <h4 className="mt-0.5 text-xs font-extrabold text-white">
                                         {updateResult.status === 'success' ? 'Update berhasil' : 'Update gagal'}
                                     </h4>
                                 </div>
                                 <span
                                     className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.14em] ${
                                         updateResult.status === 'success'
-                                            ? 'bg-teal-100 text-teal-700'
-                                            : 'bg-rose-100 text-rose-700'
+                                            ? 'bg-teal-400/20 text-teal-100'
+                                            : 'bg-rose-400/20 text-rose-100'
                                     }`}
                                 >
                                     {updateResult.finished_at}
                                 </span>
                             </div>
-                            <div className="mt-3 space-y-2">
+                            <div className="max-h-[26rem] space-y-2 overflow-y-auto p-3 font-mono">
                                 {updateResult.logs.map((log, index) => (
-                                    <div key={`${log.command}-${index}`} className="rounded-lg bg-slate-950 p-2.5">
+                                    <div
+                                        key={`${log.command}-${index}`}
+                                        className="terminal-line-in rounded-lg border border-slate-800 bg-slate-900/80 p-2.5"
+                                        style={{ animationDelay: `${index * 90}ms` }}
+                                    >
                                         <div className="flex flex-wrap items-center justify-between gap-2">
-                                            <code className="text-[10px] font-bold text-teal-200">{log.command}</code>
+                                            <code className="text-[10px] font-bold text-teal-200">
+                                                <span className="text-amber-300">$</span> {log.command}
+                                            </code>
                                             <span
                                                 className={`rounded-full px-2 py-1 text-[11px] font-black ${
                                                     log.exitCode === 0 ? 'bg-teal-400/20 text-teal-100' : 'bg-rose-400/20 text-rose-100'
@@ -139,6 +153,10 @@ export default function Update({ currentVersion, latestVersion, latestCommit, la
                                         )}
                                     </div>
                                 ))}
+                                <div className="terminal-line-in flex items-center gap-1.5 text-[10px] font-bold text-teal-300">
+                                    <span>{updateResult.status === 'success' ? 'Update process completed' : 'Update process stopped'}</span>
+                                    <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-teal-300" />
+                                </div>
                             </div>
                         </div>
                     )}
