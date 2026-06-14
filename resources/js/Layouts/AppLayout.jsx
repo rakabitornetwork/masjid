@@ -16,6 +16,7 @@ import {
     HeartHandshake,
     Heart,
     History,
+    Info,
     Landmark,
     LogOut,
     Megaphone,
@@ -68,6 +69,7 @@ const navigation = [
     { label: 'Audit Log', href: '/audit-log', icon: History, permission: 'system' },
     { label: 'Backup Data', href: '/backup-data', icon: DatabaseBackup, permission: 'system' },
     { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw, permission: 'system' },
+    { label: 'Tentang Aplikasi', href: '/tentang-aplikasi', icon: Info, permission: null },
 ];
 
 export default function AppLayout({ title, children, actions = null }) {

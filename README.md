@@ -198,6 +198,11 @@ php artisan optimize:clear
 - Riwayat menampilkan user, route, path, IP address, browser, status HTTP, dan waktu aktivitas.
 - Password dan file upload tidak disimpan mentah di metadata audit log.
 
+### Tentang Aplikasi
+
+- Halaman informasi aplikasi berisi nama aplikasi, versi, tema, developer, environment, stack teknologi, dan ringkasan fitur utama.
+- Menu `Tentang Aplikasi` tersedia untuk semua user yang sudah login.
+
 ### User, Role, dan Permission
 
 - Manajemen user admin dengan nama, email, nomor WA, role, dan password.

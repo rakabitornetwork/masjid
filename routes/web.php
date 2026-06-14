@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\ApplicationInfoController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CommitteeMemberController;
@@ -53,6 +54,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+    Route::get('tentang-aplikasi', ApplicationInfoController::class)->name('application-info');
     Route::get('profil-admin', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('profil-admin', [ProfileController::class, 'update'])->name('profile.update');
 
