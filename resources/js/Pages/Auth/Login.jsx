@@ -1,7 +1,13 @@
 import { Head, useForm } from '@inertiajs/react';
-import { LockKeyhole, Mail, ShieldCheck } from 'lucide-react';
+import { Banknote, CalendarDays, LockKeyhole, Mail, UsersRound } from 'lucide-react';
 import ApplicationLogo from '../../Components/ApplicationLogo';
 import { Field, PrimaryButton } from '../../Components/FormControls';
+
+const featureCards = [
+    { label: 'Keuangan', icon: Banknote },
+    { label: 'Jadwal', icon: CalendarDays },
+    { label: 'Pengurus', icon: UsersRound },
+];
 
 export default function Login() {
     const { data, setData, post, processing, errors } = useForm({
@@ -37,12 +43,16 @@ export default function Login() {
                                 </h1>
                             </div>
                             <div className="grid grid-cols-3 gap-3">
-                                {['Keuangan', 'Jadwal', 'Pengurus'].map((item) => (
-                                    <div key={item} className="rounded-xl bg-white/15 p-3 backdrop-blur">
-                                        <ShieldCheck className="h-4 w-4" />
-                                        <p className="mt-2 text-xs font-bold">{item}</p>
-                                    </div>
-                                ))}
+                                {featureCards.map((item) => {
+                                    const Icon = item.icon;
+
+                                    return (
+                                        <div key={item.label} className="rounded-xl bg-white/15 p-3 backdrop-blur">
+                                            <Icon className="h-4 w-4" />
+                                            <p className="mt-2 text-xs font-bold">{item.label}</p>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
