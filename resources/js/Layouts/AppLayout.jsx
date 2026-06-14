@@ -44,7 +44,7 @@ export default function AppLayout({ title, children, actions = null }) {
         return () => window.clearInterval(timer);
     }, []);
 
-    const isActive = (href) => path === href || (href !== '/dashboard' && path.startsWith(href));
+    const isActive = (href) => path === href || (href !== '/dashboard' && path.startsWith(href + '/'));
 
     const logout = (event) => {
         event.preventDefault();
