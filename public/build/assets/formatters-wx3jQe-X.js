@@ -1,0 +1,1 @@
+var e=e=>new Intl.NumberFormat(`id-ID`,{style:`currency`,currency:`IDR`,maximumFractionDigits:0}).format(Number(e||0)),t=(e,t={})=>e?new Intl.DateTimeFormat(`id-ID`,{day:`2-digit`,month:`short`,year:`numeric`,...t}).format(new Date(e)):`-`,n=e=>e?String(e).slice(0,5):`-`,r=e=>String(e||`-`).replaceAll(`_`,` `).replace(/\b\w/g,e=>e.toUpperCase());export{n as i,r as n,e as r,t};

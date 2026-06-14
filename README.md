@@ -11,6 +11,7 @@ Project ini dibuat untuk satu masjid per instalasi dan dirancang agar mudah dipa
 - Icon UI: `lucide-react` dan SVG custom ringan untuk logo masjid.
 - Database: mengikuti konfigurasi Laravel di `.env`, misalnya MySQL/MariaDB.
 - Asset production: hasil `npm run build` berada di `public/build`.
+- Optimasi frontend: halaman Inertia dimuat lazy/dynamic import sehingga bundle awal lebih kecil dan halaman lain dipisah menjadi chunk tersendiri.
 
 ## Tema Desain
 
@@ -209,7 +210,6 @@ php artisan optimize:clear
 Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
-- Setelah fitur utama lengkap, rapikan bundle frontend dengan code splitting / lazy loading agar file JS awal lebih kecil.
 
 ## Akun Admin Awal
 
