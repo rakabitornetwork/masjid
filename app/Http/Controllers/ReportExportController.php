@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Congregant;
+use App\Models\CongregantFamily;
 use App\Models\DonationCampaign;
 use App\Models\DocumentArchive;
 use App\Models\FacilityBooking;
@@ -32,6 +33,10 @@ class ReportExportController extends Controller
         'jamaah' => [
             'label' => 'Data Jamaah',
             'description' => 'Export database jamaah dan keluarga.',
+        ],
+        'keluarga-jamaah' => [
+            'label' => 'Keluarga Jamaah',
+            'description' => 'Export kepala keluarga, alamat, segmentasi, dan jumlah anggota.',
         ],
         'inventaris' => [
             'label' => 'Inventaris Masjid',
@@ -186,9 +191,10 @@ class ReportExportController extends Controller
                 ]),
             ],
             'jamaah' => [
-                ['Nama', 'Kepala Keluarga', 'Jenis Kelamin', 'Tanggal Lahir', 'Telepon', 'Email', 'RT/RW', 'Pekerjaan', 'Status Aktif', 'Alamat'],
-                Congregant::orderBy('name')->get()->map(fn (Congregant $congregant): array => [
+                ['Nama', 'Keluarga Tertaut', 'Kepala Keluarga', 'Jenis Kelamin', 'Tanggal Lahir', 'Telepon', 'Email', 'RT/RW', 'Pekerjaan', 'Status Aktif', 'Alamat'],
+                Congregant::with('family')->orderBy('name')->get()->map(fn (Congregant $congregant): array => [
                     $congregant->name,
+                    $congregant->family?->family_head_name,
                     $congregant->family_head,
                     $congregant->gender,
                     $congregant->birth_date?->format('Y-m-d'),
@@ -198,6 +204,19 @@ class ReportExportController extends Controller
                     $congregant->occupation,
                     $congregant->is_active ? 'aktif' : 'nonaktif',
                     $congregant->address,
+                ]),
+            ],
+            'keluarga-jamaah' => [
+                ['Kepala Keluarga', 'Telepon', 'RT/RW', 'Segmentasi', 'Status Aktif', 'Jumlah Anggota', 'Alamat', 'Catatan'],
+                CongregantFamily::withCount('congregants')->orderBy('family_head_name')->get()->map(fn (CongregantFamily $family): array => [
+                    $family->family_head_name,
+                    $family->phone,
+                    $family->neighborhood,
+                    $family->economic_status,
+                    $family->is_active ? 'aktif' : 'nonaktif',
+                    $family->congregants_count,
+                    $family->address,
+                    $family->notes,
                 ]),
             ],
             'inventaris' => [

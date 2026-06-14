@@ -28,6 +28,7 @@ class BackupController extends Controller
         'financial_accounts',
         'financial_categories',
         'financial_transactions',
+        'congregant_families',
         'congregants',
         'inventory_items',
         'inventory_maintenances',

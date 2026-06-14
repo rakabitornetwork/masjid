@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CommitteeMemberController;
 use App\Http\Controllers\CongregantController;
+use App\Http\Controllers\CongregantFamilyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DonationCampaignController;
 use App\Http\Controllers\DonationEntryController;
@@ -93,6 +94,11 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('jamaah', CongregantController::class)
             ->parameters(['jamaah' => 'congregant'])
             ->names('congregants')
+            ->except(['create', 'edit', 'show']);
+
+        Route::resource('keluarga-jamaah', CongregantFamilyController::class)
+            ->parameters(['keluarga-jamaah' => 'congregantFamily'])
+            ->names('congregant-families')
             ->except(['create', 'edit', 'show']);
 
         Route::resource('pengumuman', AnnouncementController::class)

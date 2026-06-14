@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Announcement;
 use App\Models\CommitteeMember;
 use App\Models\Congregant;
+use App\Models\CongregantFamily;
 use App\Models\DonationCampaign;
 use App\Models\DocumentArchive;
 use App\Models\FacilityBooking;
@@ -69,7 +70,16 @@ class DatabaseSeeder extends Seeder
             'is_active' => true,
         ]);
 
+        $ridwanFamily = CongregantFamily::updateOrCreate(['family_head_name' => 'Ahmad Ridwan'], [
+            'phone' => '0812-1000-0001',
+            'address' => 'Jl. Masjid Raya No. 12',
+            'neighborhood' => 'RT 01/RW 02',
+            'economic_status' => 'regular',
+            'is_active' => true,
+        ]);
+
         Congregant::updateOrCreate(['name' => 'Ahmad Ridwan', 'phone' => '0812-1000-0001'], [
+            'congregant_family_id' => $ridwanFamily->id,
             'family_head' => 'Ahmad Ridwan',
             'gender' => 'male',
             'address' => 'Jl. Masjid Raya No. 12',
@@ -80,6 +90,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Congregant::updateOrCreate(['name' => 'Nur Aisyah', 'phone' => '0812-1000-0002'], [
+            'congregant_family_id' => $ridwanFamily->id,
             'family_head' => 'Ahmad Ridwan',
             'gender' => 'female',
             'address' => 'Jl. Masjid Raya No. 12',

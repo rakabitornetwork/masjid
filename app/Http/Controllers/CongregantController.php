@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Congregant;
+use App\Models\CongregantFamily;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,11 +14,12 @@ class CongregantController extends Controller
     public function index(): Response
     {
         return Inertia::render('Congregants/Index', [
-            'congregants' => Congregant::orderByDesc('is_active')->orderBy('name')->get(),
+            'congregants' => Congregant::with('family')->orderByDesc('is_active')->orderBy('name')->get(),
+            'families' => CongregantFamily::where('is_active', true)->orderBy('family_head_name')->get(['id', 'family_head_name', 'neighborhood']),
             'summary' => [
                 'total' => Congregant::count(),
                 'active' => Congregant::where('is_active', true)->count(),
-                'families' => Congregant::whereNotNull('family_head')->distinct('family_head')->count('family_head'),
+                'families' => CongregantFamily::where('is_active', true)->count(),
             ],
         ]);
     }
@@ -50,6 +52,7 @@ class CongregantController extends Controller
     {
         return $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'congregant_family_id' => ['nullable', 'exists:congregant_families,id'],
             'family_head' => ['nullable', 'string', 'max:255'],
             'gender' => ['required', 'in:male,female'],
             'birth_date' => ['nullable', 'date'],

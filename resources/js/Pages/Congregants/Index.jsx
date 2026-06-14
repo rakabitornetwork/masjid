@@ -6,6 +6,7 @@ import AppLayout from '../../Layouts/AppLayout';
 import { date } from '../../lib/formatters';
 
 const emptyForm = {
+    congregant_family_id: '',
     name: '',
     family_head: '',
     gender: 'male',
@@ -20,7 +21,7 @@ const emptyForm = {
     notes: '',
 };
 
-export default function Index({ congregants, summary }) {
+export default function Index({ congregants, families, summary }) {
     const { data, setData, post, put, processing, errors, reset } = useForm(emptyForm);
     const editingId = data.id || null;
 
@@ -32,6 +33,7 @@ export default function Index({ congregants, summary }) {
     const edit = (congregant) => {
         setData({
             ...congregant,
+            congregant_family_id: congregant.congregant_family_id || '',
             birth_date: congregant.birth_date?.slice(0, 10) || '',
         });
     };
@@ -72,6 +74,16 @@ export default function Index({ congregants, summary }) {
                     <div className="grid gap-3 md:grid-cols-2">
                         <TextInput label="Nama Jamaah" value={data.name} onChange={(event) => setData('name', event.target.value)} error={errors.name} />
                         <TextInput label="Kepala Keluarga" value={data.family_head || ''} onChange={(event) => setData('family_head', event.target.value)} error={errors.family_head} />
+                        <div className="md:col-span-2">
+                            <SelectInput label="Relasi Keluarga" value={data.congregant_family_id || ''} onChange={(event) => setData('congregant_family_id', event.target.value)} error={errors.congregant_family_id}>
+                                <option value="">Belum ditautkan ke keluarga</option>
+                                {families.map((family) => (
+                                    <option key={family.id} value={family.id}>
+                                        {family.family_head_name} {family.neighborhood ? `- ${family.neighborhood}` : ''}
+                                    </option>
+                                ))}
+                            </SelectInput>
+                        </div>
                         <SelectInput label="Jenis Kelamin" value={data.gender} onChange={(event) => setData('gender', event.target.value)} error={errors.gender}>
                             <option value="male">Laki-laki</option>
                             <option value="female">Perempuan</option>
@@ -119,7 +131,7 @@ export default function Index({ congregants, summary }) {
                                     <div className="min-w-0">
                                         <p className="truncate text-sm font-extrabold text-slate-900">{congregant.name}</p>
                                         <p className="mt-0.5 truncate text-[11px] font-bold text-teal-700">
-                                            {congregant.family_head || 'Kepala keluarga belum diisi'} • {congregant.neighborhood || 'RT/RW -'}
+                                            {congregant.family?.family_head_name || congregant.family_head || 'Kepala keluarga belum diisi'} • {congregant.neighborhood || 'RT/RW -'}
                                         </p>
                                     </div>
                                     <span className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-bold ${congregant.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>

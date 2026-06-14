@@ -56,6 +56,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Jabatan, kontak, email, periode jabatan, urutan tampil, status aktif/nonaktif.
 - Tambah, ubah, dan hapus data pengurus.
 
+### Jamaah dan Keluarga
+
+- Data jamaah dengan nama, kepala keluarga, jenis kelamin, tanggal lahir, kontak, alamat, RT/RW, pekerjaan, status nikah, status aktif, dan catatan.
+- Manajemen keluarga jamaah dengan kepala keluarga, nomor WA, alamat, RT/RW, segmentasi ekonomi/layanan, status aktif, dan catatan.
+- Jamaah dapat ditautkan ke keluarga sehingga data anggota keluarga lebih mudah dikelola.
+- Data jamaah dan keluarga ikut masuk ke export laporan dan backup data aplikasi.
+
 ### Pengumuman
 
 - Judul, kategori, isi pengumuman.
@@ -124,7 +131,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 ### Export, Backup, dan Restore
 
-- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, inventaris, perawatan inventaris, donasi, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, dan qurban.
+- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, keluarga jamaah, inventaris, perawatan inventaris, donasi, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, dan qurban.
 - Backup data aplikasi dari menu `Backup Data` dalam format JSON.
 - Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
 - Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.
@@ -140,7 +147,6 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 
-- Manajemen jamaah, keluarga, alamat RT/RW, dan segmentasi jamaah.
 - ZISWAF: zakat fitrah, zakat mal, infaq, sedekah, wakaf, muzakki, mustahik, dan distribusi.
 - Inventaris aset masjid dan fasilitas lanjutan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.

@@ -4,30 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
-    'congregant_family_id',
-    'name',
-    'family_head',
-    'gender',
-    'birth_date',
+    'family_head_name',
     'phone',
-    'email',
     'address',
     'neighborhood',
-    'occupation',
-    'marital_status',
+    'economic_status',
     'is_active',
     'notes',
 ])]
-class Congregant extends Model
+class CongregantFamily extends Model
 {
-    public function family(): BelongsTo
-    {
-        return $this->belongsTo(CongregantFamily::class, 'congregant_family_id');
-    }
-
     /**
      * Get the attributes that should be cast.
      *
@@ -36,8 +25,12 @@ class Congregant extends Model
     protected function casts(): array
     {
         return [
-            'birth_date' => 'date',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function congregants(): HasMany
+    {
+        return $this->hasMany(Congregant::class);
     }
 }
