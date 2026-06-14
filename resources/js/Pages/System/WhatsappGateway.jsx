@@ -96,9 +96,18 @@ export default function WhatsappGateway({ provider, health, qr }) {
                     <div className="flex min-h-[320px] items-center justify-center rounded-xl border border-dashed border-teal-100 bg-teal-50/40 p-4">
                         {connected ? (
                             <div className="text-center">
-                                <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-600" />
+                                {data.profile_photo_url ? (
+                                    <img
+                                        className="mx-auto h-24 w-24 rounded-full border-4 border-white object-cover shadow-lg shadow-emerald-900/10"
+                                        src={data.profile_photo_url}
+                                        alt="Foto profil WhatsApp gateway"
+                                    />
+                                ) : (
+                                    <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-600" />
+                                )}
                                 <p className="mt-3 text-sm font-extrabold text-slate-900">Nomor masjid sudah tertaut.</p>
                                 <p className="mt-1 text-xs font-semibold text-slate-500">Linked phone: {data.linked_phone || '-'}</p>
+                                {data.profile_photo_url && <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-700">Foto profil WhatsApp aktif</p>}
                             </div>
                         ) : hasQr ? (
                             <div className="text-center">

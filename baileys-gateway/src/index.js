@@ -90,6 +90,19 @@ const getSessionHealth = () => {
     };
 };
 
+const getConnectedProfilePhotoUrl = async (linkedUser) => {
+    if (!sock || !linkedUser) {
+        return null;
+    }
+
+    try {
+        return await sock.profilePictureUrl(linkedUser, 'image');
+    } catch (error) {
+        logger.warn({ err: error, linked_user: linkedUser }, 'Gagal mengambil foto profil WhatsApp.');
+        return null;
+    }
+};
+
 const canAutoWipeSession = (absPath) => {
     const resolved = path.resolve(absPath);
     const cwd = path.resolve(process.cwd());
@@ -208,8 +221,11 @@ const assertSessionReady = () => {
     return { ok: true, health };
 };
 
-app.get('/health', (_req, res) => {
+app.get('/health', async (_req, res) => {
     const session = getSessionHealth();
+    const profilePhotoUrl = session.session_ready
+        ? await getConnectedProfilePhotoUrl(session.linked_user)
+        : null;
 
     res.json({
         ok: true,
@@ -225,6 +241,7 @@ app.get('/health', (_req, res) => {
         ws_open: session.ws_open,
         linked_user: session.linked_user,
         linked_phone: session.linked_phone,
+        profile_photo_url: profilePhotoUrl,
         connection_state: session.connection_state,
         session_ready: session.session_ready,
         zombie_session: session.zombie_session,
