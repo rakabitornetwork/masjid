@@ -20,6 +20,7 @@ class BackupController extends Controller
         'mosque_profiles',
         'committee_members',
         'announcements',
+        'public_articles',
         'schedules',
         'document_archives',
         'facility_bookings',

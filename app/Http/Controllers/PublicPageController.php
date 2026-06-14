@@ -7,6 +7,7 @@ use App\Models\DonationCampaign;
 use App\Models\FinancialAccount;
 use App\Models\FinancialTransaction;
 use App\Models\MosqueProfile;
+use App\Models\PublicArticle;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
@@ -45,7 +46,36 @@ class PublicPageController extends Controller
                     ->limit(3)
                     ->get()
                 : [],
+            'articles' => Schema::hasTable('public_articles') ? PublicArticle::query()
+                ->where('status', 'published')
+                ->whereNotNull('published_at')
+                ->latest('published_at')
+                ->limit(3)
+                ->get() : [],
             'summary' => $this->financialSummary(),
+        ]);
+    }
+
+    public function article(string $slug): Response
+    {
+        abort_unless(Schema::hasTable('public_articles'), 404);
+
+        $article = PublicArticle::query()
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->whereNotNull('published_at')
+            ->firstOrFail();
+
+        return Inertia::render('Public/ArticleShow', [
+            'profile' => Schema::hasTable('mosque_profiles') ? MosqueProfile::first() : null,
+            'article' => $article,
+            'relatedArticles' => PublicArticle::query()
+                ->whereKeyNot($article->id)
+                ->where('status', 'published')
+                ->whereNotNull('published_at')
+                ->latest('published_at')
+                ->limit(3)
+                ->get(),
         ]);
     }
 

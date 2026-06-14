@@ -8,6 +8,7 @@ use App\Models\DocumentArchive;
 use App\Models\FacilityBooking;
 use App\Models\FinancialTransaction;
 use App\Models\InventoryItem;
+use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
 use App\Models\ZakatCollection;
 use App\Models\ZakatDistribution;
@@ -41,6 +42,10 @@ class ReportExportController extends Controller
         'arsip-surat' => [
             'label' => 'Arsip Surat',
             'description' => 'Export surat masuk, surat keluar, dan dokumen internal.',
+        ],
+        'artikel' => [
+            'label' => 'Artikel Publik',
+            'description' => 'Export berita dan artikel yang dikelola untuk landing page publik.',
         ],
         'booking-fasilitas' => [
             'label' => 'Booking Fasilitas',
@@ -226,6 +231,18 @@ class ReportExportController extends Controller
                     $document->category,
                     $document->status,
                     $document->attachment_path,
+                ]),
+            ],
+            'artikel' => [
+                ['Tanggal Publikasi', 'Judul', 'Slug', 'Kategori', 'Status', 'Unggulan', 'Ringkasan'],
+                PublicArticle::latest('published_at')->get()->map(fn (PublicArticle $article): array => [
+                    $article->published_at?->format('Y-m-d'),
+                    $article->title,
+                    $article->slug,
+                    $article->category,
+                    $article->status,
+                    $article->is_featured ? 'ya' : 'tidak',
+                    $article->excerpt,
                 ]),
             ],
             'booking-fasilitas' => [

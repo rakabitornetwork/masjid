@@ -18,6 +18,7 @@ use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\MosqueProfileController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\PublicArticleController;
 use App\Http\Controllers\QurbanParticipantController;
 use App\Http\Controllers\ReportExportController;
 use App\Http\Controllers\ScheduleController;
@@ -31,6 +32,7 @@ Route::get('/', function () {
         ? redirect()->route('dashboard')
         : app(PublicPageController::class)->home();
 });
+Route::get('artikel/{slug}', [PublicPageController::class, 'article'])->name('public.articles.show');
 Route::get('laporan-keuangan', [PublicPageController::class, 'financeReport'])->name('public.finance-report');
 
 Route::middleware('guest')->group(function (): void {
@@ -93,6 +95,11 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('pengumuman', AnnouncementController::class)
             ->parameters(['pengumuman' => 'announcement'])
             ->names('announcements')
+            ->except(['create', 'edit', 'show']);
+
+        Route::resource('artikel', PublicArticleController::class)
+            ->parameters(['artikel' => 'article'])
+            ->names('public-articles')
             ->except(['create', 'edit', 'show']);
 
         Route::resource('jadwal', ScheduleController::class)

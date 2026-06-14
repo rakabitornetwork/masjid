@@ -64,6 +64,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Pin pengumuman penting di dashboard.
 - Tambah, ubah, dan hapus pengumuman.
 
+### Artikel Publik
+
+- CRUD berita dan artikel publik untuk landing page masjid.
+- Slug URL otomatis, kategori, ringkasan, isi artikel, cover image, status, tanggal publikasi, dan artikel unggulan.
+- Artikel `published` tampil di landing page publik dan punya halaman detail `/artikel/{slug}`.
+- Artikel publik ikut masuk ke export laporan dan backup data aplikasi.
+
 ### Jadwal Ibadah dan Kegiatan
 
 - Jadwal Shalat Jumat, kajian, kegiatan, Ramadhan, Idul Fitri/Adha, dan layanan masjid.
@@ -97,7 +104,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 ### Export, Backup, dan Restore
 
-- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, inventaris, donasi, arsip surat, booking fasilitas, zakat, dan qurban.
+- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, inventaris, donasi, artikel, arsip surat, booking fasilitas, zakat, dan qurban.
 - Backup data aplikasi dari menu `Backup Data` dalam format JSON.
 - Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
 - Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.
@@ -118,7 +125,8 @@ Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 - Inventaris aset masjid, fasilitas, dan riwayat perawatan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
 - Manajemen user, role, dan permission lebih detail.
-- Landing page publik, berita, agenda publik, dan integrasi notifikasi.
+- Agenda publik dan integrasi notifikasi.
+- Setelah fitur utama lengkap, rapikan bundle frontend dengan code splitting / lazy loading agar file JS awal lebih kecil.
 
 ## Akun Admin Awal
 

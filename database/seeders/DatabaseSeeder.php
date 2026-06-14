@@ -12,6 +12,7 @@ use App\Models\FinancialAccount;
 use App\Models\FinancialCategory;
 use App\Models\InventoryItem;
 use App\Models\MosqueProfile;
+use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
 use App\Models\Schedule;
 use App\Models\User;
@@ -233,6 +234,18 @@ class DatabaseSeeder extends Seeder
             'published_at' => now(),
             'is_pinned' => true,
             'status' => 'published',
+        ]);
+
+        PublicArticle::updateOrCreate([
+            'slug' => 'memakmurkan-masjid-bersama-jamaah',
+        ], [
+            'title' => 'Memakmurkan Masjid Bersama Jamaah',
+            'category' => 'kegiatan',
+            'excerpt' => 'Masjid menjadi pusat ibadah, pendidikan, dan pelayanan sosial ketika jamaah bergerak bersama.',
+            'body' => 'Masjid bukan hanya tempat shalat berjamaah, tetapi juga pusat pembinaan, pendidikan, musyawarah, dan pelayanan sosial. Dengan sistem manajemen yang rapi, pengurus dapat melayani jamaah dengan lebih transparan dan terukur.',
+            'published_at' => now(),
+            'status' => 'published',
+            'is_featured' => true,
         ]);
 
         DocumentArchive::updateOrCreate([

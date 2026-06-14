@@ -1,9 +1,9 @@
 import { Link } from '@inertiajs/react';
-import { ArrowRight, Banknote, CalendarDays, HeartHandshake, Megaphone, MapPin, WalletCards } from 'lucide-react';
+import { ArrowRight, Banknote, CalendarDays, HeartHandshake, Megaphone, MapPin, Newspaper, WalletCards } from 'lucide-react';
 import PublicLayout from '../../Layouts/PublicLayout';
 import { date, label, money, time } from '../../lib/formatters';
 
-export default function Home({ profile, announcements, upcomingSchedules, publicAccounts, donationCampaigns, summary }) {
+export default function Home({ profile, announcements, upcomingSchedules, publicAccounts, donationCampaigns, articles, summary }) {
     return (
         <PublicLayout title={profile?.name || 'Masjid'}>
             <section className="grid gap-5 py-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
@@ -49,6 +49,29 @@ export default function Home({ profile, announcements, upcomingSchedules, public
                                     <span>{campaign.target_amount > 0 ? money(campaign.target_amount) : 'Tanpa target'}</span>
                                 </div>
                             </article>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {articles.length > 0 && (
+                <section className="mb-4 rounded-2xl border border-sky-100 bg-white/85 p-4 shadow-sm">
+                    <div className="mb-3 flex items-center gap-2">
+                        <Newspaper className="h-4 w-4 text-teal-600" />
+                        <h2 className="text-xs font-black uppercase tracking-[0.14em] text-slate-950">Artikel Terbaru</h2>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-3">
+                        {articles.map((article) => (
+                            <Link key={article.id} href={`/artikel/${article.slug}`} className="overflow-hidden rounded-xl border border-sky-100 bg-sky-50/50 transition hover:-translate-y-0.5 hover:shadow-md">
+                                {article.cover_image_path && <img src={`/storage/${article.cover_image_path}`} alt={article.title} className="h-28 w-full object-cover" />}
+                                <div className="p-3">
+                                    <p className="text-xs font-extrabold text-slate-950">{article.title}</p>
+                                    <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-teal-700">
+                                        {label(article.category)} • {date(article.published_at)}
+                                    </p>
+                                    <p className="mt-2 line-clamp-2 text-[11px] font-semibold leading-5 text-slate-600">{article.excerpt || article.body}</p>
+                                </div>
+                            </Link>
                         ))}
                     </div>
                 </section>
