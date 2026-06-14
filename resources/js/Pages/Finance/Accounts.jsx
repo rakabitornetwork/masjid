@@ -135,15 +135,13 @@ export default function Accounts({ accounts }) {
                                     {account.bank_name} {account.account_number} {account.account_holder && `a.n. ${account.account_holder}`}
                                 </p>
                             )}
-                            <div className="relative mt-3 flex gap-2">
-                                <SecondaryButton type="button" onClick={() => edit(account)} className="gap-2 text-emerald-700">
+                            <div className="relative mt-3 flex justify-end gap-2">
+                                <button className="rounded-lg bg-emerald-50 p-2 text-emerald-700" type="button" onClick={() => edit(account)} aria-label={`Edit ${account.name}`}>
                                     <Edit3 className="h-4 w-4" />
-                                    Edit
-                                </SecondaryButton>
-                                <SecondaryButton type="button" onClick={() => destroy(account)} className="gap-2 text-rose-600">
+                                </button>
+                                <button className="rounded-lg bg-rose-50 p-2 text-rose-600" type="button" onClick={() => destroy(account)} aria-label={`Hapus ${account.name}`}>
                                     <Trash2 className="h-4 w-4" />
-                                    Hapus
-                                </SecondaryButton>
+                                </button>
                             </div>
                         </article>
                     ))}

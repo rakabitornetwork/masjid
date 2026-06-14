@@ -121,15 +121,13 @@ export default function Categories({ categories }) {
                                         {category.is_active ? 'Aktif' : 'Nonaktif'}
                                     </span>
                                 </div>
-                                <div className="relative mt-3 flex gap-2">
-                                    <SecondaryButton type="button" onClick={() => setData({ ...category })} className="gap-2 text-emerald-700">
+                                <div className="relative mt-3 flex justify-end gap-2">
+                                    <button className="rounded-lg bg-emerald-50 p-2 text-emerald-700" type="button" onClick={() => setData({ ...category })} aria-label={`Edit ${category.name}`}>
                                         <Edit3 className="h-4 w-4" />
-                                        Edit
-                                    </SecondaryButton>
-                                    <SecondaryButton type="button" onClick={() => destroy(category)} className="gap-2 text-rose-600">
+                                    </button>
+                                    <button className="rounded-lg bg-rose-50 p-2 text-rose-600" type="button" onClick={() => destroy(category)} aria-label={`Hapus ${category.name}`}>
                                         <Trash2 className="h-4 w-4" />
-                                        Hapus
-                                    </SecondaryButton>
+                                    </button>
                                 </div>
                             </article>
                         ))}
