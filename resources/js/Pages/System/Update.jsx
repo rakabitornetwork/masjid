@@ -29,6 +29,7 @@ export default function Update({
     const [displayLatestCommit, setDisplayLatestCommit] = useState(latestCommit);
     const [displayUpdateAvailable, setDisplayUpdateAvailable] = useState(updateAvailable);
     const [displayGithubStatus, setDisplayGithubStatus] = useState(githubStatus);
+    const [showUpdateResult, setShowUpdateResult] = useState(() => window.sessionStorage.getItem('showUpdateResult') === '1');
 
     useEffect(() => {
         setDisplayCurrentCommit(currentCommit);
@@ -36,6 +37,20 @@ export default function Update({
         setDisplayUpdateAvailable(updateAvailable);
         setDisplayGithubStatus(githubStatus);
     }, [currentCommit, latestCommit, updateAvailable, githubStatus]);
+
+    useEffect(() => {
+        if (!showUpdateResult) {
+            return;
+        }
+
+        const timer = window.setTimeout(() => {
+            window.sessionStorage.removeItem('showUpdateResult');
+            setShowUpdateResult(false);
+            setTerminalEntries([]);
+        }, 15000);
+
+        return () => window.clearTimeout(timer);
+    }, [showUpdateResult]);
 
     const copyUpdateCommands = async () => {
         if (navigator.clipboard) {
@@ -108,6 +123,7 @@ export default function Update({
                         setDisplayLatestCommit(event.latestCommit);
                         setDisplayGithubStatus(event.githubStatus);
                         setDisplayUpdateAvailable(event.updateAvailable);
+                        window.sessionStorage.setItem('showUpdateResult', '1');
 
                         window.setTimeout(() => {
                             window.location.reload();
@@ -131,7 +147,7 @@ export default function Update({
     };
 
     const isGithubConnected = displayGithubStatus === 'success';
-    const displayEntries = terminalEntries.length > 0 ? terminalEntries : legacyEntries(updateResult);
+    const displayEntries = terminalEntries.length > 0 ? terminalEntries : showUpdateResult ? legacyEntries(updateResult) : [];
     const terminalFinished = displayEntries.some((entry) => entry.type === 'complete' || entry.type === 'failed');
     const terminalStatusText = running
         ? 'Update sedang berjalan'
