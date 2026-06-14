@@ -29,6 +29,7 @@ class BackupController extends Controller
         'financial_transactions',
         'congregants',
         'inventory_items',
+        'inventory_maintenances',
         'donation_campaigns',
         'donation_entries',
         'zakat_collections',

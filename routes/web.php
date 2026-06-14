@@ -15,6 +15,7 @@ use App\Http\Controllers\FinancialAccountController;
 use App\Http\Controllers\FinancialCategoryController;
 use App\Http\Controllers\FinancialTransactionController;
 use App\Http\Controllers\InventoryItemController;
+use App\Http\Controllers\InventoryMaintenanceController;
 use App\Http\Controllers\MosqueProfileController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicPageController;
@@ -121,6 +122,11 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('inventaris', InventoryItemController::class)
             ->parameters(['inventaris' => 'inventoryItem'])
             ->names('inventory')
+            ->except(['create', 'edit', 'show']);
+
+        Route::resource('perawatan-inventaris', InventoryMaintenanceController::class)
+            ->parameters(['perawatan-inventaris' => 'inventoryMaintenance'])
+            ->names('inventory-maintenances')
             ->except(['create', 'edit', 'show']);
     });
 

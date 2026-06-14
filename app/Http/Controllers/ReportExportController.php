@@ -8,6 +8,7 @@ use App\Models\DocumentArchive;
 use App\Models\FacilityBooking;
 use App\Models\FinancialTransaction;
 use App\Models\InventoryItem;
+use App\Models\InventoryMaintenance;
 use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
 use App\Models\ZakatCollection;
@@ -34,6 +35,10 @@ class ReportExportController extends Controller
         'inventaris' => [
             'label' => 'Inventaris Masjid',
             'description' => 'Export barang, kondisi, lokasi, dan nilai inventaris.',
+        ],
+        'perawatan-inventaris' => [
+            'label' => 'Perawatan Inventaris',
+            'description' => 'Export riwayat servis, inspeksi, biaya, dan jadwal perawatan.',
         ],
         'donasi' => [
             'label' => 'Program Donasi',
@@ -203,6 +208,19 @@ class ReportExportController extends Controller
                     $item->estimated_value,
                     $item->maintenance_due_at?->format('Y-m-d'),
                     $item->is_active ? 'aktif' : 'nonaktif',
+                ]),
+            ],
+            'perawatan-inventaris' => [
+                ['Tanggal', 'Barang', 'Jenis', 'Penanggung Jawab', 'Biaya', 'Status', 'Jadwal Berikutnya', 'Catatan'],
+                InventoryMaintenance::with('item')->latest('maintenance_date')->get()->map(fn (InventoryMaintenance $maintenance): array => [
+                    $maintenance->maintenance_date?->format('Y-m-d'),
+                    $maintenance->item?->name,
+                    $maintenance->type,
+                    $maintenance->handled_by,
+                    $maintenance->cost,
+                    $maintenance->status,
+                    $maintenance->next_due_at?->format('Y-m-d'),
+                    $maintenance->description,
                 ]),
             ],
             'donasi' => [

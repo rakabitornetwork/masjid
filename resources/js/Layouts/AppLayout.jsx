@@ -26,6 +26,7 @@ import {
     UserRoundCheck,
     UsersRound,
     WalletCards,
+    Wrench,
     X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -44,6 +45,7 @@ const navigation = [
     { label: 'Jadwal Sholat', href: '/jadwal-sholat', icon: Clock, permission: 'content' },
     { label: 'Arsip Surat', href: '/arsip-surat', icon: Files, permission: 'content' },
     { label: 'Inventaris', href: '/inventaris', icon: Boxes, permission: 'inventory' },
+    { label: 'Perawatan', href: '/perawatan-inventaris', icon: Wrench, permission: 'inventory' },
     { label: 'Zakat', href: '/zakat', icon: HandCoins, permission: 'programs' },
     { label: 'Qurban', href: '/qurban', icon: Beef, permission: 'programs' },
     { label: 'Akun Kas', href: '/keuangan/akun', icon: WalletCards, permission: 'finance' },

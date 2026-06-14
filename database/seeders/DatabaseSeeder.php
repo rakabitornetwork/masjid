@@ -11,6 +11,7 @@ use App\Models\FacilityBooking;
 use App\Models\FinancialAccount;
 use App\Models\FinancialCategory;
 use App\Models\InventoryItem;
+use App\Models\InventoryMaintenance;
 use App\Models\MosqueProfile;
 use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
@@ -87,7 +88,7 @@ class DatabaseSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        InventoryItem::updateOrCreate(['name' => 'Sound System Utama'], [
+        $soundSystem = InventoryItem::updateOrCreate(['name' => 'Sound System Utama'], [
             'category' => 'Elektronik',
             'quantity' => 1,
             'unit' => 'set',
@@ -96,6 +97,18 @@ class DatabaseSeeder extends Seeder
             'estimated_value' => 8500000,
             'maintenance_due_at' => now()->addMonths(2)->toDateString(),
             'is_active' => true,
+        ]);
+
+        InventoryMaintenance::updateOrCreate([
+            'inventory_item_id' => $soundSystem->id,
+            'maintenance_date' => now()->subDays(10)->toDateString(),
+            'type' => 'inspection',
+        ], [
+            'handled_by' => 'Teknisi Sound',
+            'cost' => 250000,
+            'status' => 'completed',
+            'description' => 'Pengecekan mixer, speaker, dan microphone utama.',
+            'next_due_at' => now()->addMonths(2)->toDateString(),
         ]);
 
         InventoryItem::updateOrCreate(['name' => 'Karpet Shaf Jamaah'], [
