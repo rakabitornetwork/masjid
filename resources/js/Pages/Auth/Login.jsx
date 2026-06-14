@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { Banknote, CalendarDays, LockKeyhole, Mail, UsersRound } from 'lucide-react';
 import ApplicationLogo from '../../Components/ApplicationLogo';
 import { Field, PrimaryButton } from '../../Components/FormControls';
@@ -10,11 +10,14 @@ const featureCards = [
 ];
 
 export default function Login() {
+    const { app = {} } = usePage().props;
     const { data, setData, post, processing, errors } = useForm({
         email: 'admin@masjid.com',
         password: '12345678',
         remember: true,
     });
+    const mosqueName = app.name || 'Masjid';
+    const mosqueSubtitle = app.tagline || 'Management';
 
     const submit = (event) => {
         event.preventDefault();
@@ -64,7 +67,8 @@ export default function Login() {
                             <ApplicationLogo />
                             <div>
                                 <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-700">Masjid</p>
-                                <h1 className="text-base font-black">Management</h1>
+                                <h1 className="max-w-56 truncate text-base font-black">{mosqueName}</h1>
+                                <p className="max-w-56 truncate text-[10px] font-semibold text-slate-500">{mosqueSubtitle}</p>
                             </div>
                         </div>
 

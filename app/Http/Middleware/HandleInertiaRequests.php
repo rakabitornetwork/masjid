@@ -29,7 +29,13 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user()?->only('id', 'name', 'email', 'role', 'avatar_path'),
             ],
             'app' => [
-                'logo_path' => fn () => Schema::hasColumn('mosque_profiles', 'logo_path')
+                'name' => fn () => Schema::hasTable('mosque_profiles')
+                    ? MosqueProfile::query()->value('name')
+                    : null,
+                'tagline' => fn () => Schema::hasTable('mosque_profiles')
+                    ? MosqueProfile::query()->value('tagline')
+                    : null,
+                'logo_path' => fn () => Schema::hasTable('mosque_profiles') && Schema::hasColumn('mosque_profiles', 'logo_path')
                     ? MosqueProfile::query()->value('logo_path')
                     : null,
             ],

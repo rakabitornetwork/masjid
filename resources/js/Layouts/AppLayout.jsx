@@ -33,10 +33,12 @@ const navigation = [
 ];
 
 export default function AppLayout({ title, children, actions = null }) {
-    const { auth } = usePage().props;
+    const { auth, app = {} } = usePage().props;
     const path = window.location.pathname;
     const [time, setTime] = useState(new Date());
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const mosqueName = app.name || 'Masjid';
+    const mosqueSubtitle = app.tagline || 'Management';
 
     useEffect(() => {
         const timer = window.setInterval(() => setTime(new Date()), 1000);
@@ -72,11 +74,11 @@ export default function AppLayout({ title, children, actions = null }) {
                 >
                     <div className="min-h-0">
                         <div className="flex h-14 items-center justify-between border-b border-white/10 px-4">
-                            <div className="flex items-center gap-2.5">
-                                <ApplicationLogo className="h-8 w-8 rounded-xl" />
-                                <div>
-                                    <h1 className="text-xs font-bold leading-tight text-white">Masjid</h1>
-                                    <p className="text-[10px] font-medium tracking-wide text-emerald-50/75">Management</p>
+                            <div className="flex min-w-0 items-center gap-2.5">
+                                <ApplicationLogo className="h-8 w-8 shrink-0 rounded-xl" />
+                                <div className="min-w-0">
+                                    <h1 className="truncate text-xs font-bold leading-tight text-white">{mosqueName}</h1>
+                                    <p className="truncate text-[10px] font-medium tracking-wide text-emerald-50/75">{mosqueSubtitle}</p>
                                 </div>
                             </div>
                             <button
