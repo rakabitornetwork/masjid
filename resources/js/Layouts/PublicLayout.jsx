@@ -19,6 +19,9 @@ export default function PublicLayout({ title, children }) {
                         </div>
                     </Link>
                     <div className="flex items-center gap-2">
+                        <Link href="/agenda" className="hidden rounded-lg bg-white/75 px-3 py-1.5 text-xs font-bold text-teal-700 ring-1 ring-teal-100 sm:inline-flex">
+                            Agenda
+                        </Link>
                         <Link href="/laporan-keuangan" className="hidden rounded-lg bg-white/75 px-3 py-1.5 text-xs font-bold text-teal-700 ring-1 ring-teal-100 sm:inline-flex">
                             Laporan Keuangan
                         </Link>

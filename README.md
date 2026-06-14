@@ -79,6 +79,12 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Status `scheduled`, `done`, dan `canceled`.
 - Tambah, ubah, dan hapus jadwal.
 
+### Agenda Publik
+
+- Halaman publik `/agenda` untuk menampilkan semua jadwal ibadah dan kegiatan mendatang.
+- Ringkasan total agenda, agenda 7 hari ke depan, dan jumlah agenda Shalat Jumat.
+- Tautan agenda tersedia dari header publik dan panel Jadwal Kegiatan di landing page.
+
 ### Arsip Surat dan Dokumen
 
 - Pencatatan surat masuk, surat keluar, dokumen internal, dan dokumen lainnya.
@@ -125,7 +131,7 @@ Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 - Inventaris aset masjid, fasilitas, dan riwayat perawatan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
 - Manajemen user, role, dan permission lebih detail.
-- Agenda publik dan integrasi notifikasi.
+- Integrasi notifikasi.
 - Setelah fitur utama lengkap, rapikan bundle frontend dengan code splitting / lazy loading agar file JS awal lebih kecil.
 
 ## Akun Admin Awal

@@ -32,6 +32,7 @@ Route::get('/', function () {
         ? redirect()->route('dashboard')
         : app(PublicPageController::class)->home();
 });
+Route::get('agenda', [PublicPageController::class, 'agenda'])->name('public.agenda');
 Route::get('artikel/{slug}', [PublicPageController::class, 'article'])->name('public.articles.show');
 Route::get('laporan-keuangan', [PublicPageController::class, 'financeReport'])->name('public.finance-report');
 

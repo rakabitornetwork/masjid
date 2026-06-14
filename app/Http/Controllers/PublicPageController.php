@@ -105,6 +105,25 @@ class PublicPageController extends Controller
         ]);
     }
 
+    public function agenda(): Response
+    {
+        $schedules = Schema::hasTable('schedules') ? Schedule::query()
+            ->whereDate('date', '>=', today())
+            ->orderBy('date')
+            ->orderBy('start_time')
+            ->get() : collect();
+
+        return Inertia::render('Public/Agenda', [
+            'profile' => Schema::hasTable('mosque_profiles') ? MosqueProfile::first() : null,
+            'schedules' => $schedules,
+            'summary' => [
+                'total' => $schedules->count(),
+                'thisWeek' => $schedules->filter(fn (Schedule $schedule): bool => $schedule->date?->between(today(), today()->addDays(7)))->count(),
+                'friday' => $schedules->where('type', 'friday_prayer')->count(),
+            ],
+        ]);
+    }
+
     /**
      * @return array<string, float>
      */

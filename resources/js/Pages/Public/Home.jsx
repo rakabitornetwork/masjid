@@ -100,6 +100,11 @@ export default function Home({ profile, announcements, upcomingSchedules, public
                             </p>
                         </article>
                     ))}
+                    {upcomingSchedules.length > 0 && (
+                        <Link href="/agenda" className="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 px-3 py-2 text-xs font-extrabold text-white shadow-sm">
+                            Lihat Semua Agenda <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    )}
                     {upcomingSchedules.length === 0 && <Empty>Belum ada jadwal mendatang.</Empty>}
                 </Panel>
 
