@@ -17,6 +17,27 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    public const ROLE_PERMISSIONS = [
+        'admin' => ['system', 'profile', 'people', 'content', 'finance', 'inventory', 'donations', 'reports'],
+        'bendahara' => ['finance', 'donations', 'reports'],
+        'sekretaris' => ['profile', 'people', 'content', 'inventory'],
+        'takmir' => ['people', 'content', 'inventory'],
+        'viewer' => ['reports'],
+    ];
+
+    /**
+     * @return array<int, string>
+     */
+    public function permissions(): array
+    {
+        return self::ROLE_PERMISSIONS[$this->role] ?? [];
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        return in_array($permission, $this->permissions(), true);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

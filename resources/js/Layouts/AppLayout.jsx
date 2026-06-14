@@ -7,6 +7,7 @@ import {
     CalendarDays,
     Clock,
     Gauge,
+    HeartHandshake,
     Heart,
     Landmark,
     LogOut,
@@ -23,18 +24,19 @@ import ApplicationLogo from '../Components/ApplicationLogo';
 import FlashMessage from '../Components/FlashMessage';
 
 const navigation = [
-    { label: 'Dashboard', href: '/dashboard', icon: Gauge },
-    { label: 'Profil Masjid', href: '/profil-masjid', icon: Building2 },
-    { label: 'Pengurus', href: '/pengurus', icon: UsersRound },
-    { label: 'Jamaah', href: '/jamaah', icon: UserRoundCheck },
-    { label: 'Pengumuman', href: '/pengumuman', icon: Megaphone },
-    { label: 'Jadwal', href: '/jadwal', icon: CalendarDays },
-    { label: 'Jadwal Sholat', href: '/jadwal-sholat', icon: Clock },
-    { label: 'Inventaris', href: '/inventaris', icon: Boxes },
-    { label: 'Akun Kas', href: '/keuangan/akun', icon: WalletCards },
-    { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark },
-    { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote },
-    { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw },
+    { label: 'Dashboard', href: '/dashboard', icon: Gauge, permission: null },
+    { label: 'Profil Masjid', href: '/profil-masjid', icon: Building2, permission: 'profile' },
+    { label: 'Pengurus', href: '/pengurus', icon: UsersRound, permission: 'people' },
+    { label: 'Jamaah', href: '/jamaah', icon: UserRoundCheck, permission: 'people' },
+    { label: 'Pengumuman', href: '/pengumuman', icon: Megaphone, permission: 'content' },
+    { label: 'Jadwal', href: '/jadwal', icon: CalendarDays, permission: 'content' },
+    { label: 'Jadwal Sholat', href: '/jadwal-sholat', icon: Clock, permission: 'content' },
+    { label: 'Inventaris', href: '/inventaris', icon: Boxes, permission: 'inventory' },
+    { label: 'Akun Kas', href: '/keuangan/akun', icon: WalletCards, permission: 'finance' },
+    { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark, permission: 'finance' },
+    { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote, permission: 'finance' },
+    { label: 'Donasi/Infaq', href: '/donasi', icon: HeartHandshake, permission: 'donations' },
+    { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw, permission: 'system' },
 ];
 
 export default function AppLayout({ title, children, actions = null }) {
@@ -45,6 +47,8 @@ export default function AppLayout({ title, children, actions = null }) {
     const mosqueName = app.name || 'Masjid';
     const mosqueSubtitle = app.tagline || 'Management';
     const currentYear = time.getFullYear();
+    const permissions = auth?.permissions || [];
+    const visibleNavigation = navigation.filter((item) => !item.permission || permissions.includes(item.permission));
 
     useEffect(() => {
         const timer = window.setInterval(() => setTime(new Date()), 1000);
@@ -97,7 +101,7 @@ export default function AppLayout({ title, children, actions = null }) {
                         </div>
 
                         <nav className="flex-1 space-y-1 overflow-y-auto p-2">
-                            {navigation.map((item) => {
+                            {visibleNavigation.map((item) => {
                                 const Icon = item.icon;
                                 const active = isActive(item.href);
 

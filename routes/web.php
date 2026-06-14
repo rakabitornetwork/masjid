@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CommitteeMemberController;
 use App\Http\Controllers\CongregantController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DonationCampaignController;
+use App\Http\Controllers\DonationEntryController;
 use App\Http\Controllers\FinancialAccountController;
 use App\Http\Controllers\FinancialCategoryController;
 use App\Http\Controllers\FinancialTransactionController;
@@ -34,46 +36,62 @@ Route::middleware('auth')->group(function (): void {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
     Route::get('profil-admin', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('profil-admin', [ProfileController::class, 'update'])->name('profile.update');
-    Route::get('update-aplikasi', UpdateGuideController::class)->name('updates.guide');
-    Route::post('update-aplikasi/run', [UpdateGuideController::class, 'run'])->name('updates.run');
-    Route::post('update-aplikasi/run-stream', [UpdateGuideController::class, 'stream'])->name('updates.stream');
 
-    Route::get('profil-masjid', [MosqueProfileController::class, 'edit'])->name('mosque-profile.edit');
-    Route::put('profil-masjid', [MosqueProfileController::class, 'update'])->name('mosque-profile.update');
+    Route::middleware('role:admin')->group(function (): void {
+        Route::get('update-aplikasi', UpdateGuideController::class)->name('updates.guide');
+        Route::post('update-aplikasi/run', [UpdateGuideController::class, 'run'])->name('updates.run');
+        Route::post('update-aplikasi/run-stream', [UpdateGuideController::class, 'stream'])->name('updates.stream');
+    });
 
-    Route::get('jadwal-sholat', function () {
-        return Inertia\Inertia::render('PrayerSchedules/Index', [
-            'profile' => \App\Models\MosqueProfile::first(),
-        ]);
-    })->name('prayer-schedules.index');
+    Route::middleware('role:admin,sekretaris')->group(function (): void {
+        Route::get('profil-masjid', [MosqueProfileController::class, 'edit'])->name('mosque-profile.edit');
+        Route::put('profil-masjid', [MosqueProfileController::class, 'update'])->name('mosque-profile.update');
+    });
 
-    Route::post('pengurus/urutkan', [CommitteeMemberController::class, 'reorder'])->name('committee-members.reorder');
-    Route::resource('pengurus', CommitteeMemberController::class)
-        ->parameters(['pengurus' => 'committeeMember'])
-        ->names('committee-members')
-        ->except(['create', 'edit', 'show']);
+    Route::middleware('role:admin,sekretaris,takmir')->group(function (): void {
+        Route::get('jadwal-sholat', function () {
+            return Inertia\Inertia::render('PrayerSchedules/Index', [
+                'profile' => \App\Models\MosqueProfile::first(),
+            ]);
+        })->name('prayer-schedules.index');
 
-    Route::resource('jamaah', CongregantController::class)
-        ->parameters(['jamaah' => 'congregant'])
-        ->names('congregants')
-        ->except(['create', 'edit', 'show']);
+        Route::post('pengurus/urutkan', [CommitteeMemberController::class, 'reorder'])->name('committee-members.reorder');
+        Route::resource('pengurus', CommitteeMemberController::class)
+            ->parameters(['pengurus' => 'committeeMember'])
+            ->names('committee-members')
+            ->except(['create', 'edit', 'show']);
 
-    Route::resource('pengumuman', AnnouncementController::class)
-        ->parameters(['pengumuman' => 'announcement'])
-        ->names('announcements')
-        ->except(['create', 'edit', 'show']);
+        Route::resource('jamaah', CongregantController::class)
+            ->parameters(['jamaah' => 'congregant'])
+            ->names('congregants')
+            ->except(['create', 'edit', 'show']);
 
-    Route::resource('jadwal', ScheduleController::class)
-        ->parameters(['jadwal' => 'schedule'])
-        ->names('schedules')
-        ->except(['create', 'edit', 'show']);
+        Route::resource('pengumuman', AnnouncementController::class)
+            ->parameters(['pengumuman' => 'announcement'])
+            ->names('announcements')
+            ->except(['create', 'edit', 'show']);
 
-    Route::resource('inventaris', InventoryItemController::class)
-        ->parameters(['inventaris' => 'inventoryItem'])
-        ->names('inventory')
-        ->except(['create', 'edit', 'show']);
+        Route::resource('jadwal', ScheduleController::class)
+            ->parameters(['jadwal' => 'schedule'])
+            ->names('schedules')
+            ->except(['create', 'edit', 'show']);
 
-    Route::prefix('keuangan')->name('finance.')->group(function (): void {
+        Route::resource('inventaris', InventoryItemController::class)
+            ->parameters(['inventaris' => 'inventoryItem'])
+            ->names('inventory')
+            ->except(['create', 'edit', 'show']);
+    });
+
+    Route::middleware('role:admin,bendahara')->group(function (): void {
+        Route::post('donasi/catatan', [DonationEntryController::class, 'store'])->name('donations.entries.store');
+        Route::delete('donasi/catatan/{donationEntry}', [DonationEntryController::class, 'destroy'])->name('donations.entries.destroy');
+        Route::resource('donasi', DonationCampaignController::class)
+            ->parameters(['donasi' => 'donationCampaign'])
+            ->names('donations')
+            ->except(['create', 'edit', 'show']);
+    });
+
+    Route::prefix('keuangan')->name('finance.')->middleware('role:admin,bendahara')->group(function (): void {
         Route::resource('akun', FinancialAccountController::class)
             ->parameters(['akun' => 'account'])
             ->names('accounts')

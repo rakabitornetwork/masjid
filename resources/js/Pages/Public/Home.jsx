@@ -1,9 +1,9 @@
 import { Link } from '@inertiajs/react';
-import { ArrowRight, Banknote, CalendarDays, Megaphone, MapPin, WalletCards } from 'lucide-react';
+import { ArrowRight, Banknote, CalendarDays, HeartHandshake, Megaphone, MapPin, WalletCards } from 'lucide-react';
 import PublicLayout from '../../Layouts/PublicLayout';
 import { date, label, money, time } from '../../lib/formatters';
 
-export default function Home({ profile, announcements, upcomingSchedules, publicAccounts, summary }) {
+export default function Home({ profile, announcements, upcomingSchedules, publicAccounts, donationCampaigns, summary }) {
     return (
         <PublicLayout title={profile?.name || 'Masjid'}>
             <section className="grid gap-5 py-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
@@ -29,6 +29,30 @@ export default function Home({ profile, announcements, upcomingSchedules, public
                     <InfoCard icon={Banknote} label="Pemasukan / Pengeluaran" value={`${money(summary.income)} / ${money(summary.expense)}`} />
                 </div>
             </section>
+
+            {donationCampaigns.length > 0 && (
+                <section className="mb-4 rounded-2xl border border-emerald-100 bg-white/85 p-4 shadow-sm">
+                    <div className="mb-3 flex items-center gap-2">
+                        <HeartHandshake className="h-4 w-4 text-teal-600" />
+                        <h2 className="text-xs font-black uppercase tracking-[0.14em] text-slate-950">Program Donasi Aktif</h2>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-3">
+                        {donationCampaigns.map((campaign) => (
+                            <article key={campaign.id} className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-3">
+                                <p className="text-xs font-extrabold text-slate-950">{campaign.title}</p>
+                                <p className="mt-1 line-clamp-2 text-[11px] font-semibold leading-5 text-slate-600">{campaign.description || 'Program donasi masjid yang sedang berjalan.'}</p>
+                                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+                                    <div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" style={{ width: `${campaign.progress_percent}%` }} />
+                                </div>
+                                <div className="mt-2 flex items-center justify-between gap-2 text-[11px] font-bold text-slate-500">
+                                    <span>{money(campaign.collected_amount)}</span>
+                                    <span>{campaign.target_amount > 0 ? money(campaign.target_amount) : 'Tanpa target'}</span>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             <section className="grid gap-4 lg:grid-cols-3">
                 <Panel title="Pengumuman Jamaah" icon={Megaphone}>

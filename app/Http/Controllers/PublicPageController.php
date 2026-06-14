@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\DonationCampaign;
 use App\Models\FinancialAccount;
 use App\Models\FinancialTransaction;
 use App\Models\MosqueProfile;
@@ -36,6 +37,14 @@ class PublicPageController extends Controller
                 ->whereIn('type', ['bank', 'qris', 'e_wallet'])
                 ->orderBy('name')
                 ->get() : [],
+            'donationCampaigns' => Schema::hasTable('donation_campaigns') && Schema::hasTable('donation_entries')
+                ? DonationCampaign::with('entries')
+                    ->where('status', 'active')
+                    ->where('is_featured', true)
+                    ->latest()
+                    ->limit(3)
+                    ->get()
+                : [],
             'summary' => $this->financialSummary(),
         ]);
     }

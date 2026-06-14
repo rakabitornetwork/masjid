@@ -27,6 +27,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user()?->only('id', 'name', 'email', 'role', 'avatar_path'),
+                'permissions' => fn () => $request->user()?->permissions() ?? [],
             ],
             'app' => [
                 'name' => fn () => Schema::hasTable('mosque_profiles')

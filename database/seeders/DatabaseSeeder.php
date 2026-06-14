@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Announcement;
 use App\Models\CommitteeMember;
 use App\Models\Congregant;
+use App\Models\DonationCampaign;
 use App\Models\FinancialAccount;
 use App\Models\FinancialCategory;
 use App\Models\InventoryItem;
@@ -99,6 +100,24 @@ class DatabaseSeeder extends Seeder
             'location' => 'Ruang Utama',
             'estimated_value' => 12000000,
             'is_active' => true,
+        ]);
+
+        $renovationCampaign = DonationCampaign::updateOrCreate(['title' => 'Infaq Renovasi Tempat Wudhu'], [
+            'category' => 'renovasi',
+            'description' => 'Penggalangan dana untuk memperbaiki area tempat wudhu agar lebih nyaman bagi jamaah.',
+            'target_amount' => 25000000,
+            'start_date' => now()->toDateString(),
+            'status' => 'active',
+            'is_featured' => true,
+        ]);
+
+        $renovationCampaign->entries()->updateOrCreate([
+            'donor_name' => 'Hamba Allah',
+            'amount' => 1500000,
+        ], [
+            'payment_method' => 'transfer',
+            'donated_at' => now()->toDateString(),
+            'status' => 'confirmed',
         ]);
 
         $cashAccount = FinancialAccount::updateOrCreate(['name' => 'Kas Tunai Masjid'], [
