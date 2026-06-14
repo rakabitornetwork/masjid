@@ -18,6 +18,7 @@ use App\Http\Controllers\FinancialTransactionController;
 use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\InventoryMaintenanceController;
 use App\Http\Controllers\MosqueProfileController;
+use App\Http\Controllers\MosqueFacilityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PublicArticleController;
@@ -128,6 +129,11 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('booking-fasilitas', FacilityBookingController::class)
             ->parameters(['booking-fasilitas' => 'facilityBooking'])
             ->names('facility-bookings')
+            ->except(['create', 'edit', 'show']);
+
+        Route::resource('fasilitas-masjid', MosqueFacilityController::class)
+            ->parameters(['fasilitas-masjid' => 'mosqueFacility'])
+            ->names('mosque-facilities')
             ->except(['create', 'edit', 'show']);
 
         Route::post('notifikasi-wa/{whatsappNotification}/terkirim', [WhatsappNotificationController::class, 'markSent'])

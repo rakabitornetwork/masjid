@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
+    'mosque_facility_id',
     'facility_name',
     'requester_name',
     'requester_phone',
@@ -29,5 +31,10 @@ class FacilityBooking extends Model
         return [
             'booking_date' => 'date',
         ];
+    }
+
+    public function facility(): BelongsTo
+    {
+        return $this->belongsTo(MosqueFacility::class, 'mosque_facility_id');
     }
 }

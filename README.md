@@ -103,8 +103,16 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 - Pencatatan booking aula, ruang kajian, sound system, dan fasilitas masjid lainnya.
 - Data pemohon, nomor WA, nama kegiatan, tanggal, jam mulai, jam selesai, keperluan, status, dan catatan admin.
+- Booking dapat memilih database fasilitas agar nama fasilitas konsisten dan relasinya tersimpan.
 - Validasi bentrok jadwal untuk fasilitas yang sama pada tanggal dan jam yang tumpang tindih.
 - Booking fasilitas ikut masuk ke export laporan dan backup data aplikasi.
+
+### Data Fasilitas
+
+- Pencatatan ruangan, aula, area, peralatan, kendaraan, parkir, halaman, layanan, dan fasilitas lain milik masjid.
+- Data kategori, lokasi, kapasitas, kondisi, ketersediaan, biaya booking, penanggung jawab, nomor WA, status bisa booking, status aktif, dan catatan.
+- Fasilitas yang aktif dan bisa dibooking tampil sebagai pilihan di form Booking Fasilitas.
+- Data fasilitas ikut masuk ke export laporan dan backup data aplikasi.
 
 ### Perawatan Inventaris
 
@@ -160,7 +168,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 ### Export, Backup, dan Restore
 
-- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, keluarga jamaah, inventaris, perawatan inventaris, donasi, sedekah khusus, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, database muzakki/mustahik, qurban, wakaf, dan program sosial.
+- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, keluarga jamaah, inventaris, perawatan inventaris, data fasilitas, donasi, sedekah khusus, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, database muzakki/mustahik, qurban, wakaf, dan program sosial.
 - Backup data aplikasi dari menu `Backup Data` dalam format JSON.
 - Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
 - Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.
@@ -183,7 +191,6 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 
-- Inventaris aset masjid dan fasilitas lanjutan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
 - Integrasi WhatsApp Business/API untuk pengiriman otomatis.
 - Setelah fitur utama lengkap, rapikan bundle frontend dengan code splitting / lazy loading agar file JS awal lebih kecil.

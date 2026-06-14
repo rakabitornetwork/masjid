@@ -48,6 +48,7 @@ const navigation = [
     { label: 'Notifikasi WA', href: '/notifikasi-wa', icon: MessageCircle, permission: 'content' },
     { label: 'Jadwal', href: '/jadwal', icon: CalendarDays, permission: 'content' },
     { label: 'Booking Fasilitas', href: '/booking-fasilitas', icon: CalendarCheck, permission: 'content' },
+    { label: 'Fasilitas', href: '/fasilitas-masjid', icon: Building2, permission: 'inventory' },
     { label: 'Jadwal Sholat', href: '/jadwal-sholat', icon: Clock, permission: 'content' },
     { label: 'Arsip Surat', href: '/arsip-surat', icon: Files, permission: 'content' },
     { label: 'Inventaris', href: '/inventaris', icon: Boxes, permission: 'inventory' },

@@ -6,6 +6,7 @@ import AppLayout from '../../Layouts/AppLayout';
 import { date, label, time } from '../../lib/formatters';
 
 const emptyForm = {
+    mosque_facility_id: '',
     facility_name: 'Aula Masjid',
     requester_name: '',
     requester_phone: '',
@@ -26,7 +27,7 @@ const statusTone = {
     done: 'bg-sky-100 text-sky-700',
 };
 
-export default function Index({ bookings, summary }) {
+export default function Index({ bookings, facilityOptions = [], summary }) {
     const { data, setData, post, put, processing, errors, reset } = useForm(emptyForm);
     const editingId = data.id || null;
 
@@ -35,6 +36,16 @@ export default function Index({ bookings, summary }) {
         editingId
             ? put(`/booking-fasilitas/${editingId}`, { preserveScroll: true, onSuccess: () => resetForm() })
             : post('/booking-fasilitas', { preserveScroll: true, onSuccess: () => resetForm() });
+    };
+
+    const selectFacility = (facilityId) => {
+        const facility = facilityOptions.find((item) => String(item.id) === String(facilityId));
+
+        setData({
+            ...data,
+            mosque_facility_id: facilityId,
+            facility_name: facility?.name || data.facility_name,
+        });
     };
 
     const edit = (booking) => {
@@ -81,6 +92,16 @@ export default function Index({ bookings, summary }) {
                     </div>
 
                     <div className="grid gap-3 md:grid-cols-2">
+                        <div className="md:col-span-2">
+                            <SelectInput label="Pilih Database Fasilitas" value={data.mosque_facility_id || ''} onChange={(event) => selectFacility(event.target.value)} error={errors.mosque_facility_id}>
+                                <option value="">Input manual / belum terhubung</option>
+                                {facilityOptions.map((facility) => (
+                                    <option key={facility.id} value={facility.id}>
+                                        {facility.name} {facility.location ? `- ${facility.location}` : ''}
+                                    </option>
+                                ))}
+                            </SelectInput>
+                        </div>
                         <TextInput label="Nama Fasilitas" value={data.facility_name} onChange={(event) => setData('facility_name', event.target.value)} error={errors.facility_name} placeholder="Aula, ruang kajian, sound system" />
                         <SelectInput label="Status" value={data.status} onChange={(event) => setData('status', event.target.value)} error={errors.status}>
                             <option value="pending">Menunggu</option>
@@ -132,6 +153,7 @@ export default function Index({ bookings, summary }) {
                                         <p className="mt-0.5 truncate text-[11px] font-bold text-teal-700">
                                             {booking.facility_name} • {date(booking.booking_date)} • {time(booking.start_time)} - {time(booking.end_time)}
                                         </p>
+                                        {booking.facility && <p className="mt-1 text-[10px] font-bold text-emerald-700">Terhubung: {booking.facility.name}</p>}
                                     </div>
                                     <span className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-bold ${statusTone[booking.status] || 'bg-slate-100 text-slate-600'}`}>
                                         {label(booking.status)}

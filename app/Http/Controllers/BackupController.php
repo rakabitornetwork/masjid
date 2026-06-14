@@ -24,6 +24,7 @@ class BackupController extends Controller
         'whatsapp_notifications',
         'schedules',
         'document_archives',
+        'mosque_facilities',
         'facility_bookings',
         'financial_accounts',
         'financial_categories',

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\FacilityBooking;
+use App\Models\MosqueFacility;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,7 +16,12 @@ class FacilityBookingController extends Controller
     public function index(): Response
     {
         return Inertia::render('FacilityBookings/Index', [
-            'bookings' => FacilityBooking::orderBy('booking_date')->orderBy('start_time')->get(),
+            'bookings' => FacilityBooking::with('facility')->orderBy('booking_date')->orderBy('start_time')->get(),
+            'facilityOptions' => MosqueFacility::where('is_active', true)
+                ->where('is_bookable', true)
+                ->whereIn('availability_status', ['available', 'booked'])
+                ->orderBy('name')
+                ->get(['id', 'name', 'category', 'location', 'capacity', 'booking_fee']),
             'summary' => [
                 'total' => FacilityBooking::count(),
                 'pending' => FacilityBooking::where('status', 'pending')->count(),
@@ -56,7 +63,12 @@ class FacilityBookingController extends Controller
      */
     private function validatedData(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
+            'mosque_facility_id' => [
+                'nullable',
+                Rule::exists('mosque_facilities', 'id')
+                    ->where(fn ($query) => $query->where('is_active', true)->where('is_bookable', true)),
+            ],
             'facility_name' => ['required', 'string', 'max:255'],
             'requester_name' => ['required', 'string', 'max:255'],
             'requester_phone' => ['nullable', 'string', 'max:50'],
@@ -68,6 +80,13 @@ class FacilityBookingController extends Controller
             'status' => ['required', 'in:pending,approved,rejected,cancelled,done'],
             'notes' => ['nullable', 'string'],
         ]);
+
+        if (! empty($data['mosque_facility_id'])) {
+            $facility = MosqueFacility::find($data['mosque_facility_id']);
+            $data['facility_name'] = $facility?->name ?? $data['facility_name'];
+        }
+
+        return $data;
     }
 
     /**

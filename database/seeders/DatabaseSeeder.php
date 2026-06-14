@@ -13,6 +13,7 @@ use App\Models\FinancialAccount;
 use App\Models\FinancialCategory;
 use App\Models\InventoryItem;
 use App\Models\InventoryMaintenance;
+use App\Models\MosqueFacility;
 use App\Models\MosqueProfile;
 use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
@@ -135,6 +136,20 @@ class DatabaseSeeder extends Seeder
             'location' => 'Ruang Utama',
             'estimated_value' => 12000000,
             'is_active' => true,
+        ]);
+
+        $mainHall = MosqueFacility::updateOrCreate(['name' => 'Aula Masjid'], [
+            'category' => 'hall',
+            'location' => 'Lantai 1',
+            'capacity' => 120,
+            'condition' => 'good',
+            'availability_status' => 'available',
+            'booking_fee' => 0,
+            'responsible_person' => 'Takmir Masjid',
+            'responsible_phone' => '0812-3000-0001',
+            'is_bookable' => true,
+            'is_active' => true,
+            'notes' => 'Contoh fasilitas yang dapat dipilih pada booking.',
         ]);
 
         $renovationCampaign = DonationCampaign::updateOrCreate(['title' => 'Infaq Renovasi Tempat Wudhu'], [
@@ -372,6 +387,7 @@ class DatabaseSeeder extends Seeder
             'event_name' => 'Kajian Remaja Masjid',
             'booking_date' => now()->addDays(7)->toDateString(),
         ], [
+            'mosque_facility_id' => $mainHall->id,
             'requester_name' => 'Remaja Masjid Al-Ikhlas',
             'requester_phone' => '0812-3000-0001',
             'start_time' => '19:30',

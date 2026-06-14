@@ -10,6 +10,7 @@ use App\Models\FacilityBooking;
 use App\Models\FinancialTransaction;
 use App\Models\InventoryItem;
 use App\Models\InventoryMaintenance;
+use App\Models\MosqueFacility;
 use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
 use App\Models\SocialAssistanceProgram;
@@ -73,6 +74,10 @@ class ReportExportController extends Controller
         'booking-fasilitas' => [
             'label' => 'Booking Fasilitas',
             'description' => 'Export pengajuan dan jadwal pemakaian fasilitas masjid.',
+        ],
+        'fasilitas-masjid' => [
+            'label' => 'Data Fasilitas',
+            'description' => 'Export ruangan, area, peralatan, kapasitas, status, biaya, dan penanggung jawab fasilitas.',
         ],
         'zakat-penerimaan' => [
             'label' => 'Penerimaan Zakat',
@@ -336,9 +341,10 @@ class ReportExportController extends Controller
                 ]),
             ],
             'booking-fasilitas' => [
-                ['Tanggal', 'Fasilitas', 'Kegiatan', 'Pemohon', 'Nomor WA', 'Mulai', 'Selesai', 'Status', 'Keperluan'],
-                FacilityBooking::orderBy('booking_date')->orderBy('start_time')->get()->map(fn (FacilityBooking $booking): array => [
+                ['Tanggal', 'Database Fasilitas', 'Fasilitas', 'Kegiatan', 'Pemohon', 'Nomor WA', 'Mulai', 'Selesai', 'Status', 'Keperluan'],
+                FacilityBooking::with('facility')->orderBy('booking_date')->orderBy('start_time')->get()->map(fn (FacilityBooking $booking): array => [
                     $booking->booking_date?->format('Y-m-d'),
+                    $booking->facility?->name,
                     $booking->facility_name,
                     $booking->event_name,
                     $booking->requester_name,
@@ -347,6 +353,24 @@ class ReportExportController extends Controller
                     $booking->end_time,
                     $booking->status,
                     $booking->purpose,
+                ]),
+            ],
+            'fasilitas-masjid' => [
+                ['Nama', 'Kategori', 'Lokasi', 'Kapasitas', 'Kondisi', 'Ketersediaan', 'Biaya Booking', 'Penanggung Jawab', 'Nomor WA PJ', 'Bisa Booking', 'Aktif', 'Total Booking', 'Catatan'],
+                MosqueFacility::withCount('bookings')->orderBy('category')->orderBy('name')->get()->map(fn (MosqueFacility $facility): array => [
+                    $facility->name,
+                    $facility->category,
+                    $facility->location,
+                    $facility->capacity,
+                    $facility->condition,
+                    $facility->availability_status,
+                    $facility->booking_fee,
+                    $facility->responsible_person,
+                    $facility->responsible_phone,
+                    $facility->is_bookable ? 'ya' : 'tidak',
+                    $facility->is_active ? 'ya' : 'tidak',
+                    $facility->bookings_count,
+                    $facility->notes,
                 ]),
             ],
             'zakat-penerimaan' => [
