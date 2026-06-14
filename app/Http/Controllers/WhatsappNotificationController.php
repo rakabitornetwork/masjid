@@ -19,7 +19,8 @@ class WhatsappNotificationController extends Controller
             'notifications' => WhatsappNotification::latest('scheduled_at')->latest()->get(),
             'api' => [
                 'enabled' => $whatsapp->isConfigured(),
-                'provider' => 'Meta WhatsApp Cloud API',
+                'provider' => $whatsapp->providerLabel(),
+                'provider_key' => $whatsapp->provider(),
             ],
             'summary' => [
                 'total' => WhatsappNotification::count(),
@@ -71,10 +72,12 @@ class WhatsappNotificationController extends Controller
             return back()->with('error', 'WhatsApp API gagal mengirim pesan: '.($exception->response?->body() ?: $exception->getMessage()));
         }
 
-        $messageId = data_get($response, 'messages.0.id');
+        $messageId = data_get($response, 'messages.0.id') ?: data_get($response, 'data.message_id');
         $notes = trim(implode("\n", array_filter([
             $whatsappNotification->notes,
-            $messageId ? 'WhatsApp API message_id: '.$messageId : 'WhatsApp API berhasil mengirim pesan.',
+            $messageId
+                ? $whatsapp->providerLabel().' message_id: '.$messageId
+                : $whatsapp->providerLabel().' berhasil mengirim pesan.',
         ])));
 
         $whatsappNotification->update([
@@ -83,7 +86,7 @@ class WhatsappNotificationController extends Controller
             'notes' => $notes,
         ]);
 
-        return back()->with('success', 'Notifikasi WhatsApp berhasil dikirim melalui API.');
+        return back()->with('success', 'Notifikasi WhatsApp berhasil dikirim melalui '.$whatsapp->providerLabel().'.');
     }
 
     /**

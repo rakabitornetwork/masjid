@@ -37,10 +37,15 @@ return [
 
     'whatsapp' => [
         'enabled' => env('WHATSAPP_API_ENABLED', false),
+        'provider' => env('WHATSAPP_PROVIDER', 'meta'),
         'api_url' => env('WHATSAPP_API_URL', 'https://graph.facebook.com'),
         'api_version' => env('WHATSAPP_API_VERSION', 'v20.0'),
         'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
         'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
+        'baileys_base_url' => env('BAILEYS_BASE_URL', 'http://127.0.0.1:3002'),
+        'baileys_token' => env('BAILEYS_TOKEN'),
+        'baileys_timeout' => env('BAILEYS_TIMEOUT', 20),
+        'baileys_wait_delivery' => env('BAILEYS_WAIT_DELIVERY', true),
     ],
 
 ];

@@ -59,7 +59,7 @@ export default function Index({ notifications, api, summary }) {
     };
 
     const sendApi = (notification) => {
-        if (window.confirm(`Kirim notifikasi "${notification.title}" melalui WhatsApp API sekarang?`)) {
+        if (window.confirm(`Kirim notifikasi "${notification.title}" melalui ${api?.provider || 'WhatsApp API'} sekarang?`)) {
             router.post(`/notifikasi-wa/${notification.id}/kirim-api`, {}, { preserveScroll: true });
         }
     };
@@ -74,7 +74,7 @@ export default function Index({ notifications, api, summary }) {
             <div className={`mb-4 rounded-xl border p-3 text-xs font-semibold ${api?.enabled ? 'border-emerald-100 bg-emerald-50 text-emerald-700' : 'border-amber-100 bg-amber-50 text-amber-700'}`}>
                 {api?.enabled
                     ? `${api.provider} aktif. Tombol Kirim API akan mengirim pesan otomatis dan menandai status terkirim.`
-                    : 'WhatsApp API belum aktif. Tombol manual tetap bisa membuka WhatsApp/WhatsApp Web melalui link wa.me.'}
+                    : 'Provider WhatsApp API belum aktif. Tombol manual tetap bisa membuka WhatsApp/WhatsApp Web melalui link wa.me.'}
             </div>
 
             <section className="grid gap-4 md:grid-cols-4">

@@ -126,24 +126,50 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 - Pencatatan pesan WhatsApp untuk jadwal, booking, donasi, zakat, qurban, keuangan, dan pengumuman.
 - Tombol `Manual` membuka WhatsApp/WhatsApp Web melalui link `wa.me` dengan isi pesan otomatis.
-- Tombol `API` dapat mengirim pesan otomatis melalui Meta WhatsApp Cloud API jika konfigurasi `.env` sudah aktif.
+- Tombol `API` dapat mengirim pesan otomatis melalui provider yang dipilih di `.env`: Meta WhatsApp Cloud API atau Baileys Gateway Masjid.
 - Admin tetap dapat menandai pesan sebagai terkirim setelah proses kirim manual dilakukan.
 - Notifikasi WhatsApp ikut masuk ke export laporan dan backup data aplikasi.
 
-Konfigurasi WhatsApp API di `.env`:
+Konfigurasi Meta WhatsApp Cloud API di `.env`:
 
 ```env
 WHATSAPP_API_ENABLED=true
+WHATSAPP_PROVIDER=meta
 WHATSAPP_API_URL=https://graph.facebook.com
 WHATSAPP_API_VERSION=v20.0
 WHATSAPP_PHONE_NUMBER_ID=isi_phone_number_id_meta
 WHATSAPP_ACCESS_TOKEN=isi_access_token_meta
 ```
 
+Konfigurasi Baileys Gateway Masjid di `.env`:
+
+```env
+WHATSAPP_API_ENABLED=true
+WHATSAPP_PROVIDER=baileys
+BAILEYS_BASE_URL=http://127.0.0.1:3002
+BAILEYS_TOKEN=isi_token_gateway_masjid
+BAILEYS_TIMEOUT=20
+BAILEYS_WAIT_DELIVERY=true
+```
+
+Install gateway di VPS:
+
+```bash
+cd /home/masjid/public_html/baileys-gateway
+npm install
+cp .env.example .env
+npm run pm2:start
+pm2 save
+curl http://127.0.0.1:3002/health
+```
+
+Gateway masjid memakai port `3002`, process PM2 `masjid-baileys-gateway`, dan session folder `.baileys_masjid_auth` agar tidak bentrok dengan gateway aplikasi lain.
+
 Setelah mengubah `.env` di VPS, jalankan:
 
 ```bash
 php artisan optimize:clear
+php artisan config:cache
 ```
 
 ### Zakat dan Database Muzakki/Mustahik

@@ -1,0 +1,7 @@
+.env
+node_modules/
+.baileys_masjid_auth/
+.baileys_auth/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
