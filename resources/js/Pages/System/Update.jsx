@@ -91,10 +91,14 @@ export default function Update({
     return (
         <AppLayout title="Update Aplikasi">
             <section className="mb-4 grid gap-3 md:grid-cols-4">
-                <VersionTile label="Versi Terbaru" value={`v${latestVersion}`} />
-                <VersionTile label="Commit Lokal" value={currentCommit} mono />
-                <VersionTile label="Commit GitHub" value={latestCommit} mono />
-                <VersionTile label="Status" value={!isGithubConnected ? 'GitHub Gagal' : updateAvailable ? 'Perlu Update' : 'Up to Date'} />
+                <VersionTile label="Versi Terbaru" value={`v${latestVersion}`} tone={isGithubConnected ? 'emerald' : 'rose'} />
+                <VersionTile label="Commit Lokal" value={currentCommit} mono tone={updateAvailable ? 'amber' : 'blue'} />
+                <VersionTile label="Commit GitHub" value={latestCommit} mono tone={isGithubConnected ? 'sky' : 'rose'} />
+                <VersionTile
+                    label="Status"
+                    value={!isGithubConnected ? 'GitHub Gagal' : updateAvailable ? 'Perlu Update' : 'Up to Date'}
+                    tone={!isGithubConnected ? 'rose' : updateAvailable ? 'amber' : 'teal'}
+                />
             </section>
 
             <section className="grid gap-4">
@@ -230,14 +234,48 @@ export default function Update({
     );
 }
 
-function VersionTile({ label, value, mono = false }) {
+function VersionTile({ label, value, mono = false, tone = 'blue' }) {
+    const tones = {
+        blue: {
+            card: 'from-blue-800 via-blue-700 to-sky-600 border-blue-200/30',
+            icon: 'bg-white/15 text-blue-50',
+            label: 'text-blue-100',
+        },
+        sky: {
+            card: 'from-sky-700 via-cyan-600 to-blue-500 border-cyan-200/30',
+            icon: 'bg-white/15 text-cyan-50',
+            label: 'text-cyan-50',
+        },
+        emerald: {
+            card: 'from-emerald-700 via-teal-600 to-lime-500 border-emerald-200/30',
+            icon: 'bg-white/15 text-emerald-50',
+            label: 'text-emerald-50',
+        },
+        teal: {
+            card: 'from-teal-700 via-emerald-600 to-green-500 border-teal-200/30',
+            icon: 'bg-white/15 text-teal-50',
+            label: 'text-teal-50',
+        },
+        amber: {
+            card: 'from-amber-500 via-orange-500 to-yellow-500 border-amber-200/40',
+            icon: 'bg-white/20 text-amber-50',
+            label: 'text-amber-50',
+        },
+        rose: {
+            card: 'from-rose-700 via-red-600 to-orange-500 border-rose-200/30',
+            icon: 'bg-white/15 text-rose-50',
+            label: 'text-rose-50',
+        },
+    };
+    const selectedTone = tones[tone] || tones.blue;
+
     return (
-        <div className="min-w-0 rounded-xl border border-white/70 bg-gradient-to-br from-blue-800 via-blue-700 to-sky-600 p-3 text-white shadow-sm">
+        <div className={`min-w-0 rounded-xl border bg-gradient-to-br p-3 text-white shadow-sm ${selectedTone.card}`}>
             <div className="flex items-center gap-2">
-                <div className="rounded-lg bg-white/15 p-1.5">
+                <div className={`rounded-lg p-1.5 ${selectedTone.icon}`}>
                     <Rocket className="h-3.5 w-3.5" />
                 </div>
-                <p className="truncate text-[9px] font-bold uppercase tracking-[0.16em] text-blue-100">{label}</p>
+                <p className={`truncate text-[9px] font-bold uppercase tracking-[0.16em] ${selectedTone.label}`}>{label}</p>
             </div>
             <p className={`mt-2 truncate text-sm font-extrabold ${mono ? 'font-mono' : ''}`}>{value}</p>
         </div>
