@@ -77,16 +77,6 @@ export default function Index({ users, roles, rolePermissions }) {
                             error={errors.whatsapp_number}
                             placeholder="Contoh: 6281234567890"
                         />
-                        <SelectInput label="Role" value={data.role} onChange={(event) => setData('role', event.target.value)} error={errors.role}>
-                            {roles.map((role) => (
-                                <option key={role} value={role}>
-                                    {label(role)}
-                                </option>
-                            ))}
-                        </SelectInput>
-                        <div className="rounded-lg border border-teal-100 bg-teal-50/70 p-2 text-[10px] font-semibold leading-5 text-teal-800">
-                            Hak akses: {(rolePermissions[data.role] || []).map((permission) => label(permission)).join(', ') || '-'}
-                        </div>
                         <TextInput
                             label={editingId ? 'Password Baru' : 'Password'}
                             type="password"
@@ -102,6 +92,16 @@ export default function Index({ users, roles, rolePermissions }) {
                             onChange={(event) => setData('password_confirmation', event.target.value)}
                             error={errors.password_confirmation}
                         />
+                        <SelectInput label="Role" value={data.role} onChange={(event) => setData('role', event.target.value)} error={errors.role}>
+                            {roles.map((role) => (
+                                <option key={role} value={role}>
+                                    {label(role)}
+                                </option>
+                            ))}
+                        </SelectInput>
+                        <div className="rounded-lg border border-teal-100 bg-teal-50/70 p-2 text-[10px] font-semibold leading-5 text-teal-800">
+                            Hak akses: {(rolePermissions[data.role] || []).map((permission) => label(permission)).join(', ') || '-'}
+                        </div>
                     </div>
 
                     <div className="mt-4 flex flex-wrap gap-2">
