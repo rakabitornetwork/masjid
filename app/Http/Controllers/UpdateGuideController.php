@@ -25,6 +25,7 @@ class UpdateGuideController extends Controller
             && $githubMain['hash'] !== null
             && $currentCommit !== null
             && $githubMain['hash'] !== $currentCommit;
+        $pendingSummary = $updateAvailable ? $this->pendingUpdateSummary() : null;
 
         return Inertia::render('System/Update', [
             'currentVersion' => $currentVersion,
@@ -38,7 +39,7 @@ class UpdateGuideController extends Controller
             'latestUpdate' => [
                 'title' => $githubRelease['title'] ?? 'Informasi GitHub Tidak Tersedia',
                 'date' => $githubRelease['date'] ?? now()->format('d M Y H:i:s'),
-                'summary' => $githubRelease['summary'] ?? 'Aplikasi belum berhasil membaca informasi release terbaru dari GitHub. Periksa koneksi server atau akses repository.',
+                'summary' => $pendingSummary ?: ($githubRelease['summary'] ?? 'Aplikasi belum berhasil membaca informasi release terbaru dari GitHub. Periksa koneksi server atau akses repository.'),
             ],
         ]);
     }
@@ -375,7 +376,7 @@ class UpdateGuideController extends Controller
             'hash' => $latest['hash'],
             'title' => 'Aplikasi manajement masjid',
             'date' => now()->format('d M Y H:i:s'),
-            'summary' => 'Informasi release dibaca dari tag Git remote karena API GitHub tidak dapat diakses dari server.',
+            'summary' => 'Informasi release dibaca dari tag Git remote. Jika ada update, daftar perubahan akan diambil dari commit yang belum terpasang.',
             'status' => 'success',
         ];
     }
@@ -407,5 +408,42 @@ class UpdateGuideController extends Controller
             'summary' => 'Commit terbaru branch main dibaca dari Git remote origin.',
             'status' => $sha ? 'success' : 'failed',
         ];
+    }
+
+    private function pendingUpdateSummary(): ?string
+    {
+        $fetch = new Process(['git', 'fetch', 'origin', 'main', '--quiet'], base_path(), timeout: 60);
+        $fetch->run();
+
+        if (! $fetch->isSuccessful()) {
+            return null;
+        }
+
+        $log = new Process([
+            'git',
+            'log',
+            '--pretty=format:%s',
+            '--max-count=10',
+            'HEAD..FETCH_HEAD',
+        ], base_path(), timeout: 20);
+        $log->run();
+
+        if (! $log->isSuccessful()) {
+            return null;
+        }
+
+        $messages = collect(explode("\n", trim($log->getOutput())))
+            ->map(fn (string $message): string => trim($message))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($messages->isEmpty()) {
+            return 'Update tersedia di GitHub, tetapi tidak ada ringkasan commit yang dapat dibaca.';
+        }
+
+        return "Summary perubahan yang akan diterapkan:\n".$messages
+            ->map(fn (string $message): string => '- '.$message)
+            ->implode("\n");
     }
 }
