@@ -231,22 +231,8 @@ export default function Update({
                         </div>
                     </div>
 
-                    <div className="mt-4 grid gap-4 xl:grid-cols-2 xl:items-start">
-                        <div className="min-w-0 rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-teal-50 to-amber-50 p-3 shadow-sm">
-                            <div className="mb-2 flex items-center justify-between gap-2">
-                                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-800">
-                                    Perintah yang disalin atau dijalankan tombol update
-                                </p>
-                                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.14em] text-amber-700">
-                                    Masjid Update
-                                </span>
-                            </div>
-                            <pre className="max-w-full overflow-x-auto rounded-lg border border-emerald-100 bg-white/85 p-3 text-[11px] font-semibold leading-6 text-emerald-900">
-                                <code>{updateCommands}</code>
-                            </pre>
-                        </div>
-
-                        <div className="flex h-[440px] min-w-0 flex-col overflow-hidden rounded-xl border border-slate-700 bg-[#050b1a] shadow-xl shadow-slate-950/25 sm:h-[460px]">
+                    <div className="mt-4">
+                        <div className="flex h-[360px] min-w-0 flex-col overflow-hidden rounded-xl border border-slate-700 bg-[#050b1a] shadow-xl shadow-slate-950/25 sm:h-[390px] xl:h-[420px]">
                             <div className="flex h-9 items-center justify-between border-b border-slate-700 bg-gradient-to-r from-[#183b6b] via-[#0f2f57] to-[#0a1f3f] px-3">
                                 <div className="flex min-w-0 items-center gap-2">
                                     <div className="rounded bg-cyan-400/15 p-1 text-cyan-200">
