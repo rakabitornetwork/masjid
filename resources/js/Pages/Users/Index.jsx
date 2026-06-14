@@ -1,6 +1,6 @@
 import { router, useForm, usePage } from '@inertiajs/react';
 import { Edit3, Phone, Plus, ShieldCheck, Trash2, UserRound, X } from 'lucide-react';
-import { PrimaryButton, SecondaryButton, SelectInput, TextInput } from '../../Components/FormControls';
+import { Field, PrimaryButton, SecondaryButton, SelectInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
 import { date, label } from '../../lib/formatters';
 
@@ -101,9 +101,11 @@ export default function Index({ users, roles, rolePermissions }) {
                                 </option>
                             ))}
                         </SelectInput>
-                        <div className="rounded-lg border border-teal-100 bg-teal-50/70 p-2 text-[10px] font-semibold leading-5 text-teal-800">
-                            Hak akses: {(rolePermissions[data.role] || []).map((permission) => label(permission)).join(', ') || '-'}
-                        </div>
+                        <Field label="Hak Akses">
+                            <div className="mt-1 min-h-[34px] rounded-lg border border-teal-100 bg-teal-50/70 p-2 text-[10px] font-semibold leading-5 text-teal-800">
+                                {(rolePermissions[data.role] || []).map((permission) => label(permission)).join(', ') || '-'}
+                            </div>
+                        </Field>
                     </div>
 
                     <div className="mt-4 flex flex-wrap gap-2">
