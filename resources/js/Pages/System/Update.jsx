@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CheckCircle2, ClipboardCheck, RefreshCw, Rocket, Sparkles, Terminal } from 'lucide-react';
 import AppLayout from '../../Layouts/AppLayout';
 
@@ -30,6 +30,7 @@ export default function Update({
     const [displayUpdateAvailable, setDisplayUpdateAvailable] = useState(updateAvailable);
     const [displayGithubStatus, setDisplayGithubStatus] = useState(githubStatus);
     const [showUpdateResult, setShowUpdateResult] = useState(() => window.sessionStorage.getItem('showUpdateResult') === '1');
+    const terminalScrollRef = useRef(null);
 
     useEffect(() => {
         setDisplayCurrentCommit(currentCommit);
@@ -156,6 +157,14 @@ export default function Update({
             ? (displayEntries.find((entry) => entry.type === 'complete') ? 'Update berhasil' : 'Update gagal')
             : '';
 
+    useEffect(() => {
+        if (!terminalScrollRef.current) {
+            return;
+        }
+
+        terminalScrollRef.current.scrollTop = terminalScrollRef.current.scrollHeight;
+    }, [displayEntries.length, running]);
+
     return (
         <AppLayout title="Update Aplikasi">
             <section className="mb-4 grid gap-3 md:grid-cols-4">
@@ -237,7 +246,7 @@ export default function Update({
                             </pre>
                         </div>
 
-                        <div className="min-w-0 overflow-hidden rounded-xl border border-slate-700 bg-[#050b1a] shadow-xl shadow-slate-950/25">
+                        <div className="flex h-[440px] min-w-0 flex-col overflow-hidden rounded-xl border border-slate-700 bg-[#050b1a] shadow-xl shadow-slate-950/25 sm:h-[460px]">
                             <div className="flex h-9 items-center justify-between border-b border-slate-700 bg-gradient-to-r from-[#183b6b] via-[#0f2f57] to-[#0a1f3f] px-3">
                                 <div className="flex min-w-0 items-center gap-2">
                                     <div className="rounded bg-cyan-400/15 p-1 text-cyan-200">
@@ -279,7 +288,7 @@ export default function Update({
                             <div className="border-b border-cyan-400/10 bg-[#071228] px-3 py-1.5 font-mono text-[10px] font-bold text-cyan-200">
                                 TeslaTech Professional Edition session - SSH terminal log
                             </div>
-                            <div className="min-w-0 space-y-1.5 bg-[#070d1f] p-3 font-mono">
+                            <div ref={terminalScrollRef} className="min-w-0 flex-1 space-y-1.5 overflow-y-auto overscroll-contain bg-[#070d1f] p-3 font-mono">
                                 {displayEntries.length > 0 ? (
                                     <>
                                         {displayEntries.map((entry, index) => (
