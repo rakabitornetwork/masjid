@@ -31,7 +31,7 @@ export default function Dashboard({ profile, stats, accounts, recentTransactions
                         <Info label="Kapasitas" value={profile?.capacity ? `${profile.capacity} jamaah` : 'Belum diisi'} />
                     </div>
                     <p className="mt-3 rounded-lg bg-teal-50 p-3 text-xs font-medium leading-5 text-slate-600">
-                        {profile?.address || 'Lengkapi alamat, rekening, visi, misi, dan fasilitas masjid untuk membuat dashboard lebih informatif.'}
+                        {profile?.address || 'Lengkapi alamat, visi, misi, dan fasilitas masjid untuk membuat dashboard lebih informatif.'}
                     </p>
                 </div>
 

@@ -1,9 +1,9 @@
 export default function StatCard({ title, value, helper, icon: Icon, tone = 'emerald' }) {
     const tones = {
-        emerald: 'from-emerald-700 via-teal-600 to-lime-500 border-emerald-200/30 shadow-emerald-700/15',
-        amber: 'from-amber-500 via-orange-500 to-yellow-500 border-amber-200/40 shadow-amber-700/15',
-        rose: 'from-rose-700 via-red-600 to-orange-500 border-rose-200/30 shadow-rose-700/15',
-        sky: 'from-sky-700 via-cyan-600 to-blue-500 border-cyan-200/30 shadow-sky-700/15',
+        emerald: 'from-emerald-600 via-emerald-600 to-teal-600 border-emerald-200/30 shadow-emerald-700/15',
+        amber: 'from-amber-500 via-amber-500 to-orange-500 border-amber-200/40 shadow-amber-700/15',
+        rose: 'from-rose-600 via-rose-600 to-red-600 border-rose-200/30 shadow-rose-700/15',
+        sky: 'from-sky-600 via-sky-600 to-blue-600 border-cyan-200/30 shadow-sky-700/15',
     };
     const selectedTone = tones[tone] || tones.emerald;
 
