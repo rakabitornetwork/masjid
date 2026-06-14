@@ -200,7 +200,7 @@ export default function AppLayout({ title, children, actions = null }) {
             return;
         }
 
-        setOpenGroupKeys((keys) => [...new Set([...keys, ...activeGroupKeys])]);
+        setOpenGroupKeys((keys) => (keys.includes(activeGroupKeys[0]) ? keys : [activeGroupKeys[0]]));
     }, [path, permissionKey]);
 
     useEffect(() => {
@@ -225,7 +225,7 @@ export default function AppLayout({ title, children, actions = null }) {
     };
 
     const toggleGroup = (groupKey) => {
-        setOpenGroupKeys((keys) => (keys.includes(groupKey) ? keys.filter((key) => key !== groupKey) : [...keys, groupKey]));
+        setOpenGroupKeys((keys) => (keys.includes(groupKey) ? [] : [groupKey]));
     };
 
     const handleSidebarScroll = () => {
@@ -313,30 +313,32 @@ export default function AppLayout({ title, children, actions = null }) {
                                                 <ChevronDown className={`h-3.5 w-3.5 transition-transform ${opened ? 'rotate-180' : ''}`} />
                                             </span>
                                         </button>
-                                        {opened && (
-                                            <div className="space-y-1 px-1.5 pb-1.5">
-                                                {group.items.map((item) => {
-                                                    const Icon = item.icon;
-                                                    const active = isActive(item.href);
+                                        <div className={`grid transition-all duration-300 ease-out ${opened ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                                            <div className="min-h-0 overflow-hidden">
+                                                <div className={`space-y-1 px-1.5 pb-1.5 transition-transform duration-300 ease-out ${opened ? 'translate-y-0' : '-translate-y-1'}`}>
+                                                    {group.items.map((item) => {
+                                                        const Icon = item.icon;
+                                                        const active = isActive(item.href);
 
-                                                    return (
-                                                        <Link
-                                                            key={item.href}
-                                                            href={item.href}
-                                                            onClick={() => setSidebarOpen(false)}
-                                                            className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-semibold transition-all duration-150 ${
-                                                                active
-                                                                    ? 'bg-gradient-to-r from-emerald-400/25 to-amber-300/20 text-white shadow-sm shadow-emerald-950/15 ring-1 ring-emerald-100/20'
-                                                                    : 'text-emerald-50/80 hover:bg-white/10 hover:text-white'
-                                                            }`}
-                                                        >
-                                                            <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-amber-200' : 'text-emerald-100/65'}`} />
-                                                            <span className="truncate">{item.label}</span>
-                                                        </Link>
-                                                    );
-                                                })}
+                                                        return (
+                                                            <Link
+                                                                key={item.href}
+                                                                href={item.href}
+                                                                onClick={() => setSidebarOpen(false)}
+                                                                className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-semibold transition-all duration-150 ${
+                                                                    active
+                                                                        ? 'bg-gradient-to-r from-emerald-400/25 to-amber-300/20 text-white shadow-sm shadow-emerald-950/15 ring-1 ring-emerald-100/20'
+                                                                        : 'text-emerald-50/80 hover:bg-white/10 hover:text-white'
+                                                                }`}
+                                                            >
+                                                                <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-amber-200' : 'text-emerald-100/65'}`} />
+                                                                <span className="truncate">{item.label}</span>
+                                                            </Link>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
                                 );
                             })}
