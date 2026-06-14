@@ -70,30 +70,31 @@
     }
 
     .sidebar-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+        scrollbar-color: transparent transparent;
+        scrollbar-gutter: stable;
+        scrollbar-width: thin;
+        transition: scrollbar-color 240ms ease;
     }
 
     .sidebar-scrollbar::-webkit-scrollbar {
-        height: 0;
-        width: 0;
+        width: 6px;
+    }
+
+    .sidebar-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sidebar-scrollbar::-webkit-scrollbar-thumb {
+        background-color: transparent;
+        border-radius: 999px;
+        transition: background-color 240ms ease;
     }
 
     .sidebar-scrollbar-visible {
         scrollbar-color: rgba(236, 253, 245, 0.55) transparent;
-        scrollbar-width: thin;
-    }
-
-    .sidebar-scrollbar-visible::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .sidebar-scrollbar-visible::-webkit-scrollbar-track {
-        background: transparent;
     }
 
     .sidebar-scrollbar-visible::-webkit-scrollbar-thumb {
-        background: rgba(236, 253, 245, 0.45);
-        border-radius: 999px;
+        background-color: rgba(236, 253, 245, 0.45);
     }
 }

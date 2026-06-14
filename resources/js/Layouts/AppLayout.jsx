@@ -106,7 +106,7 @@ export default function AppLayout({ title, children, actions = null }) {
 
         sidebarScrollTimeoutRef.current = window.setTimeout(() => {
             setSidebarScrolling(false);
-        }, 900);
+        }, 1200);
     };
 
     return (
