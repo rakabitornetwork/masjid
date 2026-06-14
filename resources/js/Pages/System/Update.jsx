@@ -150,22 +150,22 @@ export default function Update({
                         </div>
                     </div>
 
-                    <div className="mt-4 min-w-0 rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-teal-50 to-amber-50 p-3 shadow-sm">
-                        <div className="mb-2 flex items-center justify-between gap-2">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-800">
-                                Perintah yang disalin atau dijalankan tombol update
-                            </p>
-                            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.14em] text-amber-700">
-                                Masjid Update
-                            </span>
+                    <div className="mt-4 grid gap-4 xl:grid-cols-2 xl:items-start">
+                        <div className="min-w-0 rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-teal-50 to-amber-50 p-3 shadow-sm">
+                            <div className="mb-2 flex items-center justify-between gap-2">
+                                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-800">
+                                    Perintah yang disalin atau dijalankan tombol update
+                                </p>
+                                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.14em] text-amber-700">
+                                    Masjid Update
+                                </span>
+                            </div>
+                            <pre className="max-w-full overflow-x-auto rounded-lg border border-emerald-100 bg-white/85 p-3 text-[11px] font-semibold leading-6 text-emerald-900">
+                                <code>{updateCommands}</code>
+                            </pre>
                         </div>
-                        <pre className="max-w-full overflow-x-auto rounded-lg border border-emerald-100 bg-white/85 p-3 text-[11px] font-semibold leading-6 text-emerald-900">
-                            <code>{updateCommands}</code>
-                        </pre>
-                    </div>
 
-                    {updateResult && (
-                        <div className="mt-4 min-w-0 overflow-hidden rounded-xl border border-slate-700 bg-[#050b1a] shadow-xl shadow-slate-950/25">
+                        <div className="min-w-0 overflow-hidden rounded-xl border border-slate-700 bg-[#050b1a] shadow-xl shadow-slate-950/25">
                             <div className="flex h-9 items-center justify-between border-b border-slate-700 bg-gradient-to-r from-[#183b6b] via-[#0f2f57] to-[#0a1f3f] px-3">
                                 <div className="flex min-w-0 items-center gap-2">
                                     <div className="rounded bg-cyan-400/15 p-1 text-cyan-200">
@@ -206,49 +206,58 @@ export default function Update({
                                 MobaXterm Personal Edition style session - SSH terminal log
                             </div>
                             <div className="min-w-0 space-y-1.5 bg-[#070d1f] p-3 font-mono">
-                                {updateResult.logs.slice(0, visibleLogCount).map((log, index) => (
-                                    <div
-                                        key={`${log.command}-${index}`}
-                                        className="terminal-line-in min-w-0"
-                                    >
-                                        <div className="flex flex-wrap items-center justify-between gap-2">
-                                            <code className="min-w-0 break-all text-[10px] font-bold text-teal-200">
-                                                <span className="text-lime-300">masjid@vps</span>
-                                                <span className="text-slate-400">:</span>
-                                                <span className="text-cyan-300">~/public_html</span>
-                                                <span className="text-slate-400">$</span> <span className="text-amber-200">{log.command}</span>
-                                            </code>
-                                            <span
-                                                className={`rounded px-1.5 py-0.5 text-[9px] font-black ${
-                                                    log.exitCode === 0 ? 'bg-teal-400/20 text-teal-100' : 'bg-rose-400/20 text-rose-100'
-                                                }`}
+                                {updateResult ? (
+                                    <>
+                                        {updateResult.logs.slice(0, visibleLogCount).map((log, index) => (
+                                            <div
+                                                key={`${log.command}-${index}`}
+                                                className="terminal-line-in min-w-0"
                                             >
-                                                exit {log.exitCode}
-                                            </span>
-                                        </div>
-                                        {(log.output || log.error) && (
-                                            <pre className="mt-1 max-w-full whitespace-pre-wrap break-words border-l border-cyan-500/25 pl-2 text-[10px] leading-5 text-slate-200">
-                                                <code>{log.output || log.error}</code>
-                                            </pre>
+                                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                                    <code className="min-w-0 break-all text-[10px] font-bold text-teal-200">
+                                                        <span className="text-lime-300">masjid@vps</span>
+                                                        <span className="text-slate-400">:</span>
+                                                        <span className="text-cyan-300">~/public_html</span>
+                                                        <span className="text-slate-400">$</span> <span className="text-amber-200">{log.command}</span>
+                                                    </code>
+                                                    <span
+                                                        className={`rounded px-1.5 py-0.5 text-[9px] font-black ${
+                                                            log.exitCode === 0 ? 'bg-teal-400/20 text-teal-100' : 'bg-rose-400/20 text-rose-100'
+                                                        }`}
+                                                    >
+                                                        exit {log.exitCode}
+                                                    </span>
+                                                </div>
+                                                {(log.output || log.error) && (
+                                                    <pre className="mt-1 max-w-full whitespace-pre-wrap break-words border-l border-cyan-500/25 pl-2 text-[10px] leading-5 text-slate-200">
+                                                        <code>{log.output || log.error}</code>
+                                                    </pre>
+                                                )}
+                                            </div>
+                                        ))}
+                                        {visibleLogCount < updateResult.logs.length && (
+                                            <div className="terminal-line-in flex items-center gap-1.5 text-[10px] font-bold text-amber-300">
+                                                <RefreshCw className="h-3 w-3 animate-spin" />
+                                                <span>Menampilkan proses update...</span>
+                                                <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-amber-300" />
+                                            </div>
                                         )}
-                                    </div>
-                                ))}
-                                {visibleLogCount < updateResult.logs.length && (
-                                    <div className="terminal-line-in flex items-center gap-1.5 text-[10px] font-bold text-amber-300">
-                                        <RefreshCw className="h-3 w-3 animate-spin" />
-                                        <span>Menampilkan proses update...</span>
-                                        <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-amber-300" />
-                                    </div>
-                                )}
-                                {visibleLogCount >= updateResult.logs.length && (
+                                        {visibleLogCount >= updateResult.logs.length && (
+                                            <div className="terminal-line-in flex items-center gap-1.5 text-[10px] font-bold text-teal-300">
+                                                <span>{updateResult.status === 'success' ? 'Update process completed' : 'Update process stopped'}</span>
+                                                <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-teal-300" />
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
                                     <div className="terminal-line-in flex items-center gap-1.5 text-[10px] font-bold text-teal-300">
-                                        <span>{updateResult.status === 'success' ? 'Update process completed' : 'Update process stopped'}</span>
+                                        <span>Terminal siap. Klik Jalankan Update untuk memulai proses.</span>
                                         <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-teal-300" />
                                     </div>
                                 )}
                             </div>
                         </div>
-                    )}
+                    </div>
                 </article>
 
             </section>
