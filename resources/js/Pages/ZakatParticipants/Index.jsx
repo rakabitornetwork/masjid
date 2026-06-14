@@ -93,7 +93,7 @@ export default function Index({ participants, summary }) {
                             <option value="muzakki">Muzakki</option>
                             <option value="both">Muzakki & Mustahik</option>
                         </SelectInput>
-                        <CheckboxInput label="Data aktif" checked={Boolean(data.is_active)} onChange={(checked) => setData('is_active', checked)} />
+                        <CheckboxInput label="Data aktif" checked={Boolean(data.is_active)} onChange={(checked) => setData('is_active', checked)} className="md:mt-[18px]" />
                         <TextInput label="Nama" value={data.name} onChange={(event) => setData('name', event.target.value)} error={errors.name} />
                         <TextInput label="Nomor WA" value={data.phone || ''} onChange={(event) => setData('phone', event.target.value)} error={errors.phone} />
                         {!editingId && (

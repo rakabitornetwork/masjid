@@ -39,9 +39,9 @@ export function SelectInput({ label, error, children, ...props }) {
     );
 }
 
-export function CheckboxInput({ label, checked, onChange }) {
+export function CheckboxInput({ label, checked, onChange, className = '' }) {
     return (
-        <label className="flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700">
+        <label className={`flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700 ${className}`}>
             <input
                 type="checkbox"
                 checked={checked}
