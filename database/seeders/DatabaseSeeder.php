@@ -18,6 +18,7 @@ use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
 use App\Models\Schedule;
 use App\Models\SocialAssistanceProgram;
+use App\Models\SpecialDonation;
 use App\Models\User;
 use App\Models\WaqfAsset;
 use App\Models\WhatsappNotification;
@@ -152,6 +153,20 @@ class DatabaseSeeder extends Seeder
             'payment_method' => 'transfer',
             'donated_at' => now()->toDateString(),
             'status' => 'confirmed',
+        ]);
+
+        SpecialDonation::updateOrCreate([
+            'category' => 'sedekah_subuh',
+            'donated_at' => now()->toDateString(),
+            'amount' => 250000,
+        ], [
+            'donor_name' => 'Hamba Allah',
+            'donor_phone' => null,
+            'purpose' => 'Sedekah Subuh untuk operasional masjid',
+            'payment_method' => 'qris',
+            'status' => 'confirmed',
+            'is_anonymous' => true,
+            'notes' => 'Contoh catatan sedekah khusus.',
         ]);
 
         ZakatParticipant::updateOrCreate(['name' => 'Keluarga Ahmad Ridwan', 'role' => 'muzakki'], [

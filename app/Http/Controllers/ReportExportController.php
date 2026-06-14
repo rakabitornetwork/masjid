@@ -13,6 +13,7 @@ use App\Models\InventoryMaintenance;
 use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
 use App\Models\SocialAssistanceProgram;
+use App\Models\SpecialDonation;
 use App\Models\WaqfAsset;
 use App\Models\WhatsappNotification;
 use App\Models\ZakatCollection;
@@ -52,6 +53,10 @@ class ReportExportController extends Controller
         'donasi' => [
             'label' => 'Program Donasi',
             'description' => 'Export campaign, target, progres, dan status donasi.',
+        ],
+        'sedekah-khusus' => [
+            'label' => 'Sedekah Khusus',
+            'description' => 'Export catatan sedekah khusus, kategori, donatur, nominal, metode, dan status.',
         ],
         'arsip-surat' => [
             'label' => 'Arsip Surat',
@@ -274,6 +279,21 @@ class ReportExportController extends Controller
                     $campaign->end_date?->format('Y-m-d'),
                     $campaign->status,
                     $campaign->is_featured ? 'ya' : 'tidak',
+                ]),
+            ],
+            'sedekah-khusus' => [
+                ['Tanggal', 'Kategori', 'Donatur', 'Nomor WA', 'Tujuan', 'Nominal', 'Metode', 'Status', 'Anonim', 'Catatan'],
+                SpecialDonation::latest('donated_at')->get()->map(fn (SpecialDonation $donation): array => [
+                    $donation->donated_at?->format('Y-m-d'),
+                    $donation->category,
+                    $donation->donor_name,
+                    $donation->donor_phone,
+                    $donation->purpose,
+                    $donation->amount,
+                    $donation->payment_method,
+                    $donation->status,
+                    $donation->is_anonymous ? 'ya' : 'tidak',
+                    $donation->notes,
                 ]),
             ],
             'arsip-surat' => [

@@ -61,6 +61,7 @@ const navigation = [
     { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark, permission: 'finance' },
     { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote, permission: 'finance' },
     { label: 'Donasi/Infaq', href: '/donasi', icon: HeartHandshake, permission: 'donations' },
+    { label: 'Sedekah Khusus', href: '/sedekah-khusus', icon: Heart, permission: 'donations' },
     { label: 'Export Laporan', href: '/laporan/export', icon: Download, permission: 'reports' },
     { label: 'User Manajemen', href: '/users', icon: ShieldCheck, permission: 'system' },
     { label: 'Audit Log', href: '/audit-log', icon: History, permission: 'system' },

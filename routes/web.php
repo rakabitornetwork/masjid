@@ -25,6 +25,7 @@ use App\Http\Controllers\QurbanParticipantController;
 use App\Http\Controllers\ReportExportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SocialAssistanceProgramController;
+use App\Http\Controllers\SpecialDonationController;
 use App\Http\Controllers\UpdateGuideController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\WaqfAssetController;
@@ -153,6 +154,11 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('donasi', DonationCampaignController::class)
             ->parameters(['donasi' => 'donationCampaign'])
             ->names('donations')
+            ->except(['create', 'edit', 'show']);
+
+        Route::resource('sedekah-khusus', SpecialDonationController::class)
+            ->parameters(['sedekah-khusus' => 'specialDonation'])
+            ->names('special-donations')
             ->except(['create', 'edit', 'show']);
     });
 
