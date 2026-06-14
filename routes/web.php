@@ -17,6 +17,7 @@ use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\QurbanParticipantController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UpdateGuideController;
+use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ZakatController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,11 @@ Route::middleware('auth')->group(function (): void {
     Route::post('profil-admin', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::middleware('role:admin')->group(function (): void {
+        Route::resource('users', UserManagementController::class)
+            ->parameters(['users' => 'user'])
+            ->names('users')
+            ->except(['create', 'edit', 'show']);
+
         Route::get('update-aplikasi', UpdateGuideController::class)->name('updates.guide');
         Route::post('update-aplikasi/run', [UpdateGuideController::class, 'run'])->name('updates.run');
         Route::post('update-aplikasi/run-stream', [UpdateGuideController::class, 'stream'])->name('updates.stream');

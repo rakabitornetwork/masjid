@@ -16,6 +16,7 @@ import {
     Megaphone,
     Menu,
     RefreshCw,
+    ShieldCheck,
     UserRoundCheck,
     UsersRound,
     WalletCards,
@@ -40,6 +41,7 @@ const navigation = [
     { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark, permission: 'finance' },
     { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote, permission: 'finance' },
     { label: 'Donasi/Infaq', href: '/donasi', icon: HeartHandshake, permission: 'donations' },
+    { label: 'User Admin', href: '/users', icon: ShieldCheck, permission: 'system' },
     { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw, permission: 'system' },
 ];
 
