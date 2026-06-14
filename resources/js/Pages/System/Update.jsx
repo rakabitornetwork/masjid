@@ -273,7 +273,7 @@ export default function Update({
                                 </div>
                             </div>
                             <div className="border-b border-cyan-400/10 bg-[#071228] px-3 py-1.5 font-mono text-[10px] font-bold text-cyan-200">
-                                MobaXterm Personal Edition style session - SSH terminal log
+                                TeslaTech Professional Edition session - SSH terminal log
                             </div>
                             <div className="min-w-0 space-y-1.5 bg-[#070d1f] p-3 font-mono">
                                 {displayEntries.length > 0 ? (
