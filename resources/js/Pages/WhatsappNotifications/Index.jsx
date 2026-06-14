@@ -166,10 +166,10 @@ export default function Index({ notifications, api, summary }) {
                                         Jadwal: {date(notification.scheduled_at)} • Terkirim: {date(notification.sent_at)}
                                     </p>
                                     <div className="flex flex-wrap justify-end gap-2">
-                                        {api?.enabled && notification.status !== 'sent' && (
+                                        {api?.enabled && (
                                             <button className="inline-flex items-center gap-1 rounded-lg bg-teal-600 px-2 py-2 text-xs font-bold text-white" type="button" onClick={() => sendApi(notification)}>
                                                 <Send className="h-4 w-4" />
-                                                API
+                                                {notification.status === 'sent' ? 'Kirim Ulang API' : 'API'}
                                             </button>
                                         )}
                                         <a

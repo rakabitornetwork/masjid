@@ -73,12 +73,23 @@ class WhatsappNotificationController extends Controller
         }
 
         $messageId = data_get($response, 'messages.0.id') ?: data_get($response, 'data.message_id');
+        $deliveryConfirmed = (bool) data_get($response, 'data.delivery_confirmed', true);
+        $syncWarning = (bool) data_get($response, 'data.sync_warning', false);
         $notes = trim(implode("\n", array_filter([
             $whatsappNotification->notes,
             $messageId
                 ? $whatsapp->providerLabel().' message_id: '.$messageId
                 : $whatsapp->providerLabel().' berhasil mengirim pesan.',
+            $syncWarning ? 'Peringatan: pesan diterima server tetapi belum terbukti tersinkron ke HP gateway.' : null,
         ])));
+
+        if ($whatsapp->provider() === 'baileys' && (! $deliveryConfirmed || $syncWarning)) {
+            $whatsappNotification->update([
+                'notes' => $notes,
+            ]);
+
+            return back()->with('error', (string) data_get($response, 'message', 'Pesan belum terkonfirmasi terkirim. Coba kirim ulang atau cek Gateway WA.'));
+        }
 
         $whatsappNotification->update([
             'status' => 'sent',

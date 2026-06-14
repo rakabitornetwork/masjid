@@ -8,6 +8,7 @@ import { rm } from 'fs/promises';
 import makeWASocket, {
     DisconnectReason,
     fetchLatestBaileysVersion,
+    generateMessageIDV2,
     useMultiFileAuthState,
 } from '@whiskeysockets/baileys';
 
@@ -23,6 +24,12 @@ const BAILEYS_DEVICE_NAME = String(process.env.BAILEYS_DEVICE_NAME || 'Masjid Ga
 const BAILEYS_BROWSER_NAME = String(process.env.BAILEYS_BROWSER_NAME || 'Chrome').trim();
 const BAILEYS_DEVICE_OS = String(process.env.BAILEYS_DEVICE_OS || 'Aplikasi Manajemen Masjid').trim();
 const BAILEYS_BROWSER_VERSION = String(process.env.BAILEYS_BROWSER_VERSION || '120.0.6099.129').trim();
+const DELIVERY_ACK_TIMEOUT_MS = Number(process.env.BAILEYS_DELIVERY_ACK_TIMEOUT_MS || 15000);
+const pendingDeliveryAcks = new Map();
+const pendingOutboundSync = new Map();
+const sentMessageCache = new Map();
+const MIN_SERVER_ACK_STATUS = 1;
+const MIN_STRONG_DELIVERY_ACK_STATUS = 2;
 
 if (!BAILEYS_TOKEN) {
     throw new Error('BAILEYS_TOKEN wajib diisi di environment.');
@@ -103,6 +110,108 @@ const getConnectedProfilePhotoUrl = async (linkedUser) => {
     }
 };
 
+const ackMeetsMin = (ack, minStatus) => {
+    if (typeof ack === 'number') {
+        return ack >= minStatus;
+    }
+
+    return ack === 'receipt' && minStatus <= MIN_SERVER_ACK_STATUS;
+};
+
+const resolvePendingAck = (messageId, result) => {
+    const pending = pendingDeliveryAcks.get(messageId);
+
+    if (!pending || !ackMeetsMin(result.ack, pending.minStatus)) {
+        return false;
+    }
+
+    clearTimeout(pending.timer);
+    pendingDeliveryAcks.delete(messageId);
+    pending.resolve({ ...result, status: 'acked' });
+
+    return true;
+};
+
+const resolveOutboundSync = (messageId, result) => {
+    const pending = pendingOutboundSync.get(messageId);
+
+    if (!pending) {
+        return false;
+    }
+
+    clearTimeout(pending.timer);
+    pendingOutboundSync.delete(messageId);
+    pending.resolve(result);
+
+    return true;
+};
+
+const waitForMessageAck = (messageId, minStatus = MIN_SERVER_ACK_STATUS, timeoutMs = DELIVERY_ACK_TIMEOUT_MS) => new Promise((resolve) => {
+    if (!messageId) {
+        resolve({ status: 'skipped', ack: null });
+        return;
+    }
+
+    const timer = setTimeout(() => {
+        pendingDeliveryAcks.delete(messageId);
+        resolve({ status: 'timeout', ack: null });
+    }, timeoutMs);
+
+    pendingDeliveryAcks.set(messageId, { resolve, timer, minStatus });
+});
+
+const waitForOutboundSync = (messageId, timeoutMs = DELIVERY_ACK_TIMEOUT_MS) => new Promise((resolve) => {
+    if (!messageId) {
+        resolve({ status: 'skipped' });
+        return;
+    }
+
+    const timer = setTimeout(() => {
+        pendingOutboundSync.delete(messageId);
+        resolve({ status: 'timeout' });
+    }, timeoutMs);
+
+    pendingOutboundSync.set(messageId, { resolve, timer });
+});
+
+const attachDeliveryListeners = (socket) => {
+    socket.ev.on('messages.update', (updates) => {
+        for (const { key, update } of updates) {
+            if (!key?.id || update?.status === undefined) {
+                continue;
+            }
+
+            resolvePendingAck(key.id, { status: 'acked', ack: update.status });
+        }
+    });
+
+    socket.ev.on('message-receipt.update', (updates) => {
+        for (const { key } of updates) {
+            if (!key?.id) {
+                continue;
+            }
+
+            resolvePendingAck(key.id, { status: 'acked', ack: 'receipt' });
+        }
+    });
+
+    socket.ev.on('messages.upsert', ({ messages }) => {
+        for (const message of messages) {
+            const id = message?.key?.id;
+
+            if (!id) {
+                continue;
+            }
+
+            sentMessageCache.set(id, message);
+
+            if (message?.key?.fromMe) {
+                resolveOutboundSync(id, { status: 'synced', source: 'upsert' });
+            }
+        }
+    });
+};
+
 const canAutoWipeSession = (absPath) => {
     const resolved = path.resolve(absPath);
     const cwd = path.resolve(process.cwd());
@@ -149,9 +258,12 @@ const startSock = async () => {
         browser: [BAILEYS_DEVICE_OS, BAILEYS_BROWSER_NAME, BAILEYS_BROWSER_VERSION],
         markOnlineOnConnect: false,
         syncFullHistory: false,
+        emitOwnEvents: true,
+        getMessage: async (key) => sentMessageCache.get(key?.id)?.message,
     });
 
     sock.ev.on('creds.update', saveCreds);
+    attachDeliveryListeners(sock);
     sock.ev.on('connection.update', (update) => {
         const { connection, lastDisconnect, qr } = update;
 
@@ -344,7 +456,7 @@ app.post('/send-message', bearerAuth, async (req, res) => {
             });
         }
 
-        const { phone, message } = req.body || {};
+        const { phone, message, wait_delivery: waitDelivery } = req.body || {};
         const normalizedPhone = normalizePhone(phone);
 
         if (!normalizedPhone) {
@@ -373,21 +485,81 @@ app.post('/send-message', bearerAuth, async (req, res) => {
             });
         }
 
-        const sent = await sock.sendMessage(waCheck.jid || jid, { text: String(message) });
+        const sendJid = waCheck.jid || jid;
+        const messageId = generateMessageIDV2(sock?.user?.id);
+        let serverAck = null;
+        let outboundSync = null;
+        let sent = null;
+
+        if (waitDelivery) {
+            const serverAckWait = waitForMessageAck(messageId, MIN_SERVER_ACK_STATUS);
+            const syncWait = waitForOutboundSync(messageId);
+
+            try {
+                await sock.sendPresenceUpdate('available', sendJid);
+            } catch {
+                // Non-fatal. Presence update can fail without blocking message send.
+            }
+
+            sent = await sock.sendMessage(sendJid, { text: String(message) }, { messageId });
+
+            if (sent?.key?.id) {
+                sentMessageCache.set(sent.key.id, sent);
+            }
+
+            [serverAck, outboundSync] = await Promise.all([serverAckWait, syncWait]);
+        } else {
+            sent = await sock.sendMessage(sendJid, { text: String(message) });
+        }
+
         const session = getSessionHealth();
+        const finalMessageId = sent?.key?.id ?? messageId;
+        const serverAccepted =
+            serverAck?.status === 'acked' || (typeof sent?.status === 'number' && sent.status >= MIN_SERVER_ACK_STATUS);
+        const syncedToClient = outboundSync?.status === 'synced';
+        const strongAck =
+            serverAck?.status === 'acked' && typeof serverAck?.ack === 'number' && serverAck.ack >= MIN_STRONG_DELIVERY_ACK_STATUS;
+        const deliveryConfirmed = !waitDelivery || syncedToClient || strongAck;
+
+        const baseData = {
+            jid: sendJid,
+            normalized_phone: normalizedPhone,
+            message_id: finalMessageId,
+            timestamp: sent?.messageTimestamp || null,
+            server_accepted: serverAccepted,
+            server_ack: serverAck?.ack ?? null,
+            delivery_status: serverAck?.status ?? null,
+            outbound_sync: outboundSync?.status ?? null,
+            delivery_confirmed: deliveryConfirmed,
+            session_ready: session.session_ready,
+            linked_phone: session.linked_phone,
+            linked_user: session.linked_user,
+        };
+
+        if (waitDelivery && !serverAccepted) {
+            return res.status(502).json({
+                ok: false,
+                message: 'WhatsApp server belum mengonfirmasi pesan. Coba kirim ulang atau reset session gateway jika berulang.',
+                data: baseData,
+            });
+        }
+
+        if (waitDelivery && serverAccepted && !deliveryConfirmed) {
+            return res.json({
+                ok: true,
+                message: `Server WhatsApp menerima pesan, tetapi belum terbukti tersinkron ke HP gateway ${session.linked_phone || ''}. Cek chat di HP gateway atau coba kirim ulang.`,
+                data: {
+                    ...baseData,
+                    sync_warning: true,
+                    server_ack_only: true,
+                },
+            });
+        }
 
         return res.json({
             ok: true,
-            message: 'Pesan diterima gateway masjid.',
-            data: {
-                jid: waCheck.jid || jid,
-                normalized_phone: normalizedPhone,
-                message_id: sent?.key?.id ?? null,
-                timestamp: sent?.messageTimestamp || null,
-                session_ready: session.session_ready,
-                linked_phone: session.linked_phone,
-                linked_user: session.linked_user,
-            },
+            message: deliveryConfirmed ? 'Pesan terkirim dan tersinkron.' : 'Pesan diterima gateway masjid.',
+            data: baseData,
         });
     } catch (error) {
         logger.error({ err: error }, 'send-message failed');
