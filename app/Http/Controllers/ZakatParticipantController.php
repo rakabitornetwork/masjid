@@ -92,10 +92,57 @@ class ZakatParticipantController extends Controller
             'mustahik' => 'Mustahik',
             default => 'Muzakki & Mustahik',
         };
+        $details = array_filter([
+            "Jenis Data: {$role}",
+            'Status Data: '.($participant->is_active ? 'Aktif' : 'Nonaktif'),
+            "Jumlah Keluarga: {$participant->family_count} orang",
+            in_array($participant->role, ['muzakki', 'both'], true) ? 'Tipe Muzakki: '.$this->muzakkiTypeLabel((string) $participant->muzakki_type) : null,
+            in_array($participant->role, ['mustahik', 'both'], true) ? 'Kategori Mustahik: '.$this->mustahikCategoryLabel((string) $participant->mustahik_category) : null,
+            filled($participant->occupation) ? 'Pekerjaan: '.$participant->occupation : null,
+            filled($participant->income_range) ? 'Rentang Penghasilan: '.$this->incomeRangeLabel((string) $participant->income_range) : null,
+            filled($participant->address) ? 'Alamat: '.$participant->address : null,
+            filled($participant->notes) ? 'Catatan: '.$participant->notes : null,
+        ]);
 
         return "Assalamu'alaikum warahmatullahi wabarakatuh.\n\n"
             ."Bapak/Ibu {$participant->name}, data Anda sebagai {$role} telah berhasil terdaftar di sistem Masjid.\n\n"
+            ."Detail Data:\n"
+            .implode("\n", $details)."\n\n"
             ."Informasi ini dikirim otomatis sebagai konfirmasi pencatatan data. Jika ada kekeliruan data, silakan menghubungi pengurus masjid.\n\n"
             .'Jazakumullahu khairan.';
+    }
+
+    private function muzakkiTypeLabel(string $type): string
+    {
+        return match ($type) {
+            'family' => 'Keluarga',
+            'business' => 'Usaha/Perusahaan',
+            'institution' => 'Lembaga',
+            default => 'Perorangan',
+        };
+    }
+
+    private function mustahikCategoryLabel(string $category): string
+    {
+        return match ($category) {
+            'fakir_miskin' => 'Fakir/Miskin',
+            'amil' => 'Amil',
+            'muallaf' => 'Muallaf',
+            'gharim' => 'Gharim',
+            'fisabilillah' => 'Fisabilillah',
+            'ibnu_sabil' => 'Ibnu Sabil',
+            default => 'Lainnya',
+        };
+    }
+
+    private function incomeRangeLabel(string $range): string
+    {
+        return match ($range) {
+            'under_1m' => '< Rp1 juta',
+            '1m_3m' => 'Rp1 juta - Rp3 juta',
+            '3m_5m' => 'Rp3 juta - Rp5 juta',
+            'above_5m' => '> Rp5 juta',
+            default => 'Belum diisi',
+        };
     }
 }

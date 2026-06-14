@@ -133,13 +133,19 @@ class ZakatController extends Controller
     private function collectionConfirmationMessage(ZakatCollection $collection): string
     {
         $receivedAt = $collection->received_at?->translatedFormat('d F Y') ?: '-';
+        $details = array_filter([
+            'Jenis: '.$this->zakatTypeLabel($collection->type),
+            'Nominal: '.$this->zakatAmount($collection->money_amount, $collection->rice_amount),
+            'Metode: '.$this->paymentMethodLabel($collection->payment_method),
+            "Tanggal Terima: {$receivedAt}",
+            'Status: '.$this->collectionStatusLabel($collection->status),
+            filled($collection->notes) ? 'Catatan: '.$collection->notes : null,
+        ]);
 
         return "Assalamu'alaikum warahmatullahi wabarakatuh.\n\n"
             ."Bapak/Ibu {$collection->muzakki_name}, penerimaan zakat Anda telah berhasil tercatat di sistem Masjid.\n\n"
-            .'Jenis: '.$this->zakatTypeLabel($collection->type)."\n"
-            .'Nominal: '.$this->zakatAmount($collection->money_amount, $collection->rice_amount)."\n"
-            .'Metode: '.$this->paymentMethodLabel($collection->payment_method)."\n"
-            ."Tanggal Terima: {$receivedAt}\n\n"
+            ."Detail Penerimaan:\n"
+            .implode("\n", $details)."\n\n"
             ."Terima kasih, semoga zakat yang ditunaikan menjadi keberkahan dan diterima Allah SWT.\n\n"
             .'Jazakumullahu khairan.';
     }
@@ -147,12 +153,19 @@ class ZakatController extends Controller
     private function distributionConfirmationMessage(ZakatDistribution $distribution): string
     {
         $distributedAt = $distribution->distributed_at?->translatedFormat('d F Y') ?: '-';
+        $details = array_filter([
+            'Kategori: '.$this->mustahikCategoryLabel($distribution->mustahik_category),
+            'Bantuan: '.$this->zakatAmount($distribution->money_amount, $distribution->rice_amount),
+            "Tanggal Salur: {$distributedAt}",
+            'Status: '.$this->distributionStatusLabel($distribution->status),
+            filled($distribution->address) ? 'Alamat: '.$distribution->address : null,
+            filled($distribution->notes) ? 'Catatan: '.$distribution->notes : null,
+        ]);
 
         return "Assalamu'alaikum warahmatullahi wabarakatuh.\n\n"
             ."Bapak/Ibu {$distribution->mustahik_name}, penyaluran zakat untuk Anda telah berhasil tercatat di sistem Masjid.\n\n"
-            .'Kategori: '.$this->mustahikCategoryLabel($distribution->mustahik_category)."\n"
-            .'Bantuan: '.$this->zakatAmount($distribution->money_amount, $distribution->rice_amount)."\n"
-            ."Tanggal Salur: {$distributedAt}\n\n"
+            ."Detail Penyaluran:\n"
+            .implode("\n", $details)."\n\n"
             ."Informasi ini dikirim otomatis sebagai konfirmasi pencatatan penyaluran zakat.\n\n"
             .'Jazakumullahu khairan.';
     }
@@ -190,6 +203,24 @@ class ZakatController extends Controller
             'qris' => 'QRIS',
             'rice' => 'Beras',
             default => 'Tunai',
+        };
+    }
+
+    private function collectionStatusLabel(string $status): string
+    {
+        return match ($status) {
+            'pending' => 'Pending',
+            'cancelled' => 'Dibatalkan',
+            default => 'Diterima',
+        };
+    }
+
+    private function distributionStatusLabel(string $status): string
+    {
+        return match ($status) {
+            'scheduled' => 'Terjadwal',
+            'cancelled' => 'Dibatalkan',
+            default => 'Tersalurkan',
         };
     }
 

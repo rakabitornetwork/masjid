@@ -86,14 +86,21 @@ class SocialAssistanceProgramController extends Controller
             ? 'Rp'.number_format((float) $program->amount, 0, ',', '.')
             : '-';
         $item = filled($program->item_description) ? $program->item_description : '-';
+        $details = array_filter([
+            "Program: {$program->program_name}",
+            'Kategori: '.$this->categoryLabel($program->category),
+            'Status: '.$this->statusLabel($program->status),
+            "Tanggal Distribusi: {$distributedAt}",
+            "Nominal: {$amount}",
+            "Bantuan Barang/Paket: {$item}",
+            filled($program->recipient_address) ? 'Alamat Penerima: '.$program->recipient_address : null,
+            filled($program->notes) ? 'Catatan: '.$program->notes : null,
+        ]);
 
         return "Assalamu'alaikum warahmatullahi wabarakatuh.\n\n"
             ."Bapak/Ibu {$program->recipient_name}, data bantuan sosial untuk Anda telah berhasil tercatat di sistem Masjid.\n\n"
-            ."Program: {$program->program_name}\n"
-            .'Kategori: '.$this->categoryLabel($program->category)."\n"
-            ."Tanggal Distribusi: {$distributedAt}\n"
-            ."Nominal: {$amount}\n"
-            ."Bantuan Barang/Paket: {$item}\n\n"
+            ."Detail Program:\n"
+            .implode("\n", $details)."\n\n"
             ."Informasi ini dikirim otomatis sebagai konfirmasi pencatatan program sosial.\n\n"
             .'Jazakumullahu khairan.';
     }
@@ -108,6 +115,16 @@ class SocialAssistanceProgramController extends Controller
             'disaster' => 'Bencana',
             'ramadhan' => 'Ramadhan',
             default => 'Lainnya',
+        };
+    }
+
+    private function statusLabel(string $status): string
+    {
+        return match ($status) {
+            'scheduled' => 'Terjadwal',
+            'distributed' => 'Tersalurkan',
+            'cancelled' => 'Dibatalkan',
+            default => 'Rencana',
         };
     }
 }

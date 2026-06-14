@@ -94,14 +94,24 @@ class QurbanParticipantController extends Controller
         $amountPaid = $participant->amount_paid > 0
             ? 'Rp'.number_format((float) $participant->amount_paid, 0, ',', '.')
             : '-';
+        $slaughteredAt = $participant->slaughtered_at?->translatedFormat('d F Y') ?: '-';
+        $details = array_filter([
+            "Jenis Qurban: {$animal}",
+            filled($participant->group_name) ? 'Kelompok/Sapi: '.$participant->group_name : null,
+            "Tanggal Daftar: {$registeredAt}",
+            "Tanggal Sembelih: {$slaughteredAt}",
+            "Target Biaya: {$targetAmount}",
+            "Sudah Dibayar: {$amountPaid}",
+            'Status Pembayaran: '.$this->paymentStatusLabel($participant->payment_status),
+            'Status Qurban: '.$this->slaughterStatusLabel($participant->slaughter_status),
+            filled($participant->distribution_notes) ? 'Catatan Distribusi: '.$participant->distribution_notes : null,
+            filled($participant->notes) ? 'Catatan: '.$participant->notes : null,
+        ]);
 
         return "Assalamu'alaikum warahmatullahi wabarakatuh.\n\n"
             ."Bapak/Ibu {$participant->participant_name}, data qurban Anda telah berhasil tercatat di sistem Masjid.\n\n"
-            ."Jenis Qurban: {$animal}\n"
-            ."Tanggal Daftar: {$registeredAt}\n"
-            ."Target Biaya: {$targetAmount}\n"
-            ."Sudah Dibayar: {$amountPaid}\n"
-            .'Status Pembayaran: '.$this->paymentStatusLabel($participant->payment_status)."\n\n"
+            ."Detail Qurban:\n"
+            .implode("\n", $details)."\n\n"
             ."Terima kasih atas partisipasi qurban Anda. Informasi ini dikirim otomatis sebagai konfirmasi pencatatan data.\n\n"
             .'Jazakumullahu khairan.';
     }
@@ -112,6 +122,16 @@ class QurbanParticipantController extends Controller
             'paid' => 'Lunas',
             'partial' => 'Sebagian',
             default => 'Belum Bayar',
+        };
+    }
+
+    private function slaughterStatusLabel(string $status): string
+    {
+        return match ($status) {
+            'ready' => 'Siap Disembelih',
+            'slaughtered' => 'Disembelih',
+            'distributed' => 'Dibagikan',
+            default => 'Terdaftar',
         };
     }
 }

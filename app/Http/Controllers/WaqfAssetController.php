@@ -86,13 +86,22 @@ class WaqfAssetController extends Controller
         $estimatedValue = $asset->estimated_value > 0
             ? 'Rp'.number_format((float) $asset->estimated_value, 0, ',', '.')
             : '-';
+        $details = array_filter([
+            "Nama Wakaf: {$asset->asset_name}",
+            'Kategori: '.$this->categoryLabel($asset->category),
+            'Status: '.$this->statusLabel($asset->status),
+            "Tanggal Terima: {$receivedAt}",
+            "Nilai Estimasi: {$estimatedValue}",
+            filled($asset->location) ? 'Lokasi: '.$asset->location : null,
+            filled($asset->certificate_number) ? 'Nomor Sertifikat: '.$asset->certificate_number : null,
+            filled($asset->description) ? 'Deskripsi: '.$asset->description : null,
+            filled($asset->notes) ? 'Catatan: '.$asset->notes : null,
+        ]);
 
         return "Assalamu'alaikum warahmatullahi wabarakatuh.\n\n"
             ."Bapak/Ibu {$asset->wakif_name}, wakaf Anda telah berhasil tercatat di sistem Masjid.\n\n"
-            ."Nama Wakaf: {$asset->asset_name}\n"
-            .'Kategori: '.$this->categoryLabel($asset->category)."\n"
-            ."Tanggal Terima: {$receivedAt}\n"
-            ."Nilai Estimasi: {$estimatedValue}\n\n"
+            ."Detail Wakaf:\n"
+            .implode("\n", $details)."\n\n"
             ."Terima kasih atas amanah wakaf yang diberikan. Semoga menjadi amal jariyah yang terus mengalir pahalanya.\n\n"
             .'Jazakumullahu khairan.';
     }
@@ -107,6 +116,19 @@ class WaqfAssetController extends Controller
             'vehicle' => 'Kendaraan',
             'book' => 'Kitab/Buku',
             default => 'Lainnya',
+        };
+    }
+
+    private function statusLabel(string $status): string
+    {
+        return match ($status) {
+            'pledged' => 'Ikrar',
+            'managed' => 'Dikelola',
+            'productive' => 'Produktif',
+            'maintenance' => 'Perawatan',
+            'sold' => 'Dijual',
+            'replaced' => 'Diganti',
+            default => 'Dikelola',
         };
     }
 }
