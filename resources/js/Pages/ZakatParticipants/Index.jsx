@@ -33,7 +33,7 @@ const roleTone = {
     both: 'bg-teal-100 text-teal-700',
 };
 
-export default function Index({ participants, summary, api }) {
+export default function Index({ participants, summary }) {
     const { data, setData, post, put, processing, errors, reset } = useForm(emptyForm);
     const editingId = data.id || null;
 
@@ -98,19 +98,13 @@ export default function Index({ participants, summary, api }) {
                         <TextInput label="Nomor WA" value={data.phone || ''} onChange={(event) => setData('phone', event.target.value)} error={errors.phone} />
                         {!editingId && (
                             <div className="md:col-span-2 rounded-xl border border-teal-100 bg-teal-50/70 p-3">
-                                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                                    <div className="flex items-start gap-2.5">
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="flex items-center gap-2.5">
                                         <div className="rounded-lg bg-emerald-100 p-2 text-emerald-700">
                                             <MessageCircle className="h-4 w-4" />
                                         </div>
-                                        <div>
+                                        <div className="min-w-0">
                                             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Konfirmasi WhatsApp</p>
-                                            <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-600">
-                                                Kirim pesan otomatis ke nomor WA setelah data berhasil ditambahkan. Riwayatnya akan masuk ke menu Notifikasi WhatsApp.
-                                            </p>
-                                            <p className={`mt-1 text-[11px] font-bold ${api?.enabled ? 'text-emerald-700' : 'text-amber-700'}`}>
-                                                {api?.enabled ? `Gateway aktif: ${api.provider}` : 'Gateway WhatsApp belum aktif, data tetap bisa disimpan.'}
-                                            </p>
                                         </div>
                                     </div>
                                     <div className="shrink-0">

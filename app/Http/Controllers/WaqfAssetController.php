@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WaqfAsset;
+use App\Services\AutomatedWhatsappNotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -10,10 +11,11 @@ use Inertia\Response;
 
 class WaqfAssetController extends Controller
 {
-    public function index(): Response
+    public function index(AutomatedWhatsappNotificationService $whatsapp): Response
     {
         return Inertia::render('WaqfAssets/Index', [
             'assets' => WaqfAsset::latest('received_at')->latest()->get(),
+            'api' => $whatsapp->gatewayInfo(),
             'summary' => [
                 'total' => WaqfAsset::count(),
                 'managed' => WaqfAsset::where('status', 'managed')->count(),
@@ -23,11 +25,25 @@ class WaqfAssetController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, AutomatedWhatsappNotificationService $whatsapp): RedirectResponse
     {
-        WaqfAsset::create($this->validatedData($request));
+        $asset = WaqfAsset::create($this->validatedData($request));
 
-        return back()->with('success', 'Data wakaf berhasil ditambahkan.');
+        if (! $request->boolean('send_whatsapp')) {
+            return back()->with('success', 'Data wakaf berhasil ditambahkan.');
+        }
+
+        $sendResult = $whatsapp->send(
+            title: 'Konfirmasi Data Wakaf',
+            category: 'wakaf',
+            recipientName: $asset->wakif_name,
+            recipientPhone: $asset->wakif_phone,
+            message: $this->waqfConfirmationMessage($asset),
+            sourceNotes: 'Dibuat otomatis dari form Wakaf.',
+            missingPhoneMessage: 'WhatsApp tidak dikirim karena nomor WA wakif belum diisi.',
+        );
+
+        return back()->with('success', 'Data wakaf berhasil ditambahkan. '.$sendResult);
     }
 
     public function update(Request $request, WaqfAsset $waqfAsset): RedirectResponse
@@ -62,5 +78,35 @@ class WaqfAssetController extends Controller
             'status' => ['required', 'in:pledged,managed,productive,maintenance,sold,replaced'],
             'notes' => ['nullable', 'string'],
         ]);
+    }
+
+    private function waqfConfirmationMessage(WaqfAsset $asset): string
+    {
+        $receivedAt = $asset->received_at?->translatedFormat('d F Y') ?: '-';
+        $estimatedValue = $asset->estimated_value > 0
+            ? 'Rp'.number_format((float) $asset->estimated_value, 0, ',', '.')
+            : '-';
+
+        return "Assalamu'alaikum warahmatullahi wabarakatuh.\n\n"
+            ."Bapak/Ibu {$asset->wakif_name}, wakaf Anda telah berhasil tercatat di sistem Masjid.\n\n"
+            ."Nama Wakaf: {$asset->asset_name}\n"
+            .'Kategori: '.$this->categoryLabel($asset->category)."\n"
+            ."Tanggal Terima: {$receivedAt}\n"
+            ."Nilai Estimasi: {$estimatedValue}\n\n"
+            ."Terima kasih atas amanah wakaf yang diberikan. Semoga menjadi amal jariyah yang terus mengalir pahalanya.\n\n"
+            .'Jazakumullahu khairan.';
+    }
+
+    private function categoryLabel(string $category): string
+    {
+        return match ($category) {
+            'cash' => 'Uang',
+            'land' => 'Tanah',
+            'building' => 'Bangunan',
+            'equipment' => 'Peralatan',
+            'vehicle' => 'Kendaraan',
+            'book' => 'Kitab/Buku',
+            default => 'Lainnya',
+        };
     }
 }

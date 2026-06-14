@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ZakatParticipant;
-use App\Models\WhatsappNotification;
-use App\Services\WhatsappCloudApiService;
+use App\Services\AutomatedWhatsappNotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,14 +11,11 @@ use Inertia\Response;
 
 class ZakatParticipantController extends Controller
 {
-    public function index(WhatsappCloudApiService $whatsapp): Response
+    public function index(AutomatedWhatsappNotificationService $whatsapp): Response
     {
         return Inertia::render('ZakatParticipants/Index', [
             'participants' => ZakatParticipant::latest()->get(),
-            'api' => [
-                'enabled' => $whatsapp->isConfigured(),
-                'provider' => $whatsapp->providerLabel(),
-            ],
+            'api' => $whatsapp->gatewayInfo(),
             'summary' => [
                 'total' => ZakatParticipant::count(),
                 'active' => ZakatParticipant::where('is_active', true)->count(),
@@ -29,7 +25,7 @@ class ZakatParticipantController extends Controller
         ]);
     }
 
-    public function store(Request $request, WhatsappCloudApiService $whatsapp): RedirectResponse
+    public function store(Request $request, AutomatedWhatsappNotificationService $whatsapp): RedirectResponse
     {
         $participant = ZakatParticipant::create($this->validatedData($request));
 
@@ -37,7 +33,14 @@ class ZakatParticipantController extends Controller
             return back()->with('success', 'Data muzakki/mustahik berhasil ditambahkan.');
         }
 
-        $sendResult = $this->sendRegistrationNotification($participant, $whatsapp);
+        $sendResult = $whatsapp->send(
+            title: 'Konfirmasi Data Muzakki/Mustahik',
+            category: 'zakat',
+            recipientName: $participant->name,
+            recipientPhone: $participant->phone,
+            message: $this->registrationMessage($participant),
+            sourceNotes: 'Dibuat otomatis dari form Muzakki & Mustahik.',
+        );
 
         return back()->with('success', 'Data muzakki/mustahik berhasil ditambahkan. '.$sendResult);
     }
@@ -80,72 +83,6 @@ class ZakatParticipantController extends Controller
         $data['is_active'] = (bool) ($data['is_active'] ?? false);
 
         return $data;
-    }
-
-    private function sendRegistrationNotification(ZakatParticipant $participant, WhatsappCloudApiService $whatsapp): string
-    {
-        if (! filled($participant->phone)) {
-            return 'WhatsApp tidak dikirim karena nomor WA belum diisi.';
-        }
-
-        if (! $whatsapp->isConfigured()) {
-            return 'WhatsApp tidak dikirim karena gateway belum aktif.';
-        }
-
-        $message = $this->registrationMessage($participant);
-        $notification = WhatsappNotification::create([
-            'title' => 'Konfirmasi Data Muzakki/Mustahik',
-            'category' => 'zakat',
-            'recipient_name' => $participant->name,
-            'recipient_phone' => $participant->phone,
-            'message' => $message,
-            'status' => 'draft',
-            'scheduled_at' => null,
-            'sent_at' => null,
-            'notes' => 'Dibuat otomatis dari form Muzakki & Mustahik.',
-        ]);
-
-        try {
-            $response = $whatsapp->sendText($participant->phone, $message);
-        } catch (\Throwable $exception) {
-            $errorMessage = $whatsapp->sendErrorMessage($exception);
-
-            $notification->update([
-                'status' => 'failed',
-                'notes' => trim($notification->notes."\nGagal mengirim: ".$errorMessage),
-            ]);
-
-            return 'WhatsApp gagal dikirim: '.$errorMessage;
-        }
-
-        $messageId = data_get($response, 'messages.0.id') ?: data_get($response, 'data.message_id');
-        $deliveryConfirmed = (bool) data_get($response, 'data.delivery_confirmed', true);
-        $syncWarning = (bool) data_get($response, 'data.sync_warning', false);
-        $notes = trim(implode("\n", array_filter([
-            $notification->notes,
-            $messageId
-                ? $whatsapp->providerLabel().' message_id: '.$messageId
-                : $whatsapp->providerLabel().' berhasil mengirim pesan.',
-            $syncWarning ? 'Peringatan: pesan diterima server tetapi belum terbukti tersinkron ke HP gateway.' : null,
-        ])));
-
-        if ($whatsapp->provider() === 'baileys' && (! $deliveryConfirmed || $syncWarning)) {
-            $notification->update([
-                'status' => 'pending_review',
-                'sent_at' => null,
-                'notes' => $notes,
-            ]);
-
-            return 'WhatsApp masuk riwayat dengan status perlu dicek.';
-        }
-
-        $notification->update([
-            'status' => 'sent',
-            'sent_at' => now(),
-            'notes' => $notes,
-        ]);
-
-        return 'WhatsApp konfirmasi berhasil dikirim.';
     }
 
     private function registrationMessage(ZakatParticipant $participant): string

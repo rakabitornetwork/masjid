@@ -1,9 +1,11 @@
-const baseInput =
-    'mt-1 w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-900 shadow-xs outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-100';
+const baseControl =
+    'mt-1 w-full rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-900 shadow-xs outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-100';
+const inputControl = `${baseControl} h-9`;
+const textareaControl = `${baseControl} min-h-24 py-2 resize-y`;
 
 export function Field({ label, error, children }) {
     return (
-        <label className="block text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
+        <label className="block min-w-0 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
             {label}
             {children}
             {error && <span className="mt-1 block text-[10px] font-semibold normal-case tracking-normal text-rose-600">{error}</span>}
@@ -14,7 +16,7 @@ export function Field({ label, error, children }) {
 export function TextInput({ label, error, ...props }) {
     return (
         <Field label={label} error={error}>
-            <input className={baseInput} {...props} />
+            <input className={inputControl} {...props} />
         </Field>
     );
 }
@@ -22,7 +24,7 @@ export function TextInput({ label, error, ...props }) {
 export function TextareaInput({ label, error, rows = 4, ...props }) {
     return (
         <Field label={label} error={error}>
-            <textarea className={baseInput} rows={rows} {...props} />
+            <textarea className={textareaControl} rows={rows} {...props} />
         </Field>
     );
 }
@@ -30,7 +32,7 @@ export function TextareaInput({ label, error, rows = 4, ...props }) {
 export function SelectInput({ label, error, children, ...props }) {
     return (
         <Field label={label} error={error}>
-            <select className={baseInput} {...props}>
+            <select className={inputControl} {...props}>
                 {children}
             </select>
         </Field>
@@ -39,7 +41,7 @@ export function SelectInput({ label, error, children, ...props }) {
 
 export function CheckboxInput({ label, checked, onChange }) {
     return (
-        <label className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700">
+        <label className="flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700">
             <input
                 type="checkbox"
                 checked={checked}

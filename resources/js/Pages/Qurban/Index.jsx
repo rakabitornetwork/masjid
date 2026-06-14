@@ -1,7 +1,7 @@
 import { router, useForm } from '@inertiajs/react';
-import { Beef, Edit3, Plus, Trash2, X } from 'lucide-react';
+import { Beef, Edit3, MessageCircle, Plus, Trash2, X } from 'lucide-react';
 import StatCard from '../../Components/StatCard';
-import { PrimaryButton, SecondaryButton, SelectInput, TextareaInput, TextInput } from '../../Components/FormControls';
+import { CheckboxInput, PrimaryButton, SecondaryButton, SelectInput, TextareaInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
 import { date, label, money } from '../../lib/formatters';
 
@@ -21,6 +21,7 @@ const emptyForm = {
     slaughtered_at: '',
     distribution_notes: '',
     notes: '',
+    send_whatsapp: true,
 };
 
 export default function Index({ participants, summary }) {
@@ -37,6 +38,7 @@ export default function Index({ participants, summary }) {
             ...participant,
             registered_at: participant.registered_at?.slice(0, 10) || today,
             slaughtered_at: participant.slaughtered_at?.slice(0, 10) || '',
+            send_whatsapp: false,
         });
     };
 
@@ -67,6 +69,23 @@ export default function Index({ participants, summary }) {
                     <div className="mt-3 grid gap-3 md:grid-cols-2">
                         <TextInput label="Nama Pekurban" value={data.participant_name} onChange={(event) => setData('participant_name', event.target.value)} error={errors.participant_name} />
                         <TextInput label="Telepon" value={data.phone || ''} onChange={(event) => setData('phone', event.target.value)} error={errors.phone} />
+                        {!editingId && (
+                            <div className="md:col-span-2 rounded-xl border border-teal-100 bg-teal-50/70 p-3">
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="rounded-lg bg-emerald-100 p-2 text-emerald-700">
+                                            <MessageCircle className="h-4 w-4" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Konfirmasi WhatsApp</p>
+                                        </div>
+                                    </div>
+                                    <div className="shrink-0">
+                                        <CheckboxInput label="Kirim WA" checked={Boolean(data.send_whatsapp)} onChange={(checked) => setData('send_whatsapp', checked)} />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         <SelectInput label="Jenis Hewan" value={data.animal_type} onChange={(event) => setData('animal_type', event.target.value)} error={errors.animal_type}>
                             <option value="goat">Kambing</option>
                             <option value="cow">Sapi</option>

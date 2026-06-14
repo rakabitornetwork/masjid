@@ -1,7 +1,7 @@
 import { router, useForm } from '@inertiajs/react';
-import { CheckCircle2, Edit3, HandHeart, Plus, Trash2, UsersRound, WalletCards, X } from 'lucide-react';
+import { CheckCircle2, Edit3, HandHeart, MessageCircle, Plus, Trash2, UsersRound, WalletCards, X } from 'lucide-react';
 import StatCard from '../../Components/StatCard';
-import { PrimaryButton, SecondaryButton, SelectInput, TextareaInput, TextInput } from '../../Components/FormControls';
+import { CheckboxInput, PrimaryButton, SecondaryButton, SelectInput, TextareaInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
 import { date, label, money } from '../../lib/formatters';
 
@@ -16,6 +16,7 @@ const emptyForm = {
     distributed_at: '',
     status: 'planned',
     notes: '',
+    send_whatsapp: true,
 };
 
 const statusTone = {
@@ -40,6 +41,7 @@ export default function Index({ programs, summary }) {
         setData({
             ...program,
             distributed_at: program.distributed_at?.slice(0, 10) || '',
+            send_whatsapp: false,
         });
     };
 
@@ -98,6 +100,23 @@ export default function Index({ programs, summary }) {
                         </SelectInput>
                         <TextInput label="Nama Penerima" value={data.recipient_name} onChange={(event) => setData('recipient_name', event.target.value)} error={errors.recipient_name} />
                         <TextInput label="Nomor WA" value={data.recipient_phone || ''} onChange={(event) => setData('recipient_phone', event.target.value)} error={errors.recipient_phone} />
+                        {!editingId && (
+                            <div className="md:col-span-2 rounded-xl border border-teal-100 bg-teal-50/70 p-3">
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="rounded-lg bg-emerald-100 p-2 text-emerald-700">
+                                            <MessageCircle className="h-4 w-4" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Konfirmasi WhatsApp</p>
+                                        </div>
+                                    </div>
+                                    <div className="shrink-0">
+                                        <CheckboxInput label="Kirim WA" checked={Boolean(data.send_whatsapp)} onChange={(checked) => setData('send_whatsapp', checked)} />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         <TextInput label="Tanggal Distribusi" type="date" value={data.distributed_at || ''} onChange={(event) => setData('distributed_at', event.target.value)} error={errors.distributed_at} />
                         <TextInput label="Nominal Bantuan" type="number" value={data.amount || ''} onChange={(event) => setData('amount', event.target.value)} error={errors.amount} />
                         <div className="md:col-span-2">

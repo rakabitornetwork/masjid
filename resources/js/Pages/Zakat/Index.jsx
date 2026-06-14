@@ -1,7 +1,7 @@
 import { router, useForm } from '@inertiajs/react';
-import { HandCoins, Plus, Trash2, UsersRound } from 'lucide-react';
+import { HandCoins, MessageCircle, Plus, Trash2, UsersRound } from 'lucide-react';
 import StatCard from '../../Components/StatCard';
-import { PrimaryButton, SelectInput, TextareaInput, TextInput } from '../../Components/FormControls';
+import { CheckboxInput, PrimaryButton, SelectInput, TextareaInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
 import { date, label, money } from '../../lib/formatters';
 
@@ -19,6 +19,7 @@ export default function Index({ collections, distributions, muzakkiOptions = [],
         received_at: today,
         status: 'received',
         notes: '',
+        send_whatsapp: true,
     });
     const distributionForm = useForm({
         zakat_participant_id: '',
@@ -31,6 +32,7 @@ export default function Index({ collections, distributions, muzakkiOptions = [],
         distributed_at: today,
         status: 'distributed',
         notes: '',
+        send_whatsapp: true,
     });
 
     const submitCollection = (event) => {
@@ -108,6 +110,10 @@ export default function Index({ collections, distributions, muzakkiOptions = [],
                         </div>
                         <TextInput label="Nama Muzakki" value={collectionForm.data.muzakki_name} onChange={(event) => collectionForm.setData('muzakki_name', event.target.value)} error={collectionForm.errors.muzakki_name} />
                         <TextInput label="Telepon" value={collectionForm.data.muzakki_phone || ''} onChange={(event) => collectionForm.setData('muzakki_phone', event.target.value)} error={collectionForm.errors.muzakki_phone} />
+                        <WhatsappConfirmationCard
+                            checked={Boolean(collectionForm.data.send_whatsapp)}
+                            onChange={(checked) => collectionForm.setData('send_whatsapp', checked)}
+                        />
                         <SelectInput label="Jenis Zakat" value={collectionForm.data.type} onChange={(event) => collectionForm.setData('type', event.target.value)} error={collectionForm.errors.type}>
                             <option value="fitrah">Zakat Fitrah</option>
                             <option value="maal">Zakat Maal</option>
@@ -161,6 +167,10 @@ export default function Index({ collections, distributions, muzakkiOptions = [],
                             <option value="ibnu_sabil">Ibnu Sabil</option>
                         </SelectInput>
                         <TextInput label="Telepon" value={distributionForm.data.phone || ''} onChange={(event) => distributionForm.setData('phone', event.target.value)} error={distributionForm.errors.phone} />
+                        <WhatsappConfirmationCard
+                            checked={Boolean(distributionForm.data.send_whatsapp)}
+                            onChange={(checked) => distributionForm.setData('send_whatsapp', checked)}
+                        />
                         <TextInput label="Tanggal Salur" type="date" value={distributionForm.data.distributed_at} onChange={(event) => distributionForm.setData('distributed_at', event.target.value)} error={distributionForm.errors.distributed_at} />
                         <TextInput label="Nominal Uang" type="number" value={distributionForm.data.money_amount || ''} onChange={(event) => distributionForm.setData('money_amount', event.target.value)} error={distributionForm.errors.money_amount} />
                         <TextInput label="Beras (kg)" type="number" step="0.01" value={distributionForm.data.rice_amount || ''} onChange={(event) => distributionForm.setData('rice_amount', event.target.value)} error={distributionForm.errors.rice_amount} />
@@ -189,6 +199,26 @@ export default function Index({ collections, distributions, muzakkiOptions = [],
                 <History title="Riwayat Penyaluran" items={distributions} type="distribution" onDelete={deleteDistribution} />
             </section>
         </AppLayout>
+    );
+}
+
+function WhatsappConfirmationCard({ checked, onChange }) {
+    return (
+        <div className="md:col-span-2 rounded-xl border border-teal-100 bg-teal-50/70 p-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-2.5">
+                    <div className="rounded-lg bg-emerald-100 p-2 text-emerald-700">
+                        <MessageCircle className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Konfirmasi WhatsApp</p>
+                    </div>
+                </div>
+                <div className="shrink-0">
+                    <CheckboxInput label="Kirim WA" checked={checked} onChange={onChange} />
+                </div>
+            </div>
+        </div>
     );
 }
 

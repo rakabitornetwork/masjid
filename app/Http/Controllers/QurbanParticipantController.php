@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\QurbanParticipant;
+use App\Services\AutomatedWhatsappNotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -10,10 +11,11 @@ use Inertia\Response;
 
 class QurbanParticipantController extends Controller
 {
-    public function index(): Response
+    public function index(AutomatedWhatsappNotificationService $whatsapp): Response
     {
         return Inertia::render('Qurban/Index', [
             'participants' => QurbanParticipant::latest('registered_at')->latest()->get(),
+            'api' => $whatsapp->gatewayInfo(),
             'summary' => [
                 'total' => QurbanParticipant::count(),
                 'goat' => QurbanParticipant::where('animal_type', 'goat')->count(),
@@ -23,11 +25,25 @@ class QurbanParticipantController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, AutomatedWhatsappNotificationService $whatsapp): RedirectResponse
     {
-        QurbanParticipant::create($this->validatedData($request));
+        $participant = QurbanParticipant::create($this->validatedData($request));
 
-        return back()->with('success', 'Data qurban berhasil ditambahkan.');
+        if (! $request->boolean('send_whatsapp')) {
+            return back()->with('success', 'Data qurban berhasil ditambahkan.');
+        }
+
+        $sendResult = $whatsapp->send(
+            title: 'Konfirmasi Data Qurban',
+            category: 'qurban',
+            recipientName: $participant->participant_name,
+            recipientPhone: $participant->phone,
+            message: $this->qurbanConfirmationMessage($participant),
+            sourceNotes: 'Dibuat otomatis dari form Qurban.',
+            missingPhoneMessage: 'WhatsApp tidak dikirim karena nomor WA pekurban belum diisi.',
+        );
+
+        return back()->with('success', 'Data qurban berhasil ditambahkan. '.$sendResult);
     }
 
     public function update(Request $request, QurbanParticipant $qurbanParticipant): RedirectResponse
@@ -64,5 +80,38 @@ class QurbanParticipantController extends Controller
             'distribution_notes' => ['nullable', 'string'],
             'notes' => ['nullable', 'string'],
         ]);
+    }
+
+    private function qurbanConfirmationMessage(QurbanParticipant $participant): string
+    {
+        $registeredAt = $participant->registered_at?->translatedFormat('d F Y') ?: '-';
+        $animal = $participant->animal_type === 'cow'
+            ? "Sapi ({$participant->share_count} saham)"
+            : 'Kambing';
+        $targetAmount = $participant->target_amount > 0
+            ? 'Rp'.number_format((float) $participant->target_amount, 0, ',', '.')
+            : '-';
+        $amountPaid = $participant->amount_paid > 0
+            ? 'Rp'.number_format((float) $participant->amount_paid, 0, ',', '.')
+            : '-';
+
+        return "Assalamu'alaikum warahmatullahi wabarakatuh.\n\n"
+            ."Bapak/Ibu {$participant->participant_name}, data qurban Anda telah berhasil tercatat di sistem Masjid.\n\n"
+            ."Jenis Qurban: {$animal}\n"
+            ."Tanggal Daftar: {$registeredAt}\n"
+            ."Target Biaya: {$targetAmount}\n"
+            ."Sudah Dibayar: {$amountPaid}\n"
+            .'Status Pembayaran: '.$this->paymentStatusLabel($participant->payment_status)."\n\n"
+            ."Terima kasih atas partisipasi qurban Anda. Informasi ini dikirim otomatis sebagai konfirmasi pencatatan data.\n\n"
+            .'Jazakumullahu khairan.';
+    }
+
+    private function paymentStatusLabel(string $status): string
+    {
+        return match ($status) {
+            'paid' => 'Lunas',
+            'partial' => 'Sebagian',
+            default => 'Belum Bayar',
+        };
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ZakatCollection;
 use App\Models\ZakatDistribution;
 use App\Models\ZakatParticipant;
+use App\Services\AutomatedWhatsappNotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,7 +14,7 @@ use Inertia\Response;
 
 class ZakatController extends Controller
 {
-    public function index(): Response
+    public function index(AutomatedWhatsappNotificationService $whatsapp): Response
     {
         $collectionMoney = (float) ZakatCollection::where('status', 'received')->sum('money_amount');
         $distributionMoney = (float) ZakatDistribution::where('status', 'distributed')->sum('money_amount');
@@ -23,6 +24,7 @@ class ZakatController extends Controller
         return Inertia::render('Zakat/Index', [
             'collections' => ZakatCollection::with('participant')->latest('received_at')->latest()->limit(30)->get(),
             'distributions' => ZakatDistribution::with('participant')->latest('distributed_at')->latest()->limit(30)->get(),
+            'api' => $whatsapp->gatewayInfo(),
             'muzakkiOptions' => ZakatParticipant::where('is_active', true)
                 ->whereIn('role', ['muzakki', 'both'])
                 ->orderBy('name')
@@ -42,9 +44,9 @@ class ZakatController extends Controller
         ]);
     }
 
-    public function storeCollection(Request $request): RedirectResponse
+    public function storeCollection(Request $request, AutomatedWhatsappNotificationService $whatsapp): RedirectResponse
     {
-        ZakatCollection::create($request->validate([
+        $collection = ZakatCollection::create($request->validate([
             'zakat_participant_id' => [
                 'nullable',
                 Rule::exists('zakat_participants', 'id')
@@ -61,12 +63,26 @@ class ZakatController extends Controller
             'notes' => ['nullable', 'string'],
         ]));
 
-        return back()->with('success', 'Penerimaan zakat berhasil dicatat.');
+        if (! $request->boolean('send_whatsapp')) {
+            return back()->with('success', 'Penerimaan zakat berhasil dicatat.');
+        }
+
+        $sendResult = $whatsapp->send(
+            title: 'Konfirmasi Penerimaan Zakat',
+            category: 'zakat',
+            recipientName: $collection->muzakki_name,
+            recipientPhone: $collection->muzakki_phone,
+            message: $this->collectionConfirmationMessage($collection),
+            sourceNotes: 'Dibuat otomatis dari form Penerimaan Zakat.',
+            missingPhoneMessage: 'WhatsApp tidak dikirim karena nomor WA muzakki belum diisi.',
+        );
+
+        return back()->with('success', 'Penerimaan zakat berhasil dicatat. '.$sendResult);
     }
 
-    public function storeDistribution(Request $request): RedirectResponse
+    public function storeDistribution(Request $request, AutomatedWhatsappNotificationService $whatsapp): RedirectResponse
     {
-        ZakatDistribution::create($request->validate([
+        $distribution = ZakatDistribution::create($request->validate([
             'zakat_participant_id' => [
                 'nullable',
                 Rule::exists('zakat_participants', 'id')
@@ -83,7 +99,21 @@ class ZakatController extends Controller
             'notes' => ['nullable', 'string'],
         ]));
 
-        return back()->with('success', 'Penyaluran zakat berhasil dicatat.');
+        if (! $request->boolean('send_whatsapp')) {
+            return back()->with('success', 'Penyaluran zakat berhasil dicatat.');
+        }
+
+        $sendResult = $whatsapp->send(
+            title: 'Konfirmasi Penyaluran Zakat',
+            category: 'zakat',
+            recipientName: $distribution->mustahik_name,
+            recipientPhone: $distribution->phone,
+            message: $this->distributionConfirmationMessage($distribution),
+            sourceNotes: 'Dibuat otomatis dari form Penyaluran Zakat.',
+            missingPhoneMessage: 'WhatsApp tidak dikirim karena nomor WA mustahik belum diisi.',
+        );
+
+        return back()->with('success', 'Penyaluran zakat berhasil dicatat. '.$sendResult);
     }
 
     public function destroyCollection(ZakatCollection $collection): RedirectResponse
@@ -98,5 +128,80 @@ class ZakatController extends Controller
         $distribution->delete();
 
         return back()->with('success', 'Penyaluran zakat berhasil dihapus.');
+    }
+
+    private function collectionConfirmationMessage(ZakatCollection $collection): string
+    {
+        $receivedAt = $collection->received_at?->translatedFormat('d F Y') ?: '-';
+
+        return "Assalamu'alaikum warahmatullahi wabarakatuh.\n\n"
+            ."Bapak/Ibu {$collection->muzakki_name}, penerimaan zakat Anda telah berhasil tercatat di sistem Masjid.\n\n"
+            .'Jenis: '.$this->zakatTypeLabel($collection->type)."\n"
+            .'Nominal: '.$this->zakatAmount($collection->money_amount, $collection->rice_amount)."\n"
+            .'Metode: '.$this->paymentMethodLabel($collection->payment_method)."\n"
+            ."Tanggal Terima: {$receivedAt}\n\n"
+            ."Terima kasih, semoga zakat yang ditunaikan menjadi keberkahan dan diterima Allah SWT.\n\n"
+            .'Jazakumullahu khairan.';
+    }
+
+    private function distributionConfirmationMessage(ZakatDistribution $distribution): string
+    {
+        $distributedAt = $distribution->distributed_at?->translatedFormat('d F Y') ?: '-';
+
+        return "Assalamu'alaikum warahmatullahi wabarakatuh.\n\n"
+            ."Bapak/Ibu {$distribution->mustahik_name}, penyaluran zakat untuk Anda telah berhasil tercatat di sistem Masjid.\n\n"
+            .'Kategori: '.$this->mustahikCategoryLabel($distribution->mustahik_category)."\n"
+            .'Bantuan: '.$this->zakatAmount($distribution->money_amount, $distribution->rice_amount)."\n"
+            ."Tanggal Salur: {$distributedAt}\n\n"
+            ."Informasi ini dikirim otomatis sebagai konfirmasi pencatatan penyaluran zakat.\n\n"
+            .'Jazakumullahu khairan.';
+    }
+
+    private function zakatAmount(float|int|null $moneyAmount, float|int|null $riceAmount): string
+    {
+        $items = [];
+
+        if ((float) $moneyAmount > 0) {
+            $items[] = 'Rp'.number_format((float) $moneyAmount, 0, ',', '.');
+        }
+
+        if ((float) $riceAmount > 0) {
+            $items[] = rtrim(rtrim(number_format((float) $riceAmount, 2, ',', '.'), '0'), ',').' kg beras';
+        }
+
+        return $items === [] ? '-' : implode(' + ', $items);
+    }
+
+    private function zakatTypeLabel(string $type): string
+    {
+        return match ($type) {
+            'fitrah' => 'Zakat Fitrah',
+            'maal' => 'Zakat Maal',
+            'fidyah' => 'Fidyah',
+            'infaq_zakat' => 'Infaq Zakat',
+            default => 'Zakat',
+        };
+    }
+
+    private function paymentMethodLabel(string $method): string
+    {
+        return match ($method) {
+            'transfer' => 'Transfer',
+            'qris' => 'QRIS',
+            'rice' => 'Beras',
+            default => 'Tunai',
+        };
+    }
+
+    private function mustahikCategoryLabel(string $category): string
+    {
+        return match ($category) {
+            'fakir_miskin' => 'Fakir/Miskin',
+            'amil' => 'Amil',
+            'gharim' => 'Gharim',
+            'fisabilillah' => 'Fisabilillah',
+            'ibnu_sabil' => 'Ibnu Sabil',
+            default => 'Mustahik',
+        };
     }
 }
