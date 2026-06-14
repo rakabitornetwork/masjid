@@ -12,9 +12,9 @@ const featureCards = [
 export default function Login() {
     const { app = {} } = usePage().props;
     const { data, setData, post, processing, errors } = useForm({
-        email: 'admin@masjid.com',
-        password: '12345678',
-        remember: true,
+        email: '',
+        password: '',
+        remember: false,
     });
     const mosqueName = app.name || 'Masjid';
     const mosqueSubtitle = app.tagline || 'Management';
