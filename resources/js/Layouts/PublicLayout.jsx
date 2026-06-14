@@ -31,9 +31,9 @@ export default function PublicLayout({ title, children }) {
                 <div className="mx-auto max-w-6xl px-4 pb-8">{children}</div>
 
                 <footer className="flex flex-wrap items-center justify-center gap-1 px-4 pb-6 text-center text-[10px] font-medium text-slate-400">
-                    <span>Copyleft {currentYear} - Aplikasi manajemen masjid ini dibuat oleh Amon dengan</span>
+                    <span>Copyright {currentYear} - Aplikasi manajemen masjid ini dibuat oleh Amon dengan</span>
                     <Heart className="h-3 w-3 fill-rose-500 text-rose-500" aria-hidden="true" />
-                    <span>untuk Ummat.</span>
+                    <span>untuk Umat.</span>
                 </footer>
             </main>
         </>
