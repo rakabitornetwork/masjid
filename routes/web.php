@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('profil-masjid', [MosqueProfileController::class, 'edit'])->name('mosque-profile.edit');
     Route::put('profil-masjid', [MosqueProfileController::class, 'update'])->name('mosque-profile.update');
 
+    Route::post('pengurus/urutkan', [CommitteeMemberController::class, 'reorder'])->name('committee-members.reorder');
     Route::resource('pengurus', CommitteeMemberController::class)
         ->parameters(['pengurus' => 'committeeMember'])
         ->names('committee-members')

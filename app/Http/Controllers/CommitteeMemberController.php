@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CommitteeMember;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -36,6 +37,25 @@ class CommitteeMemberController extends Controller
         $committeeMember->delete();
 
         return back()->with('success', 'Pengurus berhasil dihapus.');
+    }
+
+    public function reorder(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'members' => ['required', 'array'],
+            'members.*.id' => ['required', 'integer', 'exists:committee_members,id'],
+            'members.*.sort_order' => ['required', 'integer', 'min:1'],
+        ]);
+
+        DB::transaction(function () use ($data): void {
+            foreach ($data['members'] as $member) {
+                CommitteeMember::whereKey($member['id'])->update([
+                    'sort_order' => $member['sort_order'],
+                ]);
+            }
+        });
+
+        return back()->with('success', 'Urutan pengurus berhasil disimpan.');
     }
 
     /**

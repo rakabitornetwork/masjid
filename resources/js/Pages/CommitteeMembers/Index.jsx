@@ -1,5 +1,6 @@
 import { router, useForm } from '@inertiajs/react';
-import { Edit3, Plus, Trash2, UsersRound, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Edit3, GripVertical, Plus, Trash2, UsersRound, X } from 'lucide-react';
 import { CheckboxInput, PrimaryButton, SecondaryButton, TextareaInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
 import { date } from '../../lib/formatters';
@@ -18,7 +19,14 @@ const emptyForm = {
 
 export default function Index({ members }) {
     const { data, setData, post, put, processing, errors, reset } = useForm(emptyForm);
+    const [orderedMembers, setOrderedMembers] = useState(members);
+    const [draggedMemberId, setDraggedMemberId] = useState(null);
+    const [dragOverMemberId, setDragOverMemberId] = useState(null);
     const editingId = data.id || null;
+
+    useEffect(() => {
+        setOrderedMembers(members);
+    }, [members]);
 
     const submit = (event) => {
         event.preventDefault();
@@ -42,6 +50,78 @@ export default function Index({ members }) {
         if (window.confirm(`Hapus pengurus ${member.name}?`)) {
             router.delete(`/pengurus/${member.id}`);
         }
+    };
+
+    const moveMember = (sourceId, targetId) => {
+        if (!sourceId || !targetId || sourceId === targetId) {
+            return orderedMembers;
+        }
+
+        const nextMembers = [...orderedMembers];
+        const sourceIndex = nextMembers.findIndex((member) => member.id === sourceId);
+        const targetIndex = nextMembers.findIndex((member) => member.id === targetId);
+
+        if (sourceIndex === -1 || targetIndex === -1) {
+            return orderedMembers;
+        }
+
+        const [draggedMember] = nextMembers.splice(sourceIndex, 1);
+        nextMembers.splice(targetIndex, 0, draggedMember);
+
+        return nextMembers.map((member, index) => ({
+            ...member,
+            sort_order: index + 1,
+        }));
+    };
+
+    const persistOrder = (nextMembers) => {
+        router.post(
+            '/pengurus/urutkan',
+            {
+                members: nextMembers.map((member, index) => ({
+                    id: member.id,
+                    sort_order: index + 1,
+                })),
+            },
+            {
+                preserveScroll: true,
+                onError: () => setOrderedMembers(members),
+            },
+        );
+    };
+
+    const handleDragStart = (event, member) => {
+        setDraggedMemberId(member.id);
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', String(member.id));
+    };
+
+    const handleDragOver = (event, member) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+        setDragOverMemberId(member.id);
+    };
+
+    const handleDrop = (event, targetMember) => {
+        event.preventDefault();
+
+        const sourceId = Number(event.dataTransfer.getData('text/plain') || draggedMemberId);
+        const nextMembers = moveMember(sourceId, targetMember.id);
+
+        setDraggedMemberId(null);
+        setDragOverMemberId(null);
+
+        if (nextMembers === orderedMembers) {
+            return;
+        }
+
+        setOrderedMembers(nextMembers);
+        persistOrder(nextMembers);
+    };
+
+    const handleDragEnd = () => {
+        setDraggedMemberId(null);
+        setDragOverMemberId(null);
     };
 
     return (
@@ -112,11 +192,15 @@ export default function Index({ members }) {
                 </form>
 
                 <section className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
-                    <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Daftar Pengurus</h3>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Daftar Pengurus</h3>
+                        <p className="text-[11px] font-semibold text-slate-500">Tarik baris untuk mengatur urutan.</p>
+                    </div>
                     <div className="mt-3 overflow-x-auto">
-                        <table className="w-full min-w-[760px] text-left text-xs">
+                        <table className="w-full min-w-[800px] text-left text-xs">
                             <thead className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
                                 <tr>
+                                    <th className="w-10 py-3">Urut</th>
                                     <th className="py-3">Nama</th>
                                     <th>Jabatan</th>
                                     <th>Periode</th>
@@ -125,8 +209,30 @@ export default function Index({ members }) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-emerald-50">
-                                {members.map((member) => (
-                                    <tr key={member.id}>
+                                {orderedMembers.map((member) => (
+                                    <tr
+                                        key={member.id}
+                                        draggable={orderedMembers.length > 1}
+                                        onDragStart={(event) => handleDragStart(event, member)}
+                                        onDragOver={(event) => handleDragOver(event, member)}
+                                        onDrop={(event) => handleDrop(event, member)}
+                                        onDragEnd={handleDragEnd}
+                                        className={`transition ${
+                                            draggedMemberId === member.id
+                                                ? 'bg-amber-50 opacity-60'
+                                                : dragOverMemberId === member.id
+                                                  ? 'bg-emerald-50'
+                                                  : 'bg-white'
+                                        }`}
+                                    >
+                                        <td className="py-2.5">
+                                            <span
+                                                className="inline-flex cursor-grab items-center rounded-lg border border-emerald-100 bg-emerald-50 p-1 text-emerald-700 active:cursor-grabbing"
+                                                title="Geser urutan"
+                                            >
+                                                <GripVertical className="h-4 w-4" />
+                                            </span>
+                                        </td>
                                         <td className="py-2.5 font-bold text-slate-900">{member.name}</td>
                                         <td>{member.position}</td>
                                         <td className="text-slate-500">
@@ -151,9 +257,9 @@ export default function Index({ members }) {
                                         </td>
                                     </tr>
                                 ))}
-                                {members.length === 0 && (
+                                {orderedMembers.length === 0 && (
                                     <tr>
-                                        <td colSpan="5" className="py-8 text-center text-slate-500">
+                                        <td colSpan="6" className="py-8 text-center text-slate-500">
                                             Belum ada data pengurus.
                                         </td>
                                     </tr>
