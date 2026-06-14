@@ -52,6 +52,24 @@ class WhatsappCloudApiService
         };
     }
 
+    public function sendErrorMessage(\Throwable $exception): string
+    {
+        if ($exception instanceof RequestException) {
+            $payload = $exception->response?->json();
+
+            if (is_array($payload) && filled(data_get($payload, 'message'))) {
+                $message = 'WhatsApp API gagal mengirim pesan: '.data_get($payload, 'message');
+                $normalizedPhone = data_get($payload, 'data.normalized_phone');
+
+                return $normalizedPhone ? $message.' Nomor: '.$normalizedPhone.'.' : $message;
+            }
+
+            return 'WhatsApp API gagal mengirim pesan: '.($exception->response?->body() ?: $exception->getMessage());
+        }
+
+        return $exception->getMessage();
+    }
+
     /**
      * @return array<string, mixed>
      */
