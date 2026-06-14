@@ -70,13 +70,15 @@ export default function Index({ users, roles, rolePermissions }) {
                     <div className="grid gap-3 md:grid-cols-2">
                         <TextInput label="Nama" value={data.name} onChange={(event) => setData('name', event.target.value)} error={errors.name} />
                         <TextInput label="Email" type="email" value={data.email} onChange={(event) => setData('email', event.target.value)} error={errors.email} />
-                        <TextInput
-                            label="Nomor WA"
-                            value={data.whatsapp_number}
-                            onChange={(event) => setData('whatsapp_number', event.target.value)}
-                            error={errors.whatsapp_number}
-                            placeholder="Contoh: 6281234567890"
-                        />
+                        <div className="md:col-span-2">
+                            <TextInput
+                                label="Nomor WA"
+                                value={data.whatsapp_number}
+                                onChange={(event) => setData('whatsapp_number', event.target.value)}
+                                error={errors.whatsapp_number}
+                                placeholder="Contoh: 6281234567890"
+                            />
+                        </div>
                         <TextInput
                             label={editingId ? 'Password Baru' : 'Password'}
                             type="password"
