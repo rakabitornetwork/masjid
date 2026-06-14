@@ -153,7 +153,7 @@ export default function Update({
         ? 'Update sedang berjalan'
         : terminalFinished
             ? (displayEntries.find((entry) => entry.type === 'complete') ? 'Update berhasil' : 'Update gagal')
-            : 'Terminal siap';
+            : '';
 
     return (
         <AppLayout title="Update Aplikasi">
@@ -243,9 +243,11 @@ export default function Update({
                                     </div>
                                     <div className="min-w-0">
                                         <p className="truncate text-[10px] font-bold text-cyan-100">masjid@vpanel:~/public_html$</p>
-                                        <p className="text-[9px] font-semibold text-slate-300">
-                                            {terminalStatusText}
-                                        </p>
+                                        {terminalStatusText && (
+                                            <p className="text-[9px] font-semibold text-slate-300">
+                                                {terminalStatusText}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-1.5">
