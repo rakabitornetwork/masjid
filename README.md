@@ -77,7 +77,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Pencatatan surat masuk, surat keluar, dokumen internal, dan dokumen lainnya.
 - Nomor surat, tanggal dokumen, pengirim, penerima, kategori, status, dan catatan.
 - Upload lampiran dokumen PDF, Word, Excel, JPG, atau PNG.
-- Arsip surat ikut masuk ke export laporan CSV dan backup data aplikasi.
+- Arsip surat ikut masuk ke export laporan dan backup data aplikasi.
 
 ### Keuangan Dasar
 
@@ -90,7 +90,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 ### Export, Backup, dan Restore
 
-- Export laporan CSV untuk transaksi keuangan, jamaah, inventaris, donasi, zakat, dan qurban.
+- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, inventaris, donasi, arsip surat, zakat, dan qurban.
 - Backup data aplikasi dari menu `Backup Data` dalam format JSON.
 - Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
 - Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.

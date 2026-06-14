@@ -1,14 +1,15 @@
-import { Download, FileSpreadsheet } from 'lucide-react';
+import { Download, FileSpreadsheet, Printer, Table2 } from 'lucide-react';
 import AppLayout from '../../Layouts/AppLayout';
 
 export default function Index({ reports }) {
     return (
         <AppLayout title="Export Laporan">
             <section className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Export CSV</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Export Laporan</p>
                 <h3 className="text-sm font-extrabold text-slate-950">Download Laporan Aplikasi</h3>
                 <p className="mt-2 max-w-2xl text-xs font-semibold leading-5 text-slate-500">
-                    File CSV dapat dibuka di Excel, Google Sheets, atau aplikasi spreadsheet lain. Laporan yang tampil mengikuti hak akses role user.
+                    Download laporan dalam format CSV, Excel-compatible XLS, atau buka halaman cetak untuk disimpan sebagai PDF.
+                    Laporan yang tampil mengikuti hak akses role user.
                 </p>
             </section>
 
@@ -19,19 +20,37 @@ export default function Index({ reports }) {
                             <div className="rounded-lg bg-teal-100 p-2 text-teal-700">
                                 <FileSpreadsheet className="h-4 w-4" />
                             </div>
+                            <span className="rounded-full bg-teal-50 px-2 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-teal-700">
+                                Report
+                            </span>
+                        </div>
+                        <h4 className="mt-3 text-sm font-extrabold text-slate-950">{report.label}</h4>
+                        <p className="mt-1 text-xs font-semibold leading-5 text-slate-500">{report.description}</p>
+                        <div className="mt-3 flex flex-wrap gap-2">
                             <a
                                 href={`/laporan/export/${report.key}`}
                                 className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-teal-700"
                             >
                                 <Download className="h-4 w-4" />
-                                Download
+                                CSV
+                            </a>
+                            <a
+                                href={`/laporan/export/${report.key}?format=xls`}
+                                className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700"
+                            >
+                                <Table2 className="h-4 w-4" />
+                                Excel
+                            </a>
+                            <a
+                                href={`/laporan/export/${report.key}?format=print`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-sky-700"
+                            >
+                                <Printer className="h-4 w-4" />
+                                PDF
                             </a>
                         </div>
-                        <h4 className="mt-3 text-sm font-extrabold text-slate-950">{report.label}</h4>
-                        <p className="mt-1 text-xs font-semibold leading-5 text-slate-500">{report.description}</p>
-                        <p className="mt-3 rounded-lg bg-slate-50 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
-                            Format: CSV
-                        </p>
                     </article>
                 ))}
                 {reports.length === 0 && (

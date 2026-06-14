@@ -66,12 +66,33 @@ class ReportExportController extends Controller
         ]);
     }
 
-    public function download(Request $request, string $report): StreamedResponse
+    public function download(Request $request, string $report)
     {
         abort_unless(array_key_exists($report, self::REPORTS), 404);
         abort_unless($request->user()->hasPermission('reports'), 403);
 
         [$headers, $rows] = $this->reportData($report);
+        $format = $request->string('format', 'csv')->lower()->toString();
+
+        return match ($format) {
+            'xls', 'excel' => $this->downloadExcel($report, $headers, $rows),
+            'pdf', 'print' => response()->view('reports.print', [
+                'title' => self::REPORTS[$report]['label'],
+                'description' => self::REPORTS[$report]['description'],
+                'generatedAt' => now()->format('d/m/Y H:i'),
+                'headers' => $headers,
+                'rows' => $rows,
+            ]),
+            default => $this->downloadCsv($report, $headers, $rows),
+        };
+    }
+
+    /**
+     * @param  array<int, string>  $headers
+     * @param  iterable<array<int, mixed>>  $rows
+     */
+    private function downloadCsv(string $report, array $headers, iterable $rows): StreamedResponse
+    {
         $filename = $report.'-'.now()->format('Ymd-His').'.csv';
 
         return response()->streamDownload(function () use ($headers, $rows): void {
@@ -86,6 +107,42 @@ class ReportExportController extends Controller
             fclose($handle);
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    /**
+     * @param  array<int, string>  $headers
+     * @param  iterable<array<int, mixed>>  $rows
+     */
+    private function downloadExcel(string $report, array $headers, iterable $rows): StreamedResponse
+    {
+        $filename = $report.'-'.now()->format('Ymd-His').'.xls';
+
+        return response()->streamDownload(function () use ($headers, $rows, $report): void {
+            echo '<html><head><meta charset="UTF-8"></head><body>';
+            echo '<table border="1">';
+            echo '<caption>'.e(self::REPORTS[$report]['label']).'</caption>';
+            echo '<thead><tr>';
+
+            foreach ($headers as $header) {
+                echo '<th>'.e($header).'</th>';
+            }
+
+            echo '</tr></thead><tbody>';
+
+            foreach ($rows as $row) {
+                echo '<tr>';
+
+                foreach ($row as $cell) {
+                    echo '<td>'.e((string) $cell).'</td>';
+                }
+
+                echo '</tr>';
+            }
+
+            echo '</tbody></table></body></html>';
+        }, $filename, [
+            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
         ]);
     }
 
