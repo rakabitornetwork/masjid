@@ -6,6 +6,7 @@ import {
     CalendarDays,
     Clock,
     Gauge,
+    Heart,
     Landmark,
     LogOut,
     Megaphone,
@@ -39,6 +40,7 @@ export default function AppLayout({ title, children, actions = null }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const mosqueName = app.name || 'Masjid';
     const mosqueSubtitle = app.tagline || 'Management';
+    const currentYear = time.getFullYear();
 
     useEffect(() => {
         const timer = window.setInterval(() => setTime(new Date()), 1000);
@@ -140,7 +142,7 @@ export default function AppLayout({ title, children, actions = null }) {
                 </aside>
 
                 <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(16,185,129,0.16),transparent_28rem),linear-gradient(135deg,#eff6ff_0%,#f8fafc_46%,#dbeafe_100%)]">
-                    <header className="flex h-14 shrink-0 items-center justify-between border-b border-blue-100/70 bg-white/86 px-4 shadow-sm shadow-blue-900/5 backdrop-blur-md lg:px-6">
+                    <header className="flex h-14 shrink-0 items-center justify-between border-b border-transparent bg-transparent px-4 shadow-none backdrop-blur-md sm:border-blue-100/70 sm:bg-white/86 sm:shadow-sm sm:shadow-blue-900/5 lg:px-6">
                         <div className="flex min-w-0 items-center">
                             <button
                                 type="button"
@@ -159,6 +161,12 @@ export default function AppLayout({ title, children, actions = null }) {
                         </div>
 
                         <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1 rounded-lg border border-white/45 bg-white/35 px-2 py-1 text-[9px] font-bold text-blue-950 shadow-sm backdrop-blur sm:hidden">
+                                <Clock className="h-3 w-3 shrink-0 animate-pulse text-blue-600" />
+                                <span className="tabular-nums">{time.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
+                                <span className="text-blue-300">•</span>
+                                <span>{time.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                            </div>
                             <div className="hidden items-center gap-1.5 rounded-lg border border-blue-100 bg-blue-50/80 px-2.5 py-1 text-[10px] font-semibold text-blue-700 sm:flex">
                                 <Clock className="h-3.5 w-3.5 animate-pulse text-blue-600" />
                                 <span className="tabular-nums text-blue-950">
@@ -174,8 +182,10 @@ export default function AppLayout({ title, children, actions = null }) {
                     <main className="min-h-0 flex-1 overflow-y-auto p-4 pb-12 lg:p-5 lg:pb-14">
                         <FlashMessage />
                         {children}
-                        <footer className="mt-6 text-center text-[10px] font-medium text-slate-400">
-                            Aplikasi manajemen masjid ini dibuat oleh Amon dengan hati untuk Ummat.
+                        <footer className="mt-6 flex flex-wrap items-center justify-center gap-1 text-center text-[10px] font-medium text-slate-400">
+                            <span>Copyleft {currentYear} - Aplikasi manajemen masjid ini dibuat oleh Amon dengan</span>
+                            <Heart className="h-3 w-3 fill-rose-500 text-rose-500" aria-hidden="true" />
+                            <span>untuk Ummat.</span>
                         </footer>
                     </main>
                 </div>

@@ -1,5 +1,5 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { Banknote, CalendarDays, LockKeyhole, Mail, UsersRound } from 'lucide-react';
+import { Banknote, CalendarDays, Heart, LockKeyhole, Mail, UsersRound } from 'lucide-react';
 import ApplicationLogo from '../../Components/ApplicationLogo';
 import { Field, PrimaryButton } from '../../Components/FormControls';
 
@@ -18,6 +18,7 @@ export default function Login() {
     });
     const mosqueName = app.name || 'Masjid';
     const mosqueSubtitle = app.tagline || 'Management';
+    const currentYear = new Date().getFullYear();
 
     const submit = (event) => {
         event.preventDefault();
@@ -119,8 +120,10 @@ export default function Login() {
                         </form>
                     </div>
                 </section>
-                <footer className="text-center text-[10px] font-medium text-slate-400">
-                    Aplikasi manajemen masjid ini dibuat oleh Amon dengan hati untuk Ummat.
+                <footer className="flex flex-wrap items-center justify-center gap-1 text-center text-[10px] font-medium text-slate-400">
+                    <span>Copyleft {currentYear} - Aplikasi manajemen masjid ini dibuat oleh Amon dengan</span>
+                    <Heart className="h-3 w-3 fill-rose-500 text-rose-500" aria-hidden="true" />
+                    <span>untuk Ummat.</span>
                 </footer>
             </main>
         </>
