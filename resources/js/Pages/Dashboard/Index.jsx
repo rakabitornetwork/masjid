@@ -35,19 +35,19 @@ export default function Dashboard({ profile, stats, accounts, recentTransactions
                     </p>
                 </div>
 
-                <div className="rounded-xl border border-slate-900 bg-slate-950 p-4 text-white shadow-sm">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-200">Akun Kas / Bank</p>
+                <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-teal-50 to-amber-50 p-4 text-slate-900 shadow-sm">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-800">Akun Kas / Bank</p>
                     <div className="mt-3 space-y-2">
-                        {accounts.length === 0 && <p className="text-xs text-slate-300">Belum ada akun kas atau bank.</p>}
+                        {accounts.length === 0 && <p className="text-xs font-semibold text-slate-500">Belum ada akun kas atau bank.</p>}
                         {accounts.map((account) => (
-                            <div key={account.id} className="rounded-lg bg-white/10 p-2.5">
+                            <div key={account.id} className="rounded-lg border border-emerald-100 bg-white/80 p-2.5 shadow-xs">
                                 <div className="flex items-center justify-between gap-2">
-                                    <p className="font-bold">{account.name}</p>
-                                    <span className="rounded-full bg-teal-400/20 px-2 py-0.5 text-[10px] font-bold text-teal-100">
+                                    <p className="font-bold text-slate-900">{account.name}</p>
+                                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
                                         {label(account.type)}
                                     </span>
                                 </div>
-                                <p className="mt-1.5 text-base font-extrabold text-amber-200">{money(account.balance)}</p>
+                                <p className="mt-1.5 text-base font-extrabold text-emerald-700">{money(account.balance)}</p>
                             </div>
                         ))}
                     </div>
