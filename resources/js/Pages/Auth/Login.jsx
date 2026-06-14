@@ -27,11 +27,13 @@ export default function Login() {
 
             <main className="flex min-h-screen items-center justify-center p-4">
                 <section className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-white/70 bg-white/90 shadow-2xl shadow-blue-950/15 backdrop-blur lg:grid-cols-[1.05fr_0.95fr]">
-                    <div className="relative hidden min-h-[520px] overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-sky-600 p-8 text-white lg:block">
-                        <div className="absolute inset-0 opacity-20">
-                            <div className="absolute left-10 top-16 h-40 w-40 rounded-full border border-white" />
-                            <div className="absolute bottom-16 right-12 h-56 w-56 rounded-full border border-white" />
-                        </div>
+                    <div className="relative hidden min-h-[520px] overflow-hidden bg-blue-950 p-8 text-white lg:block">
+                        <img
+                            src="/images/mosque_welcome.png"
+                            alt="Background Masjid"
+                            className="absolute inset-0 h-full w-full object-cover opacity-40"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-b from-blue-950/20 via-blue-950/60 to-blue-950/90" />
                         <div className="relative z-10 flex h-full flex-col justify-between">
                             <div>
                                 <ApplicationLogo className="h-10 w-10" />
