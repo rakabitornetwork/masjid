@@ -163,6 +163,8 @@ export default function AppLayout({ title, children, actions = null }) {
     const activeGroupKeys = navigationGroups
         .filter((group) => group.items.some((item) => canView(item) && isActive(item.href)))
         .map((group) => group.key);
+    const activeGroup = navigationGroups.find((group) => group.items.some((item) => canView(item) && isActive(item.href)));
+    const currentMenuLabel = activeGroup?.label || 'Utama';
     const visibleGroups = navigationGroups
         .map((group) => {
             const items = group.items
@@ -388,7 +390,7 @@ export default function AppLayout({ title, children, actions = null }) {
 
                             <div className="flex min-w-0 items-center gap-1.5 text-xs font-bold text-blue-950">
                                 <Bell className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
-                                <span className="hidden truncate sm:inline">High Density Masjid</span>
+                                <span className="hidden truncate sm:inline">{currentMenuLabel}</span>
                                 <span className="hidden text-blue-200 sm:inline">/</span>
                                 <span className="truncate font-semibold text-blue-700">{title}</span>
                             </div>

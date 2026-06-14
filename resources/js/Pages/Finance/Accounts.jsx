@@ -109,25 +109,34 @@ export default function Accounts({ accounts }) {
 
                 <section className="grid gap-4 md:grid-cols-2">
                     {accounts.map((account) => (
-                        <article key={account.id} className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
-                            <div className="flex items-start justify-between gap-2.5">
-                                <div>
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">{label(account.type)}</p>
-                                    <h3 className="mt-0.5 text-sm font-extrabold text-slate-950">{account.name}</h3>
+                        <article
+                            key={account.id}
+                            className="group relative overflow-hidden rounded-2xl border border-white/75 bg-white/95 p-4 shadow-lg shadow-blue-950/5 ring-1 ring-slate-100/80 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-950/10"
+                        >
+                            <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-gradient-to-br from-emerald-200/70 via-teal-100/60 to-blue-100/50 blur-2xl transition group-hover:scale-110" />
+                            <div className="relative flex items-start justify-between gap-2.5">
+                                <div className="min-w-0">
+                                    <div className="mb-2 inline-flex rounded-full border border-teal-100 bg-teal-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.16em] text-teal-700">
+                                        {label(account.type)}
+                                    </div>
+                                    <h3 className="truncate text-sm font-extrabold text-slate-950">{account.name}</h3>
                                 </div>
-                                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${account.is_active ? 'bg-teal-100 text-teal-700' : 'bg-slate-100 text-slate-500'}`}>
+                                <span className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold shadow-sm ${account.is_active ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200/70' : 'bg-slate-100 text-slate-500 ring-1 ring-slate-200/70'}`}>
                                     {account.is_active ? 'Aktif' : 'Nonaktif'}
                                 </span>
                             </div>
-                            <p className="mt-3 text-base font-extrabold text-slate-950">{money(account.balance)}</p>
-                            <p className="mt-0.5 text-[10px] font-semibold text-slate-500">Saldo awal: {money(account.opening_balance)}</p>
+                            <div className="relative mt-4 rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white p-3">
+                                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Saldo Berjalan</p>
+                                <p className="mt-1 text-xl font-black tracking-tight text-slate-950">{money(account.balance)}</p>
+                                <p className="mt-0.5 text-[10px] font-semibold text-slate-500">Saldo awal: {money(account.opening_balance)}</p>
+                            </div>
                             {(account.bank_name || account.account_number) && (
-                                <p className="mt-2 rounded-lg bg-teal-50 p-2.5 text-xs font-medium text-slate-600">
+                                <p className="relative mt-2 rounded-xl border border-teal-100 bg-gradient-to-r from-teal-50 to-emerald-50 p-2.5 text-xs font-semibold text-teal-900 shadow-inner">
                                     {account.bank_name} {account.account_number} {account.account_holder && `a.n. ${account.account_holder}`}
                                 </p>
                             )}
-                            <div className="mt-3 flex gap-2">
-                                <SecondaryButton type="button" onClick={() => edit(account)} className="gap-2">
+                            <div className="relative mt-3 flex gap-2">
+                                <SecondaryButton type="button" onClick={() => edit(account)} className="gap-2 text-emerald-700">
                                     <Edit3 className="h-4 w-4" />
                                     Edit
                                 </SecondaryButton>

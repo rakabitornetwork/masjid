@@ -183,12 +183,28 @@ export default function Transactions({ transactions, accounts, categories, summa
                     </div>
                 </form>
 
-                <section className="min-w-0 rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
-                    <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Riwayat Transaksi</h3>
-                    <div className="mt-3 space-y-2 md:hidden">
+                <section className="min-w-0 rounded-2xl border border-white/75 bg-white/95 p-4 shadow-lg shadow-blue-950/5 ring-1 ring-slate-100/80">
+                    <div className="flex items-center justify-between gap-3">
+                        <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-teal-700">Keuangan</p>
+                            <h3 className="mt-0.5 text-sm font-extrabold text-slate-950">Riwayat Transaksi</h3>
+                        </div>
+                        <div className="rounded-xl bg-blue-100 p-2 text-blue-700 ring-1 ring-blue-200/70">
+                            <Banknote className="h-4 w-4" />
+                        </div>
+                    </div>
+                    <div className="mt-4 space-y-2 md:hidden">
                         {transactions.map((transaction) => (
-                            <div key={transaction.id} className="rounded-xl border border-slate-100 bg-white p-3 shadow-xs">
-                                <div className="flex items-start justify-between gap-3">
+                            <div
+                                key={transaction.id}
+                                className={`relative overflow-hidden rounded-2xl border bg-white p-3 shadow-sm ring-1 ${
+                                    transaction.type === 'income'
+                                        ? 'border-emerald-100 ring-emerald-50'
+                                        : 'border-rose-100 ring-rose-50'
+                                }`}
+                            >
+                                <div className={`pointer-events-none absolute -right-8 -top-10 h-24 w-24 rounded-full blur-2xl ${transaction.type === 'income' ? 'bg-emerald-200/55' : 'bg-rose-200/55'}`} />
+                                <div className="relative flex items-start justify-between gap-3">
                                     <div className="min-w-0">
                                         <p className="truncate text-sm font-extrabold text-slate-900">{transaction.description}</p>
                                         <p className="mt-0.5 text-[11px] font-semibold text-slate-500">{date(transaction.transaction_date)}</p>
@@ -197,14 +213,14 @@ export default function Transactions({ transactions, accounts, categories, summa
                                         {money(transaction.amount)}
                                     </p>
                                 </div>
-                                <div className="mt-2 grid gap-1 rounded-lg bg-slate-50 p-2 text-[11px] font-semibold text-slate-600">
+                                <div className="relative mt-2 grid gap-1 rounded-xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white p-2 text-[11px] font-semibold text-slate-600">
                                     <p className="truncate">Akun: {transaction.account?.name || '-'}</p>
                                     <p className="truncate">Kategori: {transaction.category?.name || '-'}</p>
                                     <p className="truncate">
                                         {label(transaction.type)} • {label(transaction.payment_method)} • {label(transaction.status)}
                                     </p>
                                 </div>
-                                <div className="mt-2 flex justify-end gap-2">
+                                <div className="relative mt-2 flex justify-end gap-2">
                                     <button className="rounded-lg bg-emerald-50 p-2 text-emerald-700" type="button" onClick={() => edit(transaction)}>
                                         <Edit3 className="h-4 w-4" />
                                     </button>
@@ -216,7 +232,7 @@ export default function Transactions({ transactions, accounts, categories, summa
                         ))}
                         {transactions.length === 0 && <p className="rounded-xl border border-dashed border-teal-200 bg-teal-50/60 p-4 text-center text-xs font-semibold text-slate-500">Belum ada transaksi.</p>}
                     </div>
-                    <div className="mt-3 hidden overflow-x-auto md:block">
+                    <div className="mt-4 hidden overflow-x-auto rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white p-2 md:block">
                         <table className="w-full min-w-[900px] text-left text-xs">
                             <thead className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
                                 <tr>
@@ -230,7 +246,7 @@ export default function Transactions({ transactions, accounts, categories, summa
                             </thead>
                             <tbody className="divide-y divide-emerald-50">
                                 {transactions.map((transaction) => (
-                                    <tr key={transaction.id}>
+                                    <tr key={transaction.id} className="transition hover:bg-white">
                                         <td className="py-2.5 text-xs text-slate-500">{date(transaction.transaction_date)}</td>
                                         <td>
                                             <p className="text-xs font-bold text-slate-900">{transaction.description}</p>
