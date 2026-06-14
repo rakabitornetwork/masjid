@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\Process\Process;
 
 class ApplicationInfoController extends Controller
 {
@@ -13,7 +14,8 @@ class ApplicationInfoController extends Controller
         return Inertia::render('System/About', [
             'application' => [
                 'name' => 'Aplikasi Manajemen Masjid',
-                'version' => env('APP_VERSION', '1.1'),
+                'version' => $this->currentGitVersion() ?? env('APP_VERSION', '1.1'),
+                'commit' => $this->currentGitCommit() ?? 'Tidak terbaca',
                 'description' => 'Sistem admin terpadu untuk membantu pengurus masjid mengelola operasional, jamaah, keuangan, program ibadah, ZISWAF, inventaris, fasilitas, laporan, backup, dan update aplikasi.',
                 'theme' => 'High Density Premium Masjid',
                 'developer' => 'Amon',
@@ -43,5 +45,29 @@ class ApplicationInfoController extends Controller
                 'Update aplikasi dari GitHub melalui halaman admin',
             ],
         ]);
+    }
+
+    private function currentGitVersion(): ?string
+    {
+        $process = new Process(['git', 'describe', '--tags', '--abbrev=0'], base_path(), timeout: 10);
+        $process->run();
+
+        if (! $process->isSuccessful()) {
+            return null;
+        }
+
+        return trim($process->getOutput()) ?: null;
+    }
+
+    private function currentGitCommit(): ?string
+    {
+        $process = new Process(['git', 'rev-parse', '--short', 'HEAD'], base_path(), timeout: 10);
+        $process->run();
+
+        if (! $process->isSuccessful()) {
+            return null;
+        }
+
+        return trim($process->getOutput()) ?: null;
     }
 }
