@@ -174,7 +174,7 @@ export default function AppLayout({ title, children, actions = null }) {
                     <main className="min-h-0 flex-1 overflow-y-auto p-4 pb-12 lg:p-5 lg:pb-14">
                         <FlashMessage />
                         {children}
-                        <footer className="mt-6 rounded-xl border border-emerald-100 bg-white/80 px-4 py-3 text-center text-[11px] font-semibold text-slate-500 shadow-sm">
+                        <footer className="mt-6 text-center text-[10px] font-medium text-slate-400">
                             Aplikasi manajemen masjid ini dibuat oleh Amon dengan hati untuk Ummat.
                         </footer>
                     </main>

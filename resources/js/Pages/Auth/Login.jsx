@@ -119,7 +119,7 @@ export default function Login() {
                         </form>
                     </div>
                 </section>
-                <footer className="text-center text-[11px] font-semibold text-slate-500">
+                <footer className="text-center text-[10px] font-medium text-slate-400">
                     Aplikasi manajemen masjid ini dibuat oleh Amon dengan hati untuk Ummat.
                 </footer>
             </main>
