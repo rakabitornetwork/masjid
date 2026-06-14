@@ -17,6 +17,7 @@ export default function Update({
     latestVersion,
     currentCommit,
     latestCommit,
+    releaseCommit,
     updateAvailable,
     githubStatus,
     latestUpdate,
@@ -126,6 +127,9 @@ export default function Update({
                                     }`}
                                 >
                                     {updateAvailable ? 'Update tersedia' : 'Aplikasi terbaru'}
+                                </span>
+                                <span className="rounded-full bg-sky-100 px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-sky-700">
+                                    Release commit: {releaseCommit}
                                 </span>
                             </div>
                         </div>

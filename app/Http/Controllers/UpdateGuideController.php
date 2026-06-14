@@ -17,21 +17,22 @@ class UpdateGuideController extends Controller
         $currentVersion = $this->currentGitVersion() ?? env('APP_VERSION', '1.1');
         $currentCommit = $this->currentGitCommit();
         $githubRelease = $this->latestGithubRelease();
+        $githubMain = $this->latestGithubMainCommit();
         $latestVersion = $githubRelease['version'] ?? $currentVersion;
-        $latestCommit = $githubRelease['hash'] ?? 'Tidak terbaca';
-        $updateAvailable = $githubRelease['status'] === 'success'
-            && (
-                $latestVersion !== $currentVersion
-                || ($githubRelease['hash'] !== null && $currentCommit !== null && $githubRelease['hash'] !== $currentCommit)
-            );
+        $latestCommit = $githubMain['hash'] ?? 'Tidak terbaca';
+        $updateAvailable = $githubMain['status'] === 'success'
+            && $githubMain['hash'] !== null
+            && $currentCommit !== null
+            && $githubMain['hash'] !== $currentCommit;
 
         return Inertia::render('System/Update', [
             'currentVersion' => $currentVersion,
             'latestVersion' => $latestVersion,
             'currentCommit' => $currentCommit ?? 'Tidak terbaca',
             'latestCommit' => $latestCommit,
+            'releaseCommit' => $githubRelease['hash'] ?? 'Tidak terbaca',
             'updateAvailable' => $updateAvailable,
-            'githubStatus' => $githubRelease['status'],
+            'githubStatus' => $githubMain['status'],
             'updateResult' => session('update_result'),
             'latestUpdate' => [
                 'title' => $githubRelease['title'] ?? 'Informasi GitHub Tidak Tersedia',
@@ -196,6 +197,52 @@ class UpdateGuideController extends Controller
             return $sha ? substr((string) $sha, 0, 7) : null;
         } catch (\Throwable) {
             return null;
+        }
+    }
+
+    /**
+     * @return array{hash: ?string, title: ?string, date: ?string, summary: ?string, status: string}
+     */
+    private function latestGithubMainCommit(): array
+    {
+        try {
+            $response = Http::timeout(8)
+                ->acceptJson()
+                ->withUserAgent('masjid-management-updater')
+                ->get('https://api.github.com/repos/rakabitornetwork/masjid/commits/main');
+
+            if (! $response->successful()) {
+                return [
+                    'hash' => null,
+                    'title' => null,
+                    'date' => null,
+                    'summary' => null,
+                    'status' => 'failed',
+                ];
+            }
+
+            $payload = $response->json();
+            $hash = isset($payload['sha']) ? substr((string) $payload['sha'], 0, 7) : null;
+            $message = trim((string) data_get($payload, 'commit.message', ''));
+            $messageLines = preg_split('/\r\n|\r|\n/', $message) ?: [];
+            $title = trim($messageLines[0] ?? 'Commit terbaru branch main');
+            $date = data_get($payload, 'commit.committer.date');
+
+            return [
+                'hash' => $hash,
+                'title' => $title ?: 'Commit terbaru branch main',
+                'date' => $date ? Carbon::parse($date)->timezone(config('app.timezone'))->format('d M Y H:i:s') : null,
+                'summary' => $message,
+                'status' => 'success',
+            ];
+        } catch (\Throwable) {
+            return [
+                'hash' => null,
+                'title' => null,
+                'date' => null,
+                'summary' => null,
+                'status' => 'failed',
+            ];
         }
     }
 }
