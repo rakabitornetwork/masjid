@@ -16,7 +16,14 @@ class WhatsappNotificationController extends Controller
     public function index(WhatsappCloudApiService $whatsapp): Response
     {
         return Inertia::render('WhatsappNotifications/Index', [
-            'notifications' => WhatsappNotification::latest('scheduled_at')->latest()->get(),
+            'notifications' => WhatsappNotification::latest('scheduled_at')->latest()->get()
+                ->map(fn (WhatsappNotification $notification): array => [
+                    ...$notification->toArray(),
+                    'scheduled_at_input' => $notification->scheduled_at?->format('Y-m-d\TH:i'),
+                    'sent_at_input' => $notification->sent_at?->format('Y-m-d\TH:i'),
+                    'scheduled_at_display' => $notification->scheduled_at?->format('d M Y H:i'),
+                    'sent_at_display' => $notification->sent_at?->format('d M Y H:i'),
+                ]),
             'api' => [
                 'enabled' => $whatsapp->isConfigured(),
                 'provider' => $whatsapp->providerLabel(),

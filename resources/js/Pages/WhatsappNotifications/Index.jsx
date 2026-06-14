@@ -3,7 +3,7 @@ import { CheckCircle2, Clock, Edit3, MessageCircle, Plus, Send, Trash2, X } from
 import StatCard from '../../Components/StatCard';
 import { PrimaryButton, SecondaryButton, SelectInput, TextareaInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
-import { date, label } from '../../lib/formatters';
+import { label } from '../../lib/formatters';
 
 const emptyForm = {
     title: '',
@@ -38,8 +38,8 @@ export default function Index({ notifications, api, summary }) {
     const edit = (notification) => {
         setData({
             ...notification,
-            scheduled_at: notification.scheduled_at?.slice(0, 16) || '',
-            sent_at: notification.sent_at?.slice(0, 16) || '',
+            scheduled_at: notification.scheduled_at_input || '',
+            sent_at: notification.sent_at_input || '',
         });
     };
 
@@ -163,7 +163,7 @@ export default function Index({ notifications, api, summary }) {
                                 <p className="mt-2 line-clamp-3 rounded-lg bg-slate-50 p-2 text-xs font-medium leading-5 text-slate-600">{notification.message}</p>
                                 <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                                     <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
-                                        Jadwal: {date(notification.scheduled_at)} • Terkirim: {date(notification.sent_at)}
+                                        Jadwal: {notification.scheduled_at_display || '-'} • Terkirim: {notification.sent_at_display || '-'}
                                     </p>
                                     <div className="flex flex-wrap justify-end gap-2">
                                         {api?.enabled && (

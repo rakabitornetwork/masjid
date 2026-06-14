@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('recipient_phone', 50);
             $table->text('message');
             $table->string('status', 30)->default('draft');
-            $table->timestamp('scheduled_at')->nullable();
-            $table->timestamp('sent_at')->nullable();
+            $table->dateTime('scheduled_at')->nullable();
+            $table->dateTime('sent_at')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
 
