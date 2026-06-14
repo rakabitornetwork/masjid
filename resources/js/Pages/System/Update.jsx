@@ -165,39 +165,61 @@ export default function Update({
                     </div>
 
                     {updateResult && (
-                        <div className="mt-4 min-w-0 overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-md shadow-slate-950/20">
-                            <div className="flex items-center justify-between gap-2.5 border-b border-slate-800 bg-slate-900 px-3 py-2">
-                                <div>
-                                    <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-teal-300">
+                        <div className="mt-4 min-w-0 overflow-hidden rounded-xl border border-slate-700 bg-[#050b1a] shadow-xl shadow-slate-950/25">
+                            <div className="flex h-9 items-center justify-between border-b border-slate-700 bg-gradient-to-r from-[#183b6b] via-[#0f2f57] to-[#0a1f3f] px-3">
+                                <div className="flex min-w-0 items-center gap-2">
+                                    <div className="rounded bg-cyan-400/15 p-1 text-cyan-200">
                                         <Terminal className="h-3.5 w-3.5" />
-                                        Hasil Update Terakhir
-                                    </p>
-                                    <h4 className="mt-0.5 text-xs font-extrabold text-white">
-                                        {updateResult.status === 'success' ? 'Update berhasil' : 'Update gagal'}
-                                    </h4>
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="truncate text-[10px] font-bold text-cyan-100">masjid-update@vps: ~/public_html</p>
+                                        <p className="text-[9px] font-semibold text-slate-300">
+                                            {updateResult.status === 'success' ? 'Update berhasil' : 'Update gagal'} • {updateResult.finished_at}
+                                        </p>
+                                    </div>
                                 </div>
-                                <span
-                                    className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.14em] ${
-                                        updateResult.status === 'success'
-                                            ? 'bg-teal-400/20 text-teal-100'
-                                            : 'bg-rose-400/20 text-rose-100'
-                                    }`}
-                                >
-                                    {updateResult.finished_at}
-                                </span>
+                                <div className="flex items-center gap-1.5">
+                                    <button
+                                        type="button"
+                                        title="Minimize"
+                                        className="flex h-4 w-4 items-center justify-center rounded-sm border border-amber-300/70 bg-amber-400 text-[10px] font-black leading-none text-amber-950 shadow-sm"
+                                    >
+                                        -
+                                    </button>
+                                    <button
+                                        type="button"
+                                        title="Maximize"
+                                        className="flex h-4 w-4 items-center justify-center rounded-sm border border-emerald-300/70 bg-emerald-400 text-[9px] font-black leading-none text-emerald-950 shadow-sm"
+                                    >
+                                        □
+                                    </button>
+                                    <button
+                                        type="button"
+                                        title="Close"
+                                        className="flex h-4 w-4 items-center justify-center rounded-sm border border-rose-300/70 bg-rose-500 text-[10px] font-black leading-none text-white shadow-sm"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
                             </div>
-                            <div className="min-w-0 space-y-2 p-3 font-mono">
+                            <div className="border-b border-cyan-400/10 bg-[#071228] px-3 py-1.5 font-mono text-[10px] font-bold text-cyan-200">
+                                MobaXterm Personal Edition style session - SSH terminal log
+                            </div>
+                            <div className="min-w-0 space-y-1.5 bg-[#070d1f] p-3 font-mono">
                                 {updateResult.logs.slice(0, visibleLogCount).map((log, index) => (
                                     <div
                                         key={`${log.command}-${index}`}
-                                        className="terminal-line-in min-w-0 rounded-lg border border-slate-800 bg-slate-900/80 p-2.5"
+                                        className="terminal-line-in min-w-0"
                                     >
                                         <div className="flex flex-wrap items-center justify-between gap-2">
                                             <code className="min-w-0 break-all text-[10px] font-bold text-teal-200">
-                                                <span className="text-amber-300">$</span> {log.command}
+                                                <span className="text-lime-300">masjid@vps</span>
+                                                <span className="text-slate-400">:</span>
+                                                <span className="text-cyan-300">~/public_html</span>
+                                                <span className="text-slate-400">$</span> <span className="text-amber-200">{log.command}</span>
                                             </code>
                                             <span
-                                                className={`rounded-full px-2 py-1 text-[11px] font-black ${
+                                                className={`rounded px-1.5 py-0.5 text-[9px] font-black ${
                                                     log.exitCode === 0 ? 'bg-teal-400/20 text-teal-100' : 'bg-rose-400/20 text-rose-100'
                                                 }`}
                                             >
@@ -205,14 +227,14 @@ export default function Update({
                                             </span>
                                         </div>
                                         {(log.output || log.error) && (
-                                            <pre className="mt-2 max-w-full whitespace-pre-wrap break-words text-[10px] leading-5 text-slate-200">
+                                            <pre className="mt-1 max-w-full whitespace-pre-wrap break-words border-l border-cyan-500/25 pl-2 text-[10px] leading-5 text-slate-200">
                                                 <code>{log.output || log.error}</code>
                                             </pre>
                                         )}
                                     </div>
                                 ))}
                                 {visibleLogCount < updateResult.logs.length && (
-                                    <div className="terminal-line-in flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/80 p-2.5 text-[10px] font-bold text-amber-300">
+                                    <div className="terminal-line-in flex items-center gap-1.5 text-[10px] font-bold text-amber-300">
                                         <RefreshCw className="h-3 w-3 animate-spin" />
                                         <span>Menampilkan proses update...</span>
                                         <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-amber-300" />
