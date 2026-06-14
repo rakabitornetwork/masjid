@@ -233,14 +233,7 @@ class UpdateGuideController extends Controller
                 ->get('https://api.github.com/repos/rakabitornetwork/masjid/releases/latest');
 
             if (! $response->successful()) {
-                return [
-                    'version' => null,
-                    'hash' => null,
-                    'title' => null,
-                    'date' => null,
-                    'summary' => null,
-                    'status' => 'failed',
-                ];
+                return $this->latestReleaseFromGitRemote();
             }
 
             $payload = $response->json();
@@ -259,14 +252,7 @@ class UpdateGuideController extends Controller
                 'status' => 'success',
             ];
         } catch (\Throwable) {
-            return [
-                'version' => null,
-                'hash' => null,
-                'title' => null,
-                'date' => null,
-                'summary' => null,
-                'status' => 'failed',
-            ];
+            return $this->latestReleaseFromGitRemote();
         }
     }
 
@@ -311,13 +297,7 @@ class UpdateGuideController extends Controller
                 ->get('https://api.github.com/repos/rakabitornetwork/masjid/commits/main');
 
             if (! $response->successful()) {
-                return [
-                    'hash' => null,
-                    'title' => null,
-                    'date' => null,
-                    'summary' => null,
-                    'status' => 'failed',
-                ];
+                return $this->latestMainCommitFromGitRemote();
             }
 
             $payload = $response->json();
@@ -335,6 +315,80 @@ class UpdateGuideController extends Controller
                 'status' => 'success',
             ];
         } catch (\Throwable) {
+            return $this->latestMainCommitFromGitRemote();
+        }
+    }
+
+    /**
+     * @return array{version: ?string, hash: ?string, title: ?string, date: ?string, summary: ?string, status: string}
+     */
+    private function latestReleaseFromGitRemote(): array
+    {
+        $process = new Process(['git', 'ls-remote', '--tags', 'origin'], base_path(), timeout: 20);
+        $process->run();
+
+        if (! $process->isSuccessful()) {
+            return [
+                'version' => null,
+                'hash' => null,
+                'title' => null,
+                'date' => null,
+                'summary' => null,
+                'status' => 'failed',
+            ];
+        }
+
+        $tags = collect(explode("\n", trim($process->getOutput())))
+            ->map(function (string $line): ?array {
+                [$sha, $ref] = array_pad(preg_split('/\s+/', trim($line)) ?: [], 2, null);
+
+                if (! $sha || ! $ref || str_ends_with($ref, '^{}')) {
+                    return null;
+                }
+
+                $tag = str_replace('refs/tags/', '', $ref);
+
+                return [
+                    'version' => $tag,
+                    'hash' => substr($sha, 0, 7),
+                ];
+            })
+            ->filter()
+            ->sortBy(fn (array $tag): string => str_pad(str_replace('.', '', $tag['version']), 12, '0', STR_PAD_LEFT))
+            ->values();
+
+        $latest = $tags->last();
+
+        if (! $latest) {
+            return [
+                'version' => null,
+                'hash' => null,
+                'title' => null,
+                'date' => null,
+                'summary' => null,
+                'status' => 'failed',
+            ];
+        }
+
+        return [
+            'version' => $latest['version'],
+            'hash' => $latest['hash'],
+            'title' => 'Aplikasi manajement masjid',
+            'date' => now()->format('d M Y H:i:s'),
+            'summary' => 'Informasi release dibaca dari tag Git remote karena API GitHub tidak dapat diakses dari server.',
+            'status' => 'success',
+        ];
+    }
+
+    /**
+     * @return array{hash: ?string, title: ?string, date: ?string, summary: ?string, status: string}
+     */
+    private function latestMainCommitFromGitRemote(): array
+    {
+        $process = new Process(['git', 'ls-remote', 'origin', 'refs/heads/main'], base_path(), timeout: 20);
+        $process->run();
+
+        if (! $process->isSuccessful()) {
             return [
                 'hash' => null,
                 'title' => null,
@@ -343,5 +397,15 @@ class UpdateGuideController extends Controller
                 'status' => 'failed',
             ];
         }
+
+        [$sha] = array_pad(preg_split('/\s+/', trim($process->getOutput())) ?: [], 1, null);
+
+        return [
+            'hash' => $sha ? substr($sha, 0, 7) : null,
+            'title' => 'Commit terbaru branch main',
+            'date' => now()->format('d M Y H:i:s'),
+            'summary' => 'Commit terbaru branch main dibaca dari Git remote origin.',
+            'status' => $sha ? 'success' : 'failed',
+        ];
     }
 }
