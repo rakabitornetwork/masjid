@@ -242,7 +242,7 @@ export default function Update({
                                         <Terminal className="h-3.5 w-3.5" />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="truncate text-[10px] font-bold text-cyan-100">masjid-update@vps: ~/public_html</p>
+                                        <p className="truncate text-[10px] font-bold text-cyan-100">masjid@vpanel:~/public_html$</p>
                                         <p className="text-[9px] font-semibold text-slate-300">
                                             {terminalStatusText}
                                         </p>

@@ -54,7 +54,7 @@ export default function AppLayout({ title, children, actions = null }) {
         <>
             <Head title={title} />
 
-            <div className="flex min-h-screen bg-[#052e2b] font-sans text-xs text-slate-800 antialiased">
+            <div className="flex h-screen overflow-hidden bg-[#052e2b] font-sans text-xs text-slate-800 antialiased">
                 {sidebarOpen && (
                     <button
                         type="button"
@@ -65,7 +65,7 @@ export default function AppLayout({ title, children, actions = null }) {
                 )}
 
                 <aside
-                    className={`fixed inset-y-0 left-0 z-40 flex w-56 shrink-0 flex-col justify-between border-r border-emerald-200/10 bg-[radial-gradient(circle_at_16%_0%,rgba(250,204,21,0.22),transparent_28%),radial-gradient(circle_at_82%_22%,rgba(45,212,191,0.22),transparent_30%),linear-gradient(180deg,#064e3b_0%,#065f46_42%,#0f766e_72%,#164e3f_100%)] shadow-2xl shadow-emerald-950/35 transition-transform duration-200 lg:relative lg:translate-x-0 ${
+                    className={`fixed inset-y-0 left-0 z-40 flex h-screen w-56 shrink-0 flex-col justify-between border-r border-emerald-200/10 bg-[radial-gradient(circle_at_16%_0%,rgba(250,204,21,0.22),transparent_28%),radial-gradient(circle_at_82%_22%,rgba(45,212,191,0.22),transparent_30%),linear-gradient(180deg,#064e3b_0%,#065f46_42%,#0f766e_72%,#164e3f_100%)] shadow-2xl shadow-emerald-950/35 transition-transform duration-200 lg:relative lg:translate-x-0 ${
                         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
                 >
@@ -132,8 +132,8 @@ export default function AppLayout({ title, children, actions = null }) {
                     </div>
                 </aside>
 
-                <div className="flex min-w-0 flex-1 flex-col bg-[radial-gradient(circle_at_20%_0%,rgba(16,185,129,0.16),transparent_28rem),linear-gradient(135deg,#eff6ff_0%,#f8fafc_46%,#dbeafe_100%)]">
-                    <header className="flex h-14 items-center justify-between border-b border-blue-100/70 bg-white/86 px-4 shadow-sm shadow-blue-900/5 backdrop-blur-md lg:px-6">
+                <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(16,185,129,0.16),transparent_28rem),linear-gradient(135deg,#eff6ff_0%,#f8fafc_46%,#dbeafe_100%)]">
+                    <header className="flex h-14 shrink-0 items-center justify-between border-b border-blue-100/70 bg-white/86 px-4 shadow-sm shadow-blue-900/5 backdrop-blur-md lg:px-6">
                         <div className="flex min-w-0 items-center">
                             <button
                                 type="button"
@@ -165,7 +165,7 @@ export default function AppLayout({ title, children, actions = null }) {
                         </div>
                     </header>
 
-                    <main className="flex-1 overflow-y-auto p-4 lg:p-5">
+                    <main className="min-h-0 flex-1 overflow-y-auto p-4 lg:p-5">
                         <FlashMessage />
                         {children}
                     </main>

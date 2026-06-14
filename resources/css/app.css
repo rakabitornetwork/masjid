@@ -23,6 +23,7 @@
         background: #061a40;
         color: #0f172a;
         font-size: 0.75rem;
+        overflow: hidden;
     }
 
     * {
