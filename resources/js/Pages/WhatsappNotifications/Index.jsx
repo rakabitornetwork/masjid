@@ -24,7 +24,7 @@ const statusTone = {
     cancelled: 'bg-rose-100 text-rose-700',
 };
 
-export default function Index({ notifications, summary }) {
+export default function Index({ notifications, api, summary }) {
     const { data, setData, post, put, processing, errors, reset } = useForm(emptyForm);
     const editingId = data.id || null;
 
@@ -58,6 +58,12 @@ export default function Index({ notifications, summary }) {
         router.post(`/notifikasi-wa/${notification.id}/terkirim`, {}, { preserveScroll: true });
     };
 
+    const sendApi = (notification) => {
+        if (window.confirm(`Kirim notifikasi "${notification.title}" melalui WhatsApp API sekarang?`)) {
+            router.post(`/notifikasi-wa/${notification.id}/kirim-api`, {}, { preserveScroll: true });
+        }
+    };
+
     const whatsappUrl = (notification) => {
         const phone = String(notification.recipient_phone || '').replace(/\D/g, '');
         return `https://wa.me/${phone}?text=${encodeURIComponent(notification.message || '')}`;
@@ -65,6 +71,12 @@ export default function Index({ notifications, summary }) {
 
     return (
         <AppLayout title="Notifikasi WhatsApp">
+            <div className={`mb-4 rounded-xl border p-3 text-xs font-semibold ${api?.enabled ? 'border-emerald-100 bg-emerald-50 text-emerald-700' : 'border-amber-100 bg-amber-50 text-amber-700'}`}>
+                {api?.enabled
+                    ? `${api.provider} aktif. Tombol Kirim API akan mengirim pesan otomatis dan menandai status terkirim.`
+                    : 'WhatsApp API belum aktif. Tombol manual tetap bisa membuka WhatsApp/WhatsApp Web melalui link wa.me.'}
+            </div>
+
             <section className="grid gap-4 md:grid-cols-4">
                 <StatCard title="Total Pesan" value={summary.total} helper="Semua notifikasi" icon={MessageCircle} />
                 <StatCard title="Draft" value={summary.draft} helper="Belum dikirim" icon={Edit3} tone="sky" />
@@ -153,7 +165,13 @@ export default function Index({ notifications, summary }) {
                                     <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
                                         Jadwal: {date(notification.scheduled_at)} • Terkirim: {date(notification.sent_at)}
                                     </p>
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-wrap justify-end gap-2">
+                                        {api?.enabled && notification.status !== 'sent' && (
+                                            <button className="inline-flex items-center gap-1 rounded-lg bg-teal-600 px-2 py-2 text-xs font-bold text-white" type="button" onClick={() => sendApi(notification)}>
+                                                <Send className="h-4 w-4" />
+                                                API
+                                            </button>
+                                        )}
                                         <a
                                             className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2 py-2 text-xs font-bold text-emerald-700"
                                             href={whatsappUrl(notification)}
@@ -161,7 +179,7 @@ export default function Index({ notifications, summary }) {
                                             rel="noreferrer"
                                         >
                                             <Send className="h-4 w-4" />
-                                            Kirim
+                                            Manual
                                         </a>
                                         {notification.status !== 'sent' && (
                                             <button className="rounded-lg bg-sky-50 p-2 text-sky-700" type="button" onClick={() => markSent(notification)}>

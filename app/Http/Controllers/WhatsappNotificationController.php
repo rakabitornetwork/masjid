@@ -3,17 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\WhatsappNotification;
+use App\Services\WhatsappCloudApiService;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use RuntimeException;
 
 class WhatsappNotificationController extends Controller
 {
-    public function index(): Response
+    public function index(WhatsappCloudApiService $whatsapp): Response
     {
         return Inertia::render('WhatsappNotifications/Index', [
             'notifications' => WhatsappNotification::latest('scheduled_at')->latest()->get(),
+            'api' => [
+                'enabled' => $whatsapp->isConfigured(),
+                'provider' => 'Meta WhatsApp Cloud API',
+            ],
             'summary' => [
                 'total' => WhatsappNotification::count(),
                 'draft' => WhatsappNotification::where('status', 'draft')->count(),
@@ -52,6 +59,31 @@ class WhatsappNotificationController extends Controller
         ]);
 
         return back()->with('success', 'Notifikasi WhatsApp ditandai sudah terkirim.');
+    }
+
+    public function sendApi(WhatsappNotification $whatsappNotification, WhatsappCloudApiService $whatsapp): RedirectResponse
+    {
+        try {
+            $response = $whatsapp->sendText($whatsappNotification->recipient_phone, $whatsappNotification->message);
+        } catch (RuntimeException $exception) {
+            return back()->with('error', $exception->getMessage());
+        } catch (RequestException $exception) {
+            return back()->with('error', 'WhatsApp API gagal mengirim pesan: '.($exception->response?->body() ?: $exception->getMessage()));
+        }
+
+        $messageId = data_get($response, 'messages.0.id');
+        $notes = trim(implode("\n", array_filter([
+            $whatsappNotification->notes,
+            $messageId ? 'WhatsApp API message_id: '.$messageId : 'WhatsApp API berhasil mengirim pesan.',
+        ])));
+
+        $whatsappNotification->update([
+            'status' => 'sent',
+            'sent_at' => now(),
+            'notes' => $notes,
+        ]);
+
+        return back()->with('success', 'Notifikasi WhatsApp berhasil dikirim melalui API.');
     }
 
     /**

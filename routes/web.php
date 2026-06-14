@@ -138,6 +138,8 @@ Route::middleware('auth')->group(function (): void {
 
         Route::post('notifikasi-wa/{whatsappNotification}/terkirim', [WhatsappNotificationController::class, 'markSent'])
             ->name('whatsapp-notifications.mark-sent');
+        Route::post('notifikasi-wa/{whatsappNotification}/kirim-api', [WhatsappNotificationController::class, 'sendApi'])
+            ->name('whatsapp-notifications.send-api');
         Route::resource('notifikasi-wa', WhatsappNotificationController::class)
             ->parameters(['notifikasi-wa' => 'whatsappNotification'])
             ->names('whatsapp-notifications')

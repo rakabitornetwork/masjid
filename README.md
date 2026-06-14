@@ -123,10 +123,27 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 ### Notifikasi WhatsApp
 
-- Pencatatan pesan WhatsApp manual untuk jadwal, booking, donasi, zakat, qurban, keuangan, dan pengumuman.
-- Tombol `Kirim` membuka WhatsApp/WhatsApp Web melalui link `wa.me` dengan isi pesan otomatis.
-- Admin dapat menandai pesan sebagai terkirim setelah proses kirim dilakukan.
+- Pencatatan pesan WhatsApp untuk jadwal, booking, donasi, zakat, qurban, keuangan, dan pengumuman.
+- Tombol `Manual` membuka WhatsApp/WhatsApp Web melalui link `wa.me` dengan isi pesan otomatis.
+- Tombol `API` dapat mengirim pesan otomatis melalui Meta WhatsApp Cloud API jika konfigurasi `.env` sudah aktif.
+- Admin tetap dapat menandai pesan sebagai terkirim setelah proses kirim manual dilakukan.
 - Notifikasi WhatsApp ikut masuk ke export laporan dan backup data aplikasi.
+
+Konfigurasi WhatsApp API di `.env`:
+
+```env
+WHATSAPP_API_ENABLED=true
+WHATSAPP_API_URL=https://graph.facebook.com
+WHATSAPP_API_VERSION=v20.0
+WHATSAPP_PHONE_NUMBER_ID=isi_phone_number_id_meta
+WHATSAPP_ACCESS_TOKEN=isi_access_token_meta
+```
+
+Setelah mengubah `.env` di VPS, jalankan:
+
+```bash
+php artisan optimize:clear
+```
 
 ### Zakat dan Database Muzakki/Mustahik
 
@@ -192,7 +209,6 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
-- Integrasi WhatsApp Business/API untuk pengiriman otomatis.
 - Setelah fitur utama lengkap, rapikan bundle frontend dengan code splitting / lazy loading agar file JS awal lebih kecil.
 
 ## Akun Admin Awal
