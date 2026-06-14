@@ -31,7 +31,7 @@ import {
     Wrench,
     X,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ApplicationLogo from '../Components/ApplicationLogo';
 import FlashMessage from '../Components/FlashMessage';
 
@@ -68,6 +68,8 @@ export default function AppLayout({ title, children, actions = null }) {
     const path = window.location.pathname;
     const [time, setTime] = useState(new Date());
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [sidebarScrolling, setSidebarScrolling] = useState(false);
+    const sidebarScrollTimeoutRef = useRef(null);
     const mosqueName = app.name || 'Masjid';
     const mosqueSubtitle = app.tagline || 'Management';
     const currentYear = time.getFullYear();
@@ -80,11 +82,31 @@ export default function AppLayout({ title, children, actions = null }) {
         return () => window.clearInterval(timer);
     }, []);
 
+    useEffect(() => {
+        return () => {
+            if (sidebarScrollTimeoutRef.current) {
+                window.clearTimeout(sidebarScrollTimeoutRef.current);
+            }
+        };
+    }, []);
+
     const isActive = (href) => path === href || (href !== '/dashboard' && path.startsWith(href + '/'));
 
     const logout = (event) => {
         event.preventDefault();
         router.post('/logout');
+    };
+
+    const handleSidebarScroll = () => {
+        setSidebarScrolling(true);
+
+        if (sidebarScrollTimeoutRef.current) {
+            window.clearTimeout(sidebarScrollTimeoutRef.current);
+        }
+
+        sidebarScrollTimeoutRef.current = window.setTimeout(() => {
+            setSidebarScrolling(false);
+        }, 900);
     };
 
     return (
@@ -124,7 +146,10 @@ export default function AppLayout({ title, children, actions = null }) {
                             </button>
                         </div>
 
-                        <nav className="flex-1 space-y-1 overflow-y-auto p-2">
+                        <nav
+                            className={`sidebar-scrollbar flex-1 space-y-1 overflow-y-auto p-2 ${sidebarScrolling ? 'sidebar-scrollbar-visible' : ''}`}
+                            onScroll={handleSidebarScroll}
+                        >
                             {visibleNavigation.map((item) => {
                                 const Icon = item.icon;
                                 const active = isActive(item.href);
