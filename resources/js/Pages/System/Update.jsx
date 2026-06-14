@@ -12,7 +12,7 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache`;
 
-export default function Update({ currentVersion, latestVersion, latestUpdate, updateResult }) {
+export default function Update({ currentVersion, latestVersion, latestCommit, latestUpdate, updateResult }) {
     const [copied, setCopied] = useState(false);
     const [running, setRunning] = useState(false);
 
@@ -165,6 +165,10 @@ export default function Update({ currentVersion, latestVersion, latestUpdate, up
                         <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
                             <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100">Repository</p>
                             <p className="mt-1 break-all text-sm font-bold">github.com/rakabitornetwork/masjid</p>
+                        </div>
+                        <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
+                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100">Commit Terbaru</p>
+                            <p className="mt-1 font-mono text-2xl font-black">{latestCommit}</p>
                         </div>
                         <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
                             <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100">Catatan</p>

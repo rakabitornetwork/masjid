@@ -199,6 +199,25 @@ DB_USERNAME=user_database
 DB_PASSWORD=password_database
 ```
 
+Jika tombol `Jalankan Update` di aplikasi menampilkan error `php-fpm8.4 artisan`, berarti server memakai binary PHP-FPM, bukan PHP CLI. Tambahkan konfigurasi berikut di `.env` VPS:
+
+```env
+PHP_CLI_BINARY=php
+```
+
+Jika command `php` tidak tersedia di VPS, cari path PHP CLI:
+
+```bash
+which php
+which php8.4
+```
+
+Lalu isi `.env` sesuai hasilnya, misalnya:
+
+```env
+PHP_CLI_BINARY=/usr/bin/php8.4
+```
+
 Pastikan document root web server mengarah ke folder:
 
 ```text

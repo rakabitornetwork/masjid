@@ -13,13 +13,14 @@ class UpdateGuideController extends Controller
     public function __invoke(): Response
     {
         return Inertia::render('System/Update', [
-            'currentVersion' => '1.0.0',
-            'latestVersion' => '1.0.0',
+            'currentVersion' => '1.1',
+            'latestVersion' => '1.1',
+            'latestCommit' => '61191ba',
             'updateResult' => session('update_result'),
             'latestUpdate' => [
-                'title' => 'Fase 1 Manajemen Masjid',
+                'title' => 'Update Aplikasi v1.1',
                 'date' => '14 Juni 2026',
-                'summary' => 'Rilis awal aplikasi dengan dashboard, profil masjid, pengurus, pengumuman, jadwal, dan keuangan dasar.',
+                'summary' => 'Pembaruan halaman Update Aplikasi dengan tombol salin perintah, tombol jalankan update langsung, informasi versi terbaru, dan commit rilis.',
             ],
         ]);
     }
@@ -28,14 +29,16 @@ class UpdateGuideController extends Controller
     {
         abort_unless($request->user()?->role === 'admin', 403);
 
+        $phpBinary = env('PHP_CLI_BINARY', 'php');
+
         $commands = [
             ['git', 'pull', 'origin', 'main'],
             ['composer', 'install', '--no-dev', '--optimize-autoloader'],
-            [PHP_BINARY, 'artisan', 'migrate', '--force'],
-            [PHP_BINARY, 'artisan', 'optimize:clear'],
-            [PHP_BINARY, 'artisan', 'config:cache'],
-            [PHP_BINARY, 'artisan', 'route:cache'],
-            [PHP_BINARY, 'artisan', 'view:cache'],
+            [$phpBinary, 'artisan', 'migrate', '--force'],
+            [$phpBinary, 'artisan', 'optimize:clear'],
+            [$phpBinary, 'artisan', 'config:cache'],
+            [$phpBinary, 'artisan', 'route:cache'],
+            [$phpBinary, 'artisan', 'view:cache'],
         ];
 
         $logs = [];
