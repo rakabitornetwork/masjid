@@ -1,5 +1,5 @@
 import { router, useForm, usePage } from '@inertiajs/react';
-import { Edit3, Plus, ShieldCheck, Trash2, UserRound, X } from 'lucide-react';
+import { Edit3, Phone, Plus, ShieldCheck, Trash2, UserRound, X } from 'lucide-react';
 import { PrimaryButton, SecondaryButton, SelectInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
 import { date, label } from '../../lib/formatters';
@@ -7,6 +7,7 @@ import { date, label } from '../../lib/formatters';
 const emptyForm = {
     name: '',
     email: '',
+    whatsapp_number: '',
     role: 'takmir',
     password: '',
     password_confirmation: '',
@@ -27,6 +28,7 @@ export default function Index({ users, roles, rolePermissions }) {
             id: user.id,
             name: user.name,
             email: user.email,
+            whatsapp_number: user.whatsapp_number || '',
             role: user.role,
             password: '',
             password_confirmation: '',
@@ -50,7 +52,7 @@ export default function Index({ users, roles, rolePermissions }) {
     };
 
     return (
-        <AppLayout title="User Admin">
+        <AppLayout title="User Manajemen">
             <div className="grid min-w-0 gap-4 xl:grid-cols-[0.8fr_1.2fr]">
                 <form onSubmit={submit} className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
                     <div className="mb-4 flex items-center gap-2.5">
@@ -68,6 +70,13 @@ export default function Index({ users, roles, rolePermissions }) {
                     <div className="grid gap-3 md:grid-cols-2">
                         <TextInput label="Nama" value={data.name} onChange={(event) => setData('name', event.target.value)} error={errors.name} />
                         <TextInput label="Email" type="email" value={data.email} onChange={(event) => setData('email', event.target.value)} error={errors.email} />
+                        <TextInput
+                            label="Nomor WA"
+                            value={data.whatsapp_number}
+                            onChange={(event) => setData('whatsapp_number', event.target.value)}
+                            error={errors.whatsapp_number}
+                            placeholder="Contoh: 6281234567890"
+                        />
                         <SelectInput label="Role" value={data.role} onChange={(event) => setData('role', event.target.value)} error={errors.role}>
                             {roles.map((role) => (
                                 <option key={role} value={role}>
@@ -126,6 +135,12 @@ export default function Index({ users, roles, rolePermissions }) {
                                         <div className="min-w-0">
                                             <p className="truncate text-sm font-extrabold text-slate-900">{user.name}</p>
                                             <p className="truncate text-[11px] font-semibold text-slate-500">{user.email}</p>
+                                            {user.whatsapp_number && (
+                                                <p className="mt-0.5 flex items-center gap-1 text-[10px] font-bold text-emerald-700">
+                                                    <Phone className="h-3 w-3" />
+                                                    {user.whatsapp_number}
+                                                </p>
+                                            )}
                                             <p className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-teal-700">
                                                 {label(user.role)} • Bergabung {date(user.created_at)}
                                             </p>
