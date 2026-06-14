@@ -1,7 +1,7 @@
 import { Head, useForm } from '@inertiajs/react';
 import { LockKeyhole, Mail, ShieldCheck } from 'lucide-react';
 import ApplicationLogo from '../../Components/ApplicationLogo';
-import { PrimaryButton, TextInput } from '../../Components/FormControls';
+import { Field, PrimaryButton } from '../../Components/FormControls';
 
 export default function Login() {
     const { data, setData, post, processing, errors } = useForm({
@@ -63,34 +63,29 @@ export default function Login() {
                         </p>
 
                         <form onSubmit={submit} className="mt-6 space-y-4">
-                            <div className="rounded-lg border border-teal-100 bg-teal-50/70 p-3 text-xs font-semibold text-teal-900">
-                                <p className="font-bold">Akun awal</p>
-                                <p className="mt-0.5">admin@masjid.com / 12345678</p>
-                            </div>
+                            <Field label="Email Admin" error={errors.email}>
+                                <div className="relative mt-1">
+                                    <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-600" />
+                                    <input
+                                        className="w-full rounded-lg border border-slate-200 bg-white py-1.5 pr-2.5 pl-10 text-xs font-semibold text-slate-900 shadow-xs outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+                                        type="email"
+                                        value={data.email}
+                                        onChange={(event) => setData('email', event.target.value)}
+                                    />
+                                </div>
+                            </Field>
 
-                            <div className="relative">
-                                <Mail className="pointer-events-none absolute left-3 top-9 h-4 w-4 text-emerald-600" />
-                                <TextInput
-                                    label="Email Admin"
-                                    type="email"
-                                    value={data.email}
-                                    onChange={(event) => setData('email', event.target.value)}
-                                    error={errors.email}
-                                    style={{ paddingLeft: '2.5rem' }}
-                                />
-                            </div>
-
-                            <div className="relative">
-                                <LockKeyhole className="pointer-events-none absolute left-3 top-9 h-4 w-4 text-emerald-600" />
-                                <TextInput
-                                    label="Password"
-                                    type="password"
-                                    value={data.password}
-                                    onChange={(event) => setData('password', event.target.value)}
-                                    error={errors.password}
-                                    style={{ paddingLeft: '2.5rem' }}
-                                />
-                            </div>
+                            <Field label="Password" error={errors.password}>
+                                <div className="relative mt-1">
+                                    <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-600" />
+                                    <input
+                                        className="w-full rounded-lg border border-slate-200 bg-white py-1.5 pr-2.5 pl-10 text-xs font-semibold text-slate-900 shadow-xs outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+                                        type="password"
+                                        value={data.password}
+                                        onChange={(event) => setData('password', event.target.value)}
+                                    />
+                                </div>
+                            </Field>
 
                             <label className="flex items-center gap-2 text-xs font-semibold text-slate-600">
                                 <input
