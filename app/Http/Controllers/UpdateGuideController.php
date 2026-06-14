@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Process\Process;
 
 class UpdateGuideController extends Controller
@@ -91,18 +92,109 @@ class UpdateGuideController extends Controller
             ]);
     }
 
-    private function cleanProcessOutput(string $output): string
+    public function stream(Request $request): StreamedResponse
+    {
+        abort_unless($request->user()?->role === 'admin', 403);
+
+        $phpBinary = env('PHP_CLI_BINARY', 'php');
+        $commands = [
+            ['git', 'pull', 'origin', 'main'],
+            ['composer', 'install', '--no-dev', '--optimize-autoloader'],
+            [$phpBinary, 'artisan', 'migrate', '--force'],
+            [$phpBinary, 'artisan', 'optimize:clear'],
+            [$phpBinary, 'artisan', 'config:cache'],
+            [$phpBinary, 'artisan', 'route:cache'],
+            [$phpBinary, 'artisan', 'view:cache'],
+        ];
+
+        return response()->stream(function () use ($commands): void {
+            $send = function (array $payload): void {
+                echo json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n";
+
+                if (ob_get_level() > 0) {
+                    @ob_flush();
+                }
+
+                flush();
+            };
+
+            $send([
+                'type' => 'status',
+                'message' => 'Memulai proses update aplikasi...',
+            ]);
+
+            foreach ($commands as $command) {
+                $commandText = implode(' ', $command);
+
+                $send([
+                    'type' => 'command',
+                    'command' => $commandText,
+                ]);
+
+                $process = new Process($command, base_path(), timeout: 300);
+                $process->run(function (string $type, string $buffer) use ($send): void {
+                    $output = $this->cleanProcessOutput($buffer, 1200);
+
+                    if ($output !== '') {
+                        $send([
+                            'type' => $type === Process::ERR ? 'error' : 'output',
+                            'output' => $output,
+                        ]);
+                    }
+                });
+
+                $send([
+                    'type' => 'exit',
+                    'command' => $commandText,
+                    'exitCode' => $process->getExitCode(),
+                ]);
+
+                if (! $process->isSuccessful()) {
+                    $send([
+                        'type' => 'failed',
+                        'message' => 'Update berhenti karena salah satu perintah gagal.',
+                        'finishedAt' => now()->format('d M Y H:i:s'),
+                    ]);
+
+                    return;
+                }
+            }
+
+            $currentCommit = $this->currentGitCommit();
+            $githubMain = $this->latestGithubMainCommit();
+            $updateAvailable = $githubMain['status'] === 'success'
+                && $githubMain['hash'] !== null
+                && $currentCommit !== null
+                && $githubMain['hash'] !== $currentCommit;
+
+            $send([
+                'type' => 'complete',
+                'message' => 'Update aplikasi selesai dijalankan.',
+                'finishedAt' => now()->format('d M Y H:i:s'),
+                'currentCommit' => $currentCommit ?? 'Tidak terbaca',
+                'latestCommit' => $githubMain['hash'] ?? 'Tidak terbaca',
+                'githubStatus' => $githubMain['status'],
+                'updateAvailable' => $updateAvailable,
+            ]);
+        }, 200, [
+            'Content-Type' => 'application/x-ndjson',
+            'Cache-Control' => 'no-cache, no-transform',
+            'X-Accel-Buffering' => 'no',
+        ]);
+    }
+
+    private function cleanProcessOutput(string $output, int $limit = 1600): string
     {
         $output = preg_replace('/\e\[[\d;?]*[A-Za-z]/', '', $output) ?? $output;
         $output = preg_replace('/\r+/', "\n", $output) ?? $output;
         $output = preg_replace("/\n{3,}/", "\n\n", $output) ?? $output;
         $output = trim($output);
 
-        if (strlen($output) <= 1600) {
+        if (strlen($output) <= $limit) {
             return $output;
         }
 
-        return substr($output, 0, 1600)."\n... output dipersingkat agar terminal tetap rapi ...";
+        return substr($output, 0, $limit)."\n... output dipersingkat agar terminal tetap rapi ...";
     }
 
     private function currentGitCommit(): ?string

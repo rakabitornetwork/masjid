@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { router } from '@inertiajs/react';
 import { CheckCircle2, ClipboardCheck, RefreshCw, Rocket, Sparkles, Terminal } from 'lucide-react';
 import AppLayout from '../../Layouts/AppLayout';
 
@@ -25,29 +24,18 @@ export default function Update({
 }) {
     const [copied, setCopied] = useState(false);
     const [running, setRunning] = useState(false);
-    const [visibleLogCount, setVisibleLogCount] = useState(0);
+    const [terminalEntries, setTerminalEntries] = useState([]);
+    const [displayCurrentCommit, setDisplayCurrentCommit] = useState(currentCommit);
+    const [displayLatestCommit, setDisplayLatestCommit] = useState(latestCommit);
+    const [displayUpdateAvailable, setDisplayUpdateAvailable] = useState(updateAvailable);
+    const [displayGithubStatus, setDisplayGithubStatus] = useState(githubStatus);
 
     useEffect(() => {
-        if (!updateResult?.logs?.length) {
-            setVisibleLogCount(0);
-            return;
-        }
-
-        setVisibleLogCount(0);
-
-        const timer = window.setInterval(() => {
-            setVisibleLogCount((count) => {
-                if (count >= updateResult.logs.length) {
-                    window.clearInterval(timer);
-                    return count;
-                }
-
-                return count + 1;
-            });
-        }, 420);
-
-        return () => window.clearInterval(timer);
-    }, [updateResult]);
+        setDisplayCurrentCommit(currentCommit);
+        setDisplayLatestCommit(latestCommit);
+        setDisplayUpdateAvailable(updateAvailable);
+        setDisplayGithubStatus(githubStatus);
+    }, [currentCommit, latestCommit, updateAvailable, githubStatus]);
 
     const copyUpdateCommands = async () => {
         if (navigator.clipboard) {
@@ -67,7 +55,7 @@ export default function Update({
         window.setTimeout(() => setCopied(false), 2500);
     };
 
-    const runUpdate = () => {
+    const runUpdate = async () => {
         const confirmed = window.confirm(
             'Jalankan update aplikasi sekarang? Proses ini akan menjalankan git pull, composer install, migrate, dan cache Laravel di server.',
         );
@@ -77,28 +65,86 @@ export default function Update({
         }
 
         setRunning(true);
-        router.post(
-            '/update-aplikasi/run',
-            {},
+        setTerminalEntries([
             {
-                preserveScroll: true,
-                onFinish: () => setRunning(false),
+                type: 'status',
+                message: 'Membuka sesi terminal update...',
             },
-        );
+        ]);
+
+        try {
+            const response = await fetch('/update-aplikasi/run-stream', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/x-ndjson',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+            });
+
+            if (!response.ok || !response.body) {
+                throw new Error('Stream update tidak dapat dibuka.');
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+
+                if (done) {
+                    break;
+                }
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+
+                lines.filter(Boolean).forEach((line) => {
+                    const event = JSON.parse(line);
+
+                    if (event.type === 'complete') {
+                        setDisplayCurrentCommit(event.currentCommit);
+                        setDisplayLatestCommit(event.latestCommit);
+                        setDisplayGithubStatus(event.githubStatus);
+                        setDisplayUpdateAvailable(event.updateAvailable);
+                    }
+
+                    setTerminalEntries((entries) => [...entries, event]);
+                });
+            }
+        } catch (error) {
+            setTerminalEntries((entries) => [
+                ...entries,
+                {
+                    type: 'failed',
+                    message: error.message || 'Update gagal dijalankan.',
+                },
+            ]);
+        } finally {
+            setRunning(false);
+        }
     };
 
-    const isGithubConnected = githubStatus === 'success';
+    const isGithubConnected = displayGithubStatus === 'success';
+    const displayEntries = terminalEntries.length > 0 ? terminalEntries : legacyEntries(updateResult);
+    const terminalFinished = displayEntries.some((entry) => entry.type === 'complete' || entry.type === 'failed');
+    const terminalStatusText = running
+        ? 'Update sedang berjalan'
+        : terminalFinished
+            ? (displayEntries.find((entry) => entry.type === 'complete') ? 'Update berhasil' : 'Update gagal')
+            : 'Terminal siap';
 
     return (
         <AppLayout title="Update Aplikasi">
             <section className="mb-4 grid gap-3 md:grid-cols-4">
                 <VersionTile label="Versi Terbaru" value={`v${latestVersion}`} tone={isGithubConnected ? 'emerald' : 'rose'} />
-                <VersionTile label="Commit Lokal" value={currentCommit} mono tone={updateAvailable ? 'amber' : 'blue'} />
-                <VersionTile label="Commit GitHub" value={latestCommit} mono tone={isGithubConnected ? 'sky' : 'rose'} />
+                <VersionTile label="Commit Lokal" value={displayCurrentCommit} mono tone={displayUpdateAvailable ? 'amber' : 'blue'} />
+                <VersionTile label="Commit GitHub" value={displayLatestCommit} mono tone={isGithubConnected ? 'sky' : 'rose'} />
                 <VersionTile
                     label="Status"
-                    value={!isGithubConnected ? 'GitHub Gagal' : updateAvailable ? 'Perlu Update' : 'Up to Date'}
-                    tone={!isGithubConnected ? 'rose' : updateAvailable ? 'amber' : 'teal'}
+                    value={!isGithubConnected ? 'GitHub Gagal' : displayUpdateAvailable ? 'Perlu Update' : 'Up to Date'}
+                    tone={!isGithubConnected ? 'rose' : displayUpdateAvailable ? 'amber' : 'teal'}
                 />
             </section>
 
@@ -123,10 +169,10 @@ export default function Update({
                                 </span>
                                 <span
                                     className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.14em] ${
-                                        updateAvailable ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'
+                                        displayUpdateAvailable ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'
                                     }`}
                                 >
-                                    {updateAvailable ? 'Update tersedia' : 'Aplikasi terbaru'}
+                                    {displayUpdateAvailable ? 'Update tersedia' : 'Aplikasi terbaru'}
                                 </span>
                                 <span className="rounded-full bg-sky-100 px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-[0.12em] text-sky-700">
                                     Release commit: {releaseCommit}
@@ -178,9 +224,7 @@ export default function Update({
                                     <div className="min-w-0">
                                         <p className="truncate text-[10px] font-bold text-cyan-100">masjid-update@vps: ~/public_html</p>
                                         <p className="text-[9px] font-semibold text-slate-300">
-                                            {updateResult
-                                                ? `${updateResult.status === 'success' ? 'Update berhasil' : 'Update gagal'} • ${updateResult.finished_at}`
-                                                : 'Terminal siap • belum ada proses update'}
+                                            {terminalStatusText}
                                         </p>
                                     </div>
                                 </div>
@@ -212,45 +256,21 @@ export default function Update({
                                 MobaXterm Personal Edition style session - SSH terminal log
                             </div>
                             <div className="min-w-0 space-y-1.5 bg-[#070d1f] p-3 font-mono">
-                                {updateResult ? (
+                                {displayEntries.length > 0 ? (
                                     <>
-                                        {updateResult.logs.slice(0, visibleLogCount).map((log, index) => (
-                                            <div
-                                                key={`${log.command}-${index}`}
-                                                className="terminal-line-in min-w-0"
-                                            >
-                                                <div className="flex flex-wrap items-center justify-between gap-2">
-                                                    <code className="min-w-0 break-all text-[10px] font-bold text-teal-200">
-                                                        <span className="text-lime-300">masjid@vps</span>
-                                                        <span className="text-slate-400">:</span>
-                                                        <span className="text-cyan-300">~/public_html</span>
-                                                        <span className="text-slate-400">$</span> <span className="text-amber-200">{log.command}</span>
-                                                    </code>
-                                                    <span
-                                                        className={`rounded px-1.5 py-0.5 text-[9px] font-black ${
-                                                            log.exitCode === 0 ? 'bg-teal-400/20 text-teal-100' : 'bg-rose-400/20 text-rose-100'
-                                                        }`}
-                                                    >
-                                                        exit {log.exitCode}
-                                                    </span>
-                                                </div>
-                                                {(log.output || log.error) && (
-                                                    <pre className="mt-1 max-w-full whitespace-pre-wrap break-words border-l border-cyan-500/25 pl-2 text-[10px] leading-5 text-slate-200">
-                                                        <code>{log.output || log.error}</code>
-                                                    </pre>
-                                                )}
-                                            </div>
+                                        {displayEntries.map((entry, index) => (
+                                            <TerminalEntry entry={entry} key={`${entry.type}-${index}`} />
                                         ))}
-                                        {visibleLogCount < updateResult.logs.length && (
+                                        {running && (
                                             <div className="terminal-line-in flex items-center gap-1.5 text-[10px] font-bold text-amber-300">
                                                 <RefreshCw className="h-3 w-3 animate-spin" />
-                                                <span>Menampilkan proses update...</span>
+                                                <span>Mengeksekusi perintah shell...</span>
                                                 <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-amber-300" />
                                             </div>
                                         )}
-                                        {visibleLogCount >= updateResult.logs.length && (
+                                        {terminalFinished && !running && (
                                             <div className="terminal-line-in flex items-center gap-1.5 text-[10px] font-bold text-teal-300">
-                                                <span>{updateResult.status === 'success' ? 'Update process completed' : 'Update process stopped'}</span>
+                                                <span>{displayEntries.find((entry) => entry.type === 'complete') ? 'Update process completed' : 'Update process stopped'}</span>
                                                 <span className="terminal-cursor h-3 w-1.5 rounded-sm bg-teal-300" />
                                             </div>
                                         )}
@@ -269,6 +289,104 @@ export default function Update({
             </section>
         </AppLayout>
     );
+}
+
+function TerminalEntry({ entry }) {
+    if (entry.type === 'command') {
+        return (
+            <div className="terminal-line-in min-w-0">
+                <code className="min-w-0 break-all text-[10px] font-bold text-teal-200">
+                    <span className="text-lime-300">masjid@vps</span>
+                    <span className="text-slate-400">:</span>
+                    <span className="text-cyan-300">~/public_html</span>
+                    <span className="text-slate-400">$</span> <span className="text-amber-200">{entry.command}</span>
+                </code>
+            </div>
+        );
+    }
+
+    if (entry.type === 'output' || entry.type === 'error') {
+        return (
+            <pre
+                className={`terminal-line-in max-w-full whitespace-pre-wrap break-words border-l pl-2 text-[10px] leading-5 ${
+                    entry.type === 'error' ? 'border-rose-500/35 text-rose-200' : 'border-cyan-500/25 text-slate-200'
+                }`}
+            >
+                <code>{entry.output}</code>
+            </pre>
+        );
+    }
+
+    if (entry.type === 'exit') {
+        return (
+            <div className="terminal-line-in flex justify-end">
+                <span
+                    className={`rounded px-1.5 py-0.5 text-[9px] font-black ${
+                        entry.exitCode === 0 ? 'bg-teal-400/20 text-teal-100' : 'bg-rose-400/20 text-rose-100'
+                    }`}
+                >
+                    exit {entry.exitCode}
+                </span>
+            </div>
+        );
+    }
+
+    if (entry.type === 'complete' || entry.type === 'failed' || entry.type === 'status') {
+        return (
+            <div
+                className={`terminal-line-in flex items-center gap-1.5 text-[10px] font-bold ${
+                    entry.type === 'failed' ? 'text-rose-300' : entry.type === 'complete' ? 'text-teal-300' : 'text-cyan-300'
+                }`}
+            >
+                <span>{entry.message}</span>
+            </div>
+        );
+    }
+
+    return null;
+}
+
+function legacyEntries(updateResult) {
+    if (!updateResult?.logs?.length) {
+        return [];
+    }
+
+    return [
+        {
+            type: 'status',
+            message: `Log update terakhir: ${updateResult.finished_at}`,
+        },
+        ...updateResult.logs.flatMap((log) => [
+            {
+                type: 'command',
+                command: log.command,
+            },
+            ...(log.output
+                ? [
+                      {
+                          type: 'output',
+                          output: log.output,
+                      },
+                  ]
+                : []),
+            ...(log.error
+                ? [
+                      {
+                          type: 'error',
+                          output: log.error,
+                      },
+                  ]
+                : []),
+            {
+                type: 'exit',
+                exitCode: log.exitCode,
+            },
+        ]),
+        {
+            type: updateResult.status === 'success' ? 'complete' : 'failed',
+            message: updateResult.status === 'success' ? 'Update aplikasi selesai dijalankan.' : 'Update berhenti karena salah satu perintah gagal.',
+        },
+    ];
 }
 
 function VersionTile({ label, value, mono = false, tone = 'blue' }) {
