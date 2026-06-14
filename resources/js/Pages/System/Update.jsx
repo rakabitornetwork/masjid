@@ -149,6 +149,7 @@ export default function Update({
     const isGithubConnected = displayGithubStatus === 'success';
     const displayEntries = terminalEntries.length > 0 ? terminalEntries : showUpdateResult ? legacyEntries(updateResult) : [];
     const terminalFinished = displayEntries.some((entry) => entry.type === 'complete' || entry.type === 'failed');
+    const canRunUpdate = isGithubConnected && displayUpdateAvailable;
     const terminalStatusText = running
         ? 'Update sedang berjalan'
         : terminalFinished
@@ -211,11 +212,12 @@ export default function Update({
                             <button
                                 type="button"
                                 onClick={runUpdate}
-                                disabled={running}
+                                disabled={running || !canRunUpdate}
                                 className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm shadow-teal-700/15 transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                title={canRunUpdate ? 'Jalankan update aplikasi' : 'Tidak ada update yang terdeteksi dari GitHub'}
                             >
                                 <RefreshCw className={`h-4 w-4 ${running ? 'animate-spin' : ''}`} />
-                                {running ? 'Menjalankan Update...' : 'Jalankan Update'}
+                                {running ? 'Menjalankan Update...' : canRunUpdate ? 'Jalankan Update' : 'Tidak Ada Update'}
                             </button>
                         </div>
                     </div>
