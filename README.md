@@ -106,6 +106,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Jadwal perawatan berikutnya dapat otomatis memperbarui `maintenance_due_at` pada barang inventaris.
 - Riwayat perawatan ikut masuk ke export laporan dan backup data aplikasi.
 
+### Notifikasi WhatsApp
+
+- Pencatatan pesan WhatsApp manual untuk jadwal, booking, donasi, zakat, qurban, keuangan, dan pengumuman.
+- Tombol `Kirim` membuka WhatsApp/WhatsApp Web melalui link `wa.me` dengan isi pesan otomatis.
+- Admin dapat menandai pesan sebagai terkirim setelah proses kirim dilakukan.
+- Notifikasi WhatsApp ikut masuk ke export laporan dan backup data aplikasi.
+
 ### Keuangan Dasar
 
 - Akun kas, bank, QRIS, dan e-wallet.
@@ -117,7 +124,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 ### Export, Backup, dan Restore
 
-- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, inventaris, perawatan inventaris, donasi, artikel, arsip surat, booking fasilitas, zakat, dan qurban.
+- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, inventaris, perawatan inventaris, donasi, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, dan qurban.
 - Backup data aplikasi dari menu `Backup Data` dalam format JSON.
 - Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
 - Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.
@@ -138,7 +145,7 @@ Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 - Inventaris aset masjid dan fasilitas lanjutan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
 - Manajemen user, role, dan permission lebih detail.
-- Integrasi notifikasi.
+- Integrasi WhatsApp Business/API untuk pengiriman otomatis.
 - Setelah fitur utama lengkap, rapikan bundle frontend dengan code splitting / lazy loading agar file JS awal lebih kecil.
 
 ## Akun Admin Awal

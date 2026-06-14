@@ -17,6 +17,7 @@ use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Models\WhatsappNotification;
 use App\Models\ZakatCollection;
 use App\Models\ZakatDistribution;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -247,6 +248,18 @@ class DatabaseSeeder extends Seeder
             'published_at' => now(),
             'is_pinned' => true,
             'status' => 'published',
+        ]);
+
+        WhatsappNotification::updateOrCreate([
+            'title' => 'Pengingat Kajian Pekanan',
+            'recipient_phone' => '6281230000001',
+        ], [
+            'category' => 'schedule',
+            'recipient_name' => 'Koordinator Jamaah',
+            'message' => 'Assalamu alaikum, kami mengingatkan agenda kajian pekanan di Masjid Al-Ikhlas. Mohon hadir tepat waktu.',
+            'status' => 'draft',
+            'scheduled_at' => now()->addDays(2),
+            'notes' => 'Contoh template notifikasi WhatsApp manual.',
         ]);
 
         PublicArticle::updateOrCreate([

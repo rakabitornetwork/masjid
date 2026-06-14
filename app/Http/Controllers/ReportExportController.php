@@ -11,6 +11,7 @@ use App\Models\InventoryItem;
 use App\Models\InventoryMaintenance;
 use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
+use App\Models\WhatsappNotification;
 use App\Models\ZakatCollection;
 use App\Models\ZakatDistribution;
 use Illuminate\Http\Request;
@@ -51,6 +52,10 @@ class ReportExportController extends Controller
         'artikel' => [
             'label' => 'Artikel Publik',
             'description' => 'Export berita dan artikel yang dikelola untuk landing page publik.',
+        ],
+        'notifikasi-wa' => [
+            'label' => 'Notifikasi WhatsApp',
+            'description' => 'Export pesan WhatsApp manual, penerima, jadwal, dan status kirim.',
         ],
         'booking-fasilitas' => [
             'label' => 'Booking Fasilitas',
@@ -261,6 +266,19 @@ class ReportExportController extends Controller
                     $article->status,
                     $article->is_featured ? 'ya' : 'tidak',
                     $article->excerpt,
+                ]),
+            ],
+            'notifikasi-wa' => [
+                ['Judul', 'Kategori', 'Penerima', 'Nomor WA', 'Status', 'Jadwal Kirim', 'Terkirim', 'Pesan'],
+                WhatsappNotification::latest('scheduled_at')->latest()->get()->map(fn (WhatsappNotification $notification): array => [
+                    $notification->title,
+                    $notification->category,
+                    $notification->recipient_name,
+                    $notification->recipient_phone,
+                    $notification->status,
+                    $notification->scheduled_at?->format('Y-m-d H:i'),
+                    $notification->sent_at?->format('Y-m-d H:i'),
+                    $notification->message,
                 ]),
             ],
             'booking-fasilitas' => [

@@ -21,6 +21,7 @@ class BackupController extends Controller
         'committee_members',
         'announcements',
         'public_articles',
+        'whatsapp_notifications',
         'schedules',
         'document_archives',
         'facility_bookings',
