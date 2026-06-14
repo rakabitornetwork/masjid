@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('website')->nullable();
+            $table->string('logo_path')->nullable();
             $table->text('vision')->nullable();
             $table->text('mission')->nullable();
             $table->date('founded_at')->nullable();

@@ -1,10 +1,11 @@
 import { useForm } from '@inertiajs/react';
-import { Building2, Save } from 'lucide-react';
+import { Building2, Camera, Save } from 'lucide-react';
+import ApplicationLogo from '../../Components/ApplicationLogo';
 import { PrimaryButton, TextareaInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
 
 export default function Edit({ profile, facilitiesText }) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         name: profile?.name || 'Masjid Al-Ikhlas',
         tagline: profile?.tagline || '',
         address: profile?.address || '',
@@ -14,16 +15,24 @@ export default function Edit({ profile, facilitiesText }) {
         phone: profile?.phone || '',
         email: profile?.email || '',
         website: profile?.website || '',
+        logo: null,
         vision: profile?.vision || '',
         mission: profile?.mission || '',
         founded_at: profile?.founded_at?.slice(0, 10) || '',
         capacity: profile?.capacity || '',
         facilities_text: facilitiesText || '',
     });
+    const logoPreviewUrl = data.logo ? URL.createObjectURL(data.logo) : profile?.logo_path ? `/storage/${profile.logo_path}` : null;
 
     const submit = (event) => {
         event.preventDefault();
-        put('/profil-masjid');
+        transform((formData) => ({ ...formData, _method: 'put' }));
+        post('/profil-masjid', {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => setData('logo', null),
+            onFinish: () => transform((formData) => formData),
+        });
     };
 
     return (
@@ -88,6 +97,37 @@ export default function Edit({ profile, facilitiesText }) {
                 </section>
 
                 <section className="space-y-4">
+                    <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                        <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Logo / Icon Aplikasi</h3>
+                        <div className="mt-3 rounded-xl border border-dashed border-teal-200 bg-teal-50/60 p-3">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white bg-white p-2 shadow-sm">
+                                    {logoPreviewUrl ? (
+                                        <img src={logoPreviewUrl} alt="Logo masjid" className="h-full w-full object-contain" />
+                                    ) : (
+                                        <ApplicationLogo className="h-14 w-14" />
+                                    )}
+                                </div>
+                                <div className="min-w-0">
+                                    <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-teal-700">
+                                        <Camera className="h-4 w-4" />
+                                        Pilih Icon
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(event) => setData('logo', event.target.files?.[0] || null)}
+                                        />
+                                    </label>
+                                    {errors.logo && <p className="mt-2 text-[10px] font-semibold text-rose-600">{errors.logo}</p>}
+                                    <p className="mt-2 text-[10px] font-semibold leading-5 text-slate-500">
+                                        Gunakan gambar kotak PNG/JPG maksimal 2MB. Logo akan tampil di sidebar, navbar, dan halaman login.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
                         <h3 className="text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">Kontak</h3>
                         <div className="mt-3 grid gap-3">

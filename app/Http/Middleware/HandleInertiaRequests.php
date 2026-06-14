@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\MosqueProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -25,6 +27,11 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user()?->only('id', 'name', 'email', 'role', 'avatar_path'),
+            ],
+            'app' => [
+                'logo_path' => fn () => Schema::hasColumn('mosque_profiles', 'logo_path')
+                    ? MosqueProfile::query()->value('logo_path')
+                    : null,
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

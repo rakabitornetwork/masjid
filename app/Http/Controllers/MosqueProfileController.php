@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MosqueProfile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -32,6 +33,7 @@ class MosqueProfileController extends Controller
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'email', 'max:255'],
             'website' => ['nullable', 'string', 'max:255'],
+            'logo' => ['nullable', 'image', 'max:2048'],
             'vision' => ['nullable', 'string'],
             'mission' => ['nullable', 'string'],
             'founded_at' => ['nullable', 'date'],
@@ -47,6 +49,17 @@ class MosqueProfileController extends Controller
         unset($data['facilities_text']);
 
         $profile = MosqueProfile::first() ?? new MosqueProfile();
+
+        if ($request->hasFile('logo')) {
+            if ($profile->logo_path) {
+                Storage::disk('public')->delete($profile->logo_path);
+            }
+
+            $data['logo_path'] = $request->file('logo')->store('mosque-logos', 'public');
+        }
+
+        unset($data['logo']);
+
         $profile->fill($data);
         $profile->save();
 

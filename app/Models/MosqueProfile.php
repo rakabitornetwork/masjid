@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
     'phone',
     'email',
     'website',
+    'logo_path',
     'vision',
     'mission',
     'founded_at',
