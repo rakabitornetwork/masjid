@@ -127,6 +127,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Ringkasan total wakaf, aset dikelola, aset produktif, dan nilai estimasi.
 - Data wakaf ikut masuk ke export laporan dan backup data aplikasi.
 
+### Program Sosial
+
+- Pencatatan program bantuan sosial seperti santunan dhuafa, yatim/piatu, pendidikan, kesehatan, bencana, Ramadhan, dan lainnya.
+- Data penerima manfaat, nomor WA, alamat, nominal bantuan, bantuan barang/paket, tanggal distribusi, status, dan catatan.
+- Ringkasan total program, rencana bantuan, bantuan tersalurkan, dan total nominal.
+- Program sosial ikut masuk ke export laporan dan backup data aplikasi.
+
 ### Keuangan Dasar
 
 - Akun kas, bank, QRIS, dan e-wallet.
@@ -138,7 +145,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 ### Export, Backup, dan Restore
 
-- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, keluarga jamaah, inventaris, perawatan inventaris, donasi, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, qurban, dan wakaf.
+- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, keluarga jamaah, inventaris, perawatan inventaris, donasi, artikel, arsip surat, booking fasilitas, notifikasi WhatsApp, zakat, qurban, wakaf, dan program sosial.
 - Backup data aplikasi dari menu `Backup Data` dalam format JSON.
 - Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
 - Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.
@@ -161,7 +168,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 
-- ZISWAF lanjutan: sedekah khusus, muzakki/mustahik lebih detail, dan distribusi program sosial.
+- ZISWAF lanjutan: sedekah khusus dan database muzakki/mustahik lebih detail.
 - Inventaris aset masjid dan fasilitas lanjutan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
 - Integrasi WhatsApp Business/API untuk pengiriman otomatis.

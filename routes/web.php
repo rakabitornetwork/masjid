@@ -24,6 +24,7 @@ use App\Http\Controllers\PublicArticleController;
 use App\Http\Controllers\QurbanParticipantController;
 use App\Http\Controllers\ReportExportController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\SocialAssistanceProgramController;
 use App\Http\Controllers\UpdateGuideController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\WaqfAssetController;
@@ -169,6 +170,11 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('wakaf', WaqfAssetController::class)
             ->parameters(['wakaf' => 'waqfAsset'])
             ->names('waqf-assets')
+            ->except(['create', 'edit', 'show']);
+
+        Route::resource('program-sosial', SocialAssistanceProgramController::class)
+            ->parameters(['program-sosial' => 'socialAssistanceProgram'])
+            ->names('social-assistance-programs')
             ->except(['create', 'edit', 'show']);
     });
 

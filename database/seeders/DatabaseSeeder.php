@@ -17,6 +17,7 @@ use App\Models\MosqueProfile;
 use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
 use App\Models\Schedule;
+use App\Models\SocialAssistanceProgram;
 use App\Models\User;
 use App\Models\WaqfAsset;
 use App\Models\WhatsappNotification;
@@ -188,6 +189,20 @@ class DatabaseSeeder extends Seeder
             'received_at' => now()->subMonth()->toDateString(),
             'location' => 'Ruang Utama',
             'status' => 'managed',
+        ]);
+
+        SocialAssistanceProgram::updateOrCreate([
+            'program_name' => 'Santunan Dhuafa Bulanan',
+            'recipient_name' => 'Keluarga Bapak Hasan',
+        ], [
+            'category' => 'duafa',
+            'recipient_phone' => '0812-5000-0001',
+            'recipient_address' => 'Lingkungan sekitar masjid',
+            'amount' => 300000,
+            'item_description' => 'Paket sembako dan bantuan tunai',
+            'distributed_at' => now()->toDateString(),
+            'status' => 'distributed',
+            'notes' => 'Contoh distribusi bantuan sosial rutin.',
         ]);
 
         $cashAccount = FinancialAccount::updateOrCreate(['name' => 'Kas Tunai Masjid'], [

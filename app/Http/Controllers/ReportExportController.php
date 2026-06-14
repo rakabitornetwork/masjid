@@ -12,6 +12,7 @@ use App\Models\InventoryItem;
 use App\Models\InventoryMaintenance;
 use App\Models\PublicArticle;
 use App\Models\QurbanParticipant;
+use App\Models\SocialAssistanceProgram;
 use App\Models\WaqfAsset;
 use App\Models\WhatsappNotification;
 use App\Models\ZakatCollection;
@@ -82,6 +83,10 @@ class ReportExportController extends Controller
         'wakaf' => [
             'label' => 'Data Wakaf',
             'description' => 'Export wakif, aset wakaf, nilai estimasi, status, dan lokasi.',
+        ],
+        'program-sosial' => [
+            'label' => 'Program Sosial',
+            'description' => 'Export bantuan sosial, penerima manfaat, nominal, dan status distribusi.',
         ],
     ];
 
@@ -374,6 +379,21 @@ class ReportExportController extends Controller
                     $asset->location,
                     $asset->status,
                     $asset->notes,
+                ]),
+            ],
+            'program-sosial' => [
+                ['Tanggal Distribusi', 'Program', 'Kategori', 'Penerima', 'Telepon', 'Alamat', 'Nominal', 'Barang/Paket', 'Status', 'Catatan'],
+                SocialAssistanceProgram::latest('distributed_at')->get()->map(fn (SocialAssistanceProgram $program): array => [
+                    $program->distributed_at?->format('Y-m-d'),
+                    $program->program_name,
+                    $program->category,
+                    $program->recipient_name,
+                    $program->recipient_phone,
+                    $program->recipient_address,
+                    $program->amount,
+                    $program->item_description,
+                    $program->status,
+                    $program->notes,
                 ]),
             ],
         };

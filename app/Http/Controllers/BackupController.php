@@ -38,6 +38,7 @@ class BackupController extends Controller
         'zakat_distributions',
         'qurban_participants',
         'waqf_assets',
+        'social_assistance_programs',
         'activity_logs',
     ];
 
