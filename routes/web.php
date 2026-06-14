@@ -15,6 +15,7 @@ use App\Http\Controllers\MosqueProfileController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\QurbanParticipantController;
+use App\Http\Controllers\ReportExportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UpdateGuideController;
 use App\Http\Controllers\UserManagementController;
@@ -49,6 +50,11 @@ Route::middleware('auth')->group(function (): void {
         Route::get('update-aplikasi', UpdateGuideController::class)->name('updates.guide');
         Route::post('update-aplikasi/run', [UpdateGuideController::class, 'run'])->name('updates.run');
         Route::post('update-aplikasi/run-stream', [UpdateGuideController::class, 'stream'])->name('updates.stream');
+    });
+
+    Route::middleware('role:admin,bendahara,viewer')->group(function (): void {
+        Route::get('laporan/export', [ReportExportController::class, 'index'])->name('reports.export.index');
+        Route::get('laporan/export/{report}', [ReportExportController::class, 'download'])->name('reports.export.download');
     });
 
     Route::middleware('role:admin,sekretaris')->group(function (): void {

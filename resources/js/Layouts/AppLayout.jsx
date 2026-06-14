@@ -7,6 +7,7 @@ import {
     Building2,
     CalendarDays,
     Clock,
+    Download,
     Gauge,
     HandCoins,
     HeartHandshake,
@@ -41,6 +42,7 @@ const navigation = [
     { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark, permission: 'finance' },
     { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote, permission: 'finance' },
     { label: 'Donasi/Infaq', href: '/donasi', icon: HeartHandshake, permission: 'donations' },
+    { label: 'Export Laporan', href: '/laporan/export', icon: Download, permission: 'reports' },
     { label: 'User Admin', href: '/users', icon: ShieldCheck, permission: 'system' },
     { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw, permission: 'system' },
 ];
