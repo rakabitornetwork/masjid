@@ -57,7 +57,7 @@ export default function AppLayout({ title, children, actions = null }) {
         <>
             <Head title={title} />
 
-            <div className="flex h-screen overflow-hidden bg-[#052e2b] font-sans text-slate-800 antialiased">
+            <div className="flex h-dvh overflow-hidden bg-[#052e2b] font-sans text-slate-800 antialiased">
                 {sidebarOpen && (
                     <button
                         type="button"
@@ -171,7 +171,7 @@ export default function AppLayout({ title, children, actions = null }) {
                         </div>
                     </header>
 
-                    <main className="min-h-0 flex-1 overflow-y-auto p-4 lg:p-5">
+                    <main className="min-h-0 flex-1 overflow-y-auto p-4 pb-12 lg:p-5 lg:pb-14">
                         <FlashMessage />
                         {children}
                     </main>
