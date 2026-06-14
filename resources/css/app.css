@@ -38,11 +38,29 @@
 
 @layer components {
     button.text-emerald-700 {
-        @apply rounded-lg border border-emerald-200 bg-emerald-100 text-emerald-800 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-200 hover:text-emerald-950;
+        @apply rounded-lg shadow-sm transition;
+        background-color: #d1fae5 !important;
+        border-color: #6ee7b7 !important;
+        color: #065f46 !important;
     }
 
     button.text-rose-600 {
-        @apply rounded-lg border border-rose-200 bg-rose-100 text-rose-700 shadow-sm transition hover:border-rose-300 hover:bg-rose-200 hover:text-rose-900;
+        @apply rounded-lg shadow-sm transition;
+        background-color: #ffe4e6 !important;
+        border-color: #fda4af !important;
+        color: #be123c !important;
+    }
+
+    button.text-emerald-700:hover {
+        background-color: #a7f3d0 !important;
+        border-color: #34d399 !important;
+        color: #064e3b !important;
+    }
+
+    button.text-rose-600:hover {
+        background-color: #fecdd3 !important;
+        border-color: #fb7185 !important;
+        color: #881337 !important;
     }
 }
 
