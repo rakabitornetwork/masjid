@@ -18,6 +18,9 @@ createInertiaApp({
     },
     setup({ el, App, props }) {
         createRoot(el).render(<App {...props} />);
+        window.requestAnimationFrame(() => {
+            document.getElementById('app-loading-fallback')?.remove();
+        });
     },
     progress: {
         color: '#059669',

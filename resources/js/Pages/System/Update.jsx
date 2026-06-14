@@ -30,6 +30,7 @@ export default function Update({
     const [displayUpdateAvailable, setDisplayUpdateAvailable] = useState(updateAvailable);
     const [displayGithubStatus, setDisplayGithubStatus] = useState(githubStatus);
     const [showUpdateResult, setShowUpdateResult] = useState(() => window.sessionStorage.getItem('showUpdateResult') === '1');
+    const [reloading, setReloading] = useState(false);
     const terminalScrollRef = useRef(null);
 
     useEffect(() => {
@@ -125,10 +126,11 @@ export default function Update({
                         setDisplayGithubStatus(event.githubStatus);
                         setDisplayUpdateAvailable(event.updateAvailable);
                         window.sessionStorage.setItem('showUpdateResult', '1');
+                        setReloading(true);
 
                         window.setTimeout(() => {
                             window.location.reload();
-                        }, 1800);
+                        }, 3800);
                     }
 
                     setTerminalEntries((entries) => [...entries, event]);
@@ -167,6 +169,20 @@ export default function Update({
 
     return (
         <AppLayout title="Update Aplikasi">
+            {reloading && (
+                <div className="fixed inset-0 z-[9999] grid place-items-center bg-[#061a40]/95 px-6 text-center text-white backdrop-blur-sm">
+                    <div className="w-full max-w-md rounded-2xl border border-cyan-300/20 bg-slate-950/60 p-6 shadow-2xl shadow-slate-950/40">
+                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-teal-400/15 text-teal-200 ring-1 ring-teal-300/20">
+                            <RefreshCw className="h-6 w-6 animate-spin" />
+                        </div>
+                        <p className="mt-4 text-[11px] font-black uppercase tracking-[0.18em] text-teal-200">Update Selesai</p>
+                        <h2 className="mt-2 text-lg font-extrabold tracking-tight">Memuat ulang aplikasi</h2>
+                        <p className="mt-2 text-sm font-medium leading-6 text-slate-300">
+                            Mohon tunggu sebentar. Aplikasi sedang membaca asset dan cache terbaru agar halaman tidak tampil kosong.
+                        </p>
+                    </div>
+                </div>
+            )}
             <section className="mb-4 grid gap-3 md:grid-cols-4">
                 <VersionTile label="Versi Terbaru" value={`v${latestVersion}`} tone={isGithubConnected ? 'emerald' : 'rose'} />
                 <VersionTile label="Commit Lokal" value={displayCurrentCommit} mono tone={displayUpdateAvailable ? 'amber' : 'blue'} />
