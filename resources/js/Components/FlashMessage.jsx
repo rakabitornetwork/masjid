@@ -1,14 +1,28 @@
 import { usePage } from '@inertiajs/react';
 import { AlertCircle, CheckCircle2, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function FlashMessage() {
     const { flash } = usePage().props;
+    const message = flash.success || flash.error;
+    const [visible, setVisible] = useState(Boolean(message));
 
-    if (!flash?.success && !flash?.error) {
+    useEffect(() => {
+        setVisible(Boolean(message));
+
+        if (!message) {
+            return undefined;
+        }
+
+        const timer = window.setTimeout(() => setVisible(false), 4000);
+
+        return () => window.clearTimeout(timer);
+    }, [message]);
+
+    if (!message || !visible) {
         return null;
     }
 
-    const message = flash.success || flash.error;
     const isSuccess = Boolean(flash.success);
     const isDeleted = /hapus|dihapus/i.test(message || '');
     const isDanger = !isSuccess || isDeleted;

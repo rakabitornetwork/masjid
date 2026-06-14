@@ -36,6 +36,16 @@
     }
 }
 
+@layer components {
+    button.text-emerald-700 {
+        @apply rounded-lg border border-emerald-200 bg-emerald-100 text-emerald-800 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-200 hover:text-emerald-950;
+    }
+
+    button.text-rose-600 {
+        @apply rounded-lg border border-rose-200 bg-rose-100 text-rose-700 shadow-sm transition hover:border-rose-300 hover:bg-rose-200 hover:text-rose-900;
+    }
+}
+
 @layer utilities {
     @keyframes terminal-line-in {
         from {
