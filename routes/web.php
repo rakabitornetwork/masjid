@@ -8,6 +8,7 @@ use App\Http\Controllers\FinancialAccountController;
 use App\Http\Controllers\FinancialCategoryController;
 use App\Http\Controllers\FinancialTransactionController;
 use App\Http\Controllers\MosqueProfileController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UpdateGuideController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,8 @@ Route::middleware('auth')->group(function (): void {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+    Route::get('profil-admin', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('profil-admin', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('update-aplikasi', UpdateGuideController::class)->name('updates.guide');
     Route::post('update-aplikasi/run', [UpdateGuideController::class, 'run'])->name('updates.run');
     Route::post('update-aplikasi/run-stream', [UpdateGuideController::class, 'stream'])->name('updates.stream');

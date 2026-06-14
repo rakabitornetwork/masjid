@@ -112,15 +112,19 @@ export default function AppLayout({ title, children, actions = null }) {
                     </div>
 
                     <div className="border-t border-emerald-100/10 bg-emerald-950/25 p-2">
-                        <div className="mb-1 flex items-center gap-2 rounded-lg px-2 py-1.5">
-                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/15 text-xs font-bold text-white shadow-inner">
-                                {(auth?.user?.name || 'A').charAt(0).toUpperCase()}
+                        <Link href="/profil-admin" className="mb-1 flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-white/10">
+                            <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/15 bg-white/15 text-xs font-bold text-white shadow-inner">
+                                {auth?.user?.avatar_path ? (
+                                    <img src={`/storage/${auth.user.avatar_path}`} alt={auth?.user?.name || 'Admin'} className="h-full w-full object-cover" />
+                                ) : (
+                                    (auth?.user?.name || 'A').charAt(0).toUpperCase()
+                                )}
                             </div>
                             <div className="min-w-0">
                                 <p className="mb-0.5 truncate text-[11px] font-bold leading-none text-white">{auth?.user?.name || 'Admin Masjid'}</p>
                                 <p className="truncate text-[9px] leading-none text-emerald-50/65">{auth?.user?.email || 'admin@masjid.com'}</p>
                             </div>
-                        </div>
+                        </Link>
                         <button
                             type="button"
                             onClick={logout}
