@@ -22,7 +22,7 @@
         min-height: 100vh;
         background: #061a40;
         color: #0f172a;
-        overflow: hidden;
+        overflow-x: hidden;
     }
 
     * {
