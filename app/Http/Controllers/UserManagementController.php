@@ -15,9 +15,10 @@ class UserManagementController extends Controller
     public function index(): Response
     {
         return Inertia::render('Users/Index', [
-            'users' => User::orderBy('role')->orderBy('name')->get(['id', 'name', 'email', 'whatsapp_number', 'role', 'avatar_path', 'created_at']),
+            'users' => User::orderBy('role')->orderBy('name')->get(['id', 'name', 'email', 'whatsapp_number', 'role', 'custom_permissions', 'avatar_path', 'created_at']),
             'roles' => array_keys(User::ROLE_PERMISSIONS),
             'rolePermissions' => User::ROLE_PERMISSIONS,
+            'permissionOptions' => $this->permissionOptions(),
         ]);
     }
 
@@ -28,6 +29,9 @@ class UserManagementController extends Controller
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
             'whatsapp_number' => ['nullable', 'string', 'max:30'],
             'role' => ['required', Rule::in(array_keys(User::ROLE_PERMISSIONS))],
+            'use_custom_permissions' => ['boolean'],
+            'custom_permissions' => ['nullable', 'array'],
+            'custom_permissions.*' => [Rule::in($this->permissionOptions())],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
@@ -36,6 +40,7 @@ class UserManagementController extends Controller
             'email' => $data['email'],
             'whatsapp_number' => $data['whatsapp_number'] ?? null,
             'role' => $data['role'],
+            'custom_permissions' => $this->customPermissions($data),
             'password' => Hash::make($data['password']),
         ]);
 
@@ -49,6 +54,9 @@ class UserManagementController extends Controller
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'whatsapp_number' => ['nullable', 'string', 'max:30'],
             'role' => ['required', Rule::in(array_keys(User::ROLE_PERMISSIONS))],
+            'use_custom_permissions' => ['boolean'],
+            'custom_permissions' => ['nullable', 'array'],
+            'custom_permissions.*' => [Rule::in($this->permissionOptions())],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
@@ -57,6 +65,7 @@ class UserManagementController extends Controller
             'email' => $data['email'],
             'whatsapp_number' => $data['whatsapp_number'] ?? null,
             'role' => $data['role'],
+            'custom_permissions' => $this->customPermissions($data),
         ]);
 
         if (! empty($data['password'])) {
@@ -77,5 +86,29 @@ class UserManagementController extends Controller
         $user->delete();
 
         return back()->with('success', 'User berhasil dihapus.');
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function permissionOptions(): array
+    {
+        return collect(User::ROLE_PERMISSIONS)->flatten()->unique()->values()->all();
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<int, string>|null
+     */
+    private function customPermissions(array $data): ?array
+    {
+        if (! (bool) ($data['use_custom_permissions'] ?? false)) {
+            return null;
+        }
+
+        return collect($data['custom_permissions'] ?? [])
+            ->intersect($this->permissionOptions())
+            ->values()
+            ->all();
     }
 }

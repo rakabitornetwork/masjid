@@ -150,6 +150,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Riwayat menampilkan user, route, path, IP address, browser, status HTTP, dan waktu aktivitas.
 - Password dan file upload tidak disimpan mentah di metadata audit log.
 
+### User, Role, dan Permission
+
+- Manajemen user admin dengan nama, email, nomor WA, role, dan password.
+- Role bawaan: `admin`, `bendahara`, `sekretaris`, `takmir`, dan `viewer`.
+- Hak akses bawaan mengikuti role, tetapi admin dapat mengaktifkan custom permission per user.
+- Custom permission memungkinkan user tertentu diberi izin khusus tanpa mengubah role utamanya.
+
 ## Roadmap Fitur Lanjutan
 
 Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
@@ -157,7 +164,6 @@ Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 - ZISWAF lanjutan: sedekah khusus, muzakki/mustahik lebih detail, dan distribusi program sosial.
 - Inventaris aset masjid dan fasilitas lanjutan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
-- Manajemen user, role, dan permission lebih detail.
 - Integrasi WhatsApp Business/API untuk pengiriman otomatis.
 - Setelah fitur utama lengkap, rapikan bundle frontend dengan code splitting / lazy loading agar file JS awal lebih kecil.
 

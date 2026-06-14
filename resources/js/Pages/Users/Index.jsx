@@ -1,6 +1,6 @@
 import { router, useForm, usePage } from '@inertiajs/react';
 import { Edit3, Phone, Plus, ShieldCheck, Trash2, UserRound, X } from 'lucide-react';
-import { Field, PrimaryButton, SecondaryButton, SelectInput, TextInput } from '../../Components/FormControls';
+import { CheckboxInput, Field, PrimaryButton, SecondaryButton, SelectInput, TextInput } from '../../Components/FormControls';
 import AppLayout from '../../Layouts/AppLayout';
 import { date, label } from '../../lib/formatters';
 
@@ -9,11 +9,13 @@ const emptyForm = {
     email: '',
     whatsapp_number: '',
     role: 'takmir',
+    use_custom_permissions: false,
+    custom_permissions: [],
     password: '',
     password_confirmation: '',
 };
 
-export default function Index({ users, roles, rolePermissions }) {
+export default function Index({ users, roles, rolePermissions, permissionOptions }) {
     const { auth } = usePage().props;
     const { data, setData, post, put, processing, errors, reset } = useForm(emptyForm);
     const editingId = data.id || null;
@@ -30,6 +32,8 @@ export default function Index({ users, roles, rolePermissions }) {
             email: user.email,
             whatsapp_number: user.whatsapp_number || '',
             role: user.role,
+            use_custom_permissions: Array.isArray(user.custom_permissions),
+            custom_permissions: user.custom_permissions || rolePermissions[user.role] || [],
             password: '',
             password_confirmation: '',
         });
@@ -38,6 +42,22 @@ export default function Index({ users, roles, rolePermissions }) {
     const resetForm = () => {
         reset();
         setData(emptyForm);
+    };
+
+    const toggleCustomPermissions = (enabled) => {
+        setData({
+            ...data,
+            use_custom_permissions: enabled,
+            custom_permissions: enabled ? data.custom_permissions.length > 0 ? data.custom_permissions : rolePermissions[data.role] || [] : [],
+        });
+    };
+
+    const togglePermission = (permission, checked) => {
+        const permissions = checked
+            ? [...new Set([...data.custom_permissions, permission])]
+            : data.custom_permissions.filter((item) => item !== permission);
+
+        setData('custom_permissions', permissions);
     };
 
     const destroy = (user) => {
@@ -106,6 +126,28 @@ export default function Index({ users, roles, rolePermissions }) {
                                 {(rolePermissions[data.role] || []).map((permission) => label(permission)).join(', ') || '-'}
                             </div>
                         </Field>
+                        <div className="md:col-span-2">
+                            <CheckboxInput
+                                label="Gunakan hak akses custom untuk user ini"
+                                checked={Boolean(data.use_custom_permissions)}
+                                onChange={toggleCustomPermissions}
+                            />
+                        </div>
+                        {data.use_custom_permissions && (
+                            <div className="md:col-span-2 rounded-xl border border-teal-100 bg-teal-50/60 p-3">
+                                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Pilih Hak Akses Custom</p>
+                                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                                    {permissionOptions.map((permission) => (
+                                        <CheckboxInput
+                                            key={permission}
+                                            label={label(permission)}
+                                            checked={data.custom_permissions.includes(permission)}
+                                            onChange={(checked) => togglePermission(permission, checked)}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="mt-4 flex flex-wrap gap-2">
@@ -146,7 +188,7 @@ export default function Index({ users, roles, rolePermissions }) {
                                                 </p>
                                             )}
                                             <p className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-teal-700">
-                                                {label(user.role)} • Bergabung {date(user.created_at)}
+                                                {label(user.role)} {Array.isArray(user.custom_permissions) ? '• Custom akses' : ''} • Bergabung {date(user.created_at)}
                                             </p>
                                         </div>
                                     </div>

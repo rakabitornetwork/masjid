@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'whatsapp_number', 'role', 'avatar_path', 'password'])]
+#[Fillable(['name', 'email', 'whatsapp_number', 'role', 'custom_permissions', 'avatar_path', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -30,6 +30,10 @@ class User extends Authenticatable
      */
     public function permissions(): array
     {
+        if (is_array($this->custom_permissions)) {
+            return $this->custom_permissions;
+        }
+
         return self::ROLE_PERMISSIONS[$this->role] ?? [];
     }
 
@@ -46,6 +50,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'custom_permissions' => 'array',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
