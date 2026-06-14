@@ -174,7 +174,9 @@ export default function Update({
                                     <div className="min-w-0">
                                         <p className="truncate text-[10px] font-bold text-cyan-100">masjid-update@vps: ~/public_html</p>
                                         <p className="text-[9px] font-semibold text-slate-300">
-                                            {updateResult.status === 'success' ? 'Update berhasil' : 'Update gagal'} • {updateResult.finished_at}
+                                            {updateResult
+                                                ? `${updateResult.status === 'success' ? 'Update berhasil' : 'Update gagal'} • ${updateResult.finished_at}`
+                                                : 'Terminal siap • belum ada proses update'}
                                         </p>
                                     </div>
                                 </div>
