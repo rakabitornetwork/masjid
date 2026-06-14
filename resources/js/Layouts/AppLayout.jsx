@@ -8,6 +8,7 @@ import {
     Landmark,
     LogOut,
     Megaphone,
+    RefreshCw,
     UsersRound,
     WalletCards,
 } from 'lucide-react';
@@ -23,6 +24,7 @@ const navigation = [
     { label: 'Akun Kas', href: '/keuangan/akun', icon: WalletCards },
     { label: 'Kategori', href: '/keuangan/kategori', icon: Landmark },
     { label: 'Transaksi', href: '/keuangan/transaksi', icon: Banknote },
+    { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw },
 ];
 
 export default function AppLayout({ title, children, actions = null }) {

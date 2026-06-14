@@ -9,6 +9,7 @@ use App\Http\Controllers\FinancialCategoryController;
 use App\Http\Controllers\FinancialTransactionController;
 use App\Http\Controllers\MosqueProfileController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\UpdateGuideController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,6 +27,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+    Route::get('update-aplikasi', UpdateGuideController::class)->name('updates.guide');
 
     Route::get('profil-masjid', [MosqueProfileController::class, 'edit'])->name('mosque-profile.edit');
     Route::put('profil-masjid', [MosqueProfileController::class, 'update'])->name('mosque-profile.update');

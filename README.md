@@ -152,11 +152,30 @@ Project ini memakai Laravel, Inertia.js, React, Tailwind CSS, dan Vite. Proses `
 
 ### Setup Pertama di VPS
 
-Jalankan perintah berikut di VPS setelah repository GitHub sudah tersedia:
+Jika folder `public_html` lama masih ada, backup dulu lalu clone repository GitHub ke `public_html`:
 
 ```bash
-cd /path/ke/project/masjid
-git pull origin main
+cd ~
+mv public_html public_html_backup
+git clone https://github.com/rakabitornetwork/masjid.git public_html
+cd public_html
+composer install --no-dev --optimize-autoloader
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed --force
+php artisan storage:link
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+Jika folder `public_html` benar-benar kosong dan ingin langsung clone:
+
+```bash
+cd ~
+git clone https://github.com/rakabitornetwork/masjid.git public_html
+cd public_html
 composer install --no-dev --optimize-autoloader
 cp .env.example .env
 php artisan key:generate
@@ -191,7 +210,7 @@ public
 Jika aplikasi sudah berjalan di VPS dan hanya ingin mengambil perubahan terbaru dari GitHub:
 
 ```bash
-cd /path/ke/project/masjid
+cd ~/public_html
 git pull origin main
 composer install --no-dev --optimize-autoloader
 php artisan migrate --force
