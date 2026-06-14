@@ -64,12 +64,11 @@ export default function Login() {
                     </div>
 
                     <div className="p-4 sm:p-7">
-                        <div className="mb-8 flex items-center gap-3 lg:hidden">
-                            <ApplicationLogo />
+                        <div className="mb-8 flex flex-col items-center gap-2 text-center lg:hidden">
+                            <ApplicationLogo className="h-11 w-11" />
                             <div>
-                                <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-700">Masjid</p>
-                                <h1 className="max-w-56 truncate text-base font-black">{mosqueName}</h1>
-                                <p className="max-w-56 truncate text-[10px] font-semibold text-slate-500">{mosqueSubtitle}</p>
+                                <h1 className="max-w-64 truncate text-base font-black">{mosqueName}</h1>
+                                <p className="max-w-64 truncate text-[10px] font-semibold text-slate-500">{mosqueSubtitle}</p>
                             </div>
                         </div>
 
