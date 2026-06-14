@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('dashboard', DashboardController::class)->name('dashboard');
     Route::get('update-aplikasi', UpdateGuideController::class)->name('updates.guide');
+    Route::post('update-aplikasi/run', [UpdateGuideController::class, 'run'])->name('updates.run');
 
     Route::get('profil-masjid', [MosqueProfileController::class, 'edit'])->name('mosque-profile.edit');
     Route::put('profil-masjid', [MosqueProfileController::class, 'update'])->name('mosque-profile.update');
