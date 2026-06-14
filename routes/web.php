@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DonationCampaignController;
 use App\Http\Controllers\DonationEntryController;
 use App\Http\Controllers\DocumentArchiveController;
+use App\Http\Controllers\FacilityBookingController;
 use App\Http\Controllers\FinancialAccountController;
 use App\Http\Controllers\FinancialCategoryController;
 use App\Http\Controllers\FinancialTransactionController;
@@ -102,6 +103,11 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('arsip-surat', DocumentArchiveController::class)
             ->parameters(['arsip-surat' => 'documentArchive'])
             ->names('document-archives')
+            ->except(['create', 'edit', 'show']);
+
+        Route::resource('booking-fasilitas', FacilityBookingController::class)
+            ->parameters(['booking-fasilitas' => 'facilityBooking'])
+            ->names('facility-bookings')
             ->except(['create', 'edit', 'show']);
 
         Route::resource('inventaris', InventoryItemController::class)

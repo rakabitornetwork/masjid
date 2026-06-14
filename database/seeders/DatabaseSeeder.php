@@ -7,6 +7,7 @@ use App\Models\CommitteeMember;
 use App\Models\Congregant;
 use App\Models\DonationCampaign;
 use App\Models\DocumentArchive;
+use App\Models\FacilityBooking;
 use App\Models\FinancialAccount;
 use App\Models\FinancialCategory;
 use App\Models\InventoryItem;
@@ -245,6 +246,19 @@ class DatabaseSeeder extends Seeder
             'category' => 'Undangan',
             'status' => 'archived',
             'notes' => 'Contoh arsip surat masuk untuk data awal aplikasi.',
+        ]);
+
+        FacilityBooking::updateOrCreate([
+            'facility_name' => 'Aula Masjid',
+            'event_name' => 'Kajian Remaja Masjid',
+            'booking_date' => now()->addDays(7)->toDateString(),
+        ], [
+            'requester_name' => 'Remaja Masjid Al-Ikhlas',
+            'requester_phone' => '0812-3000-0001',
+            'start_time' => '19:30',
+            'end_time' => '21:00',
+            'purpose' => 'Kajian rutin dan diskusi program remaja masjid.',
+            'status' => 'approved',
         ]);
     }
 }

@@ -79,6 +79,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Upload lampiran dokumen PDF, Word, Excel, JPG, atau PNG.
 - Arsip surat ikut masuk ke export laporan dan backup data aplikasi.
 
+### Booking Fasilitas
+
+- Pencatatan booking aula, ruang kajian, sound system, dan fasilitas masjid lainnya.
+- Data pemohon, nomor WA, nama kegiatan, tanggal, jam mulai, jam selesai, keperluan, status, dan catatan admin.
+- Validasi bentrok jadwal untuk fasilitas yang sama pada tanggal dan jam yang tumpang tindih.
+- Booking fasilitas ikut masuk ke export laporan dan backup data aplikasi.
+
 ### Keuangan Dasar
 
 - Akun kas, bank, QRIS, dan e-wallet.
@@ -90,7 +97,7 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 
 ### Export, Backup, dan Restore
 
-- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, inventaris, donasi, arsip surat, zakat, dan qurban.
+- Export laporan CSV, Excel-compatible XLS, dan halaman cetak PDF untuk transaksi keuangan, jamaah, inventaris, donasi, arsip surat, booking fasilitas, zakat, dan qurban.
 - Backup data aplikasi dari menu `Backup Data` dalam format JSON.
 - Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
 - Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.
@@ -108,7 +115,7 @@ Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 
 - Manajemen jamaah, keluarga, alamat RT/RW, dan segmentasi jamaah.
 - ZISWAF: zakat fitrah, zakat mal, infaq, sedekah, wakaf, muzakki, mustahik, dan distribusi.
-- Inventaris aset masjid, fasilitas, booking ruangan, dan riwayat perawatan.
+- Inventaris aset masjid, fasilitas, dan riwayat perawatan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
 - Manajemen user, role, dan permission lebih detail.
 - Landing page publik, berita, agenda publik, dan integrasi notifikasi.

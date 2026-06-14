@@ -22,6 +22,7 @@ class BackupController extends Controller
         'announcements',
         'schedules',
         'document_archives',
+        'facility_bookings',
         'financial_accounts',
         'financial_categories',
         'financial_transactions',

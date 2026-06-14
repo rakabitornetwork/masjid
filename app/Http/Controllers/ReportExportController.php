@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Congregant;
 use App\Models\DonationCampaign;
 use App\Models\DocumentArchive;
+use App\Models\FacilityBooking;
 use App\Models\FinancialTransaction;
 use App\Models\InventoryItem;
 use App\Models\QurbanParticipant;
@@ -40,6 +41,10 @@ class ReportExportController extends Controller
         'arsip-surat' => [
             'label' => 'Arsip Surat',
             'description' => 'Export surat masuk, surat keluar, dan dokumen internal.',
+        ],
+        'booking-fasilitas' => [
+            'label' => 'Booking Fasilitas',
+            'description' => 'Export pengajuan dan jadwal pemakaian fasilitas masjid.',
         ],
         'zakat-penerimaan' => [
             'label' => 'Penerimaan Zakat',
@@ -221,6 +226,20 @@ class ReportExportController extends Controller
                     $document->category,
                     $document->status,
                     $document->attachment_path,
+                ]),
+            ],
+            'booking-fasilitas' => [
+                ['Tanggal', 'Fasilitas', 'Kegiatan', 'Pemohon', 'Nomor WA', 'Mulai', 'Selesai', 'Status', 'Keperluan'],
+                FacilityBooking::orderBy('booking_date')->orderBy('start_time')->get()->map(fn (FacilityBooking $booking): array => [
+                    $booking->booking_date?->format('Y-m-d'),
+                    $booking->facility_name,
+                    $booking->event_name,
+                    $booking->requester_name,
+                    $booking->requester_phone,
+                    $booking->start_time,
+                    $booking->end_time,
+                    $booking->status,
+                    $booking->purpose,
                 ]),
             ],
             'zakat-penerimaan' => [
