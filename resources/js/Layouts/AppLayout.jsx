@@ -14,6 +14,7 @@ import {
     HandCoins,
     HeartHandshake,
     Heart,
+    History,
     Landmark,
     LogOut,
     Megaphone,
@@ -47,6 +48,7 @@ const navigation = [
     { label: 'Donasi/Infaq', href: '/donasi', icon: HeartHandshake, permission: 'donations' },
     { label: 'Export Laporan', href: '/laporan/export', icon: Download, permission: 'reports' },
     { label: 'User Manajemen', href: '/users', icon: ShieldCheck, permission: 'system' },
+    { label: 'Audit Log', href: '/audit-log', icon: History, permission: 'system' },
     { label: 'Backup Data', href: '/backup-data', icon: DatabaseBackup, permission: 'system' },
     { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw, permission: 'system' },
 ];

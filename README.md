@@ -95,6 +95,13 @@ Aplikasi memakai tema High Density Premium Masjid dengan karakter:
 - Restore data aplikasi dari file backup JSON dengan konfirmasi manual `RESTORE`.
 - Backup hanya menyertakan tabel aplikasi, bukan cache, session, job queue, atau tabel teknis Laravel.
 
+### Audit Log Aktivitas
+
+- Pencatatan otomatis untuk aktivitas tambah, ubah, hapus, restore, reorder, dan aksi update aplikasi.
+- Pencatatan login dan logout user admin.
+- Riwayat menampilkan user, route, path, IP address, browser, status HTTP, dan waktu aktivitas.
+- Password dan file upload tidak disimpan mentah di metadata audit log.
+
 ## Roadmap Fitur Lanjutan
 
 Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
@@ -103,7 +110,7 @@ Fitur berikut sudah direncanakan untuk pengembangan berikutnya:
 - ZISWAF: zakat fitrah, zakat mal, infaq, sedekah, wakaf, muzakki, mustahik, dan distribusi.
 - Inventaris aset masjid, fasilitas, booking ruangan, dan riwayat perawatan.
 - Laporan PDF/Excel untuk keuangan, kegiatan, jamaah, dan ZISWAF.
-- Manajemen user, role, permission lebih detail, dan audit log.
+- Manajemen user, role, dan permission lebih detail.
 - Landing page publik, berita, agenda publik, dan integrasi notifikasi.
 
 ## Akun Admin Awal

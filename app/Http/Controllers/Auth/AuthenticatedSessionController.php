@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,11 +41,19 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        ActivityLog::record($request, 'login', 'Login ke dashboard admin', [
+            'remember' => $remember,
+        ], $request->user(), 302);
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
     public function destroy(Request $request): RedirectResponse
     {
+        $user = $request->user();
+
+        ActivityLog::record($request, 'logout', 'Logout dari dashboard admin', [], $user, 302);
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

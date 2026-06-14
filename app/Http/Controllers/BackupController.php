@@ -32,6 +32,7 @@ class BackupController extends Controller
         'zakat_collections',
         'zakat_distributions',
         'qurban_participants',
+        'activity_logs',
     ];
 
     public function index(): Response

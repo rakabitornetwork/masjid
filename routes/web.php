@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CommitteeMemberController;
@@ -56,6 +57,8 @@ Route::middleware('auth')->group(function (): void {
         Route::get('backup-data', [BackupController::class, 'index'])->name('backups.index');
         Route::get('backup-data/download', [BackupController::class, 'download'])->name('backups.download');
         Route::post('backup-data/restore', [BackupController::class, 'restore'])->name('backups.restore');
+
+        Route::get('audit-log', [ActivityLogController::class, 'index'])->name('activity-logs.index');
     });
 
     Route::middleware('role:admin,bendahara,viewer')->group(function (): void {
