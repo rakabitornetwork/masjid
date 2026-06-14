@@ -91,15 +91,6 @@ export default function Update({ currentVersion, latestVersion, latestUpdate, up
                         </div>
                     </div>
 
-                    <div className="mt-6 grid gap-3 md:grid-cols-2">
-                        {latestUpdate.items.map((item) => (
-                            <div key={item} className="flex items-start gap-2 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-3 text-sm font-semibold text-slate-700">
-                                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                                {item}
-                            </div>
-                        ))}
-                    </div>
-
                     <div className="mt-6 rounded-2xl bg-slate-950 p-4">
                         <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">
                             Perintah yang disalin atau dijalankan tombol update
@@ -178,7 +169,7 @@ export default function Update({ currentVersion, latestVersion, latestUpdate, up
                         <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
                             <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-100">Catatan</p>
                             <p className="mt-1 text-sm font-semibold leading-6">
-                                Tombol update menyalin perintah terminal. Jalankan perintah tersebut di VPS melalui SSH.
+                                Tombol update dapat menjalankan proses langsung dari aplikasi atau menyalin perintah untuk dijalankan manual via SSH.
                             </p>
                         </div>
                     </div>
