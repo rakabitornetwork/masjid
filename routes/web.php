@@ -31,6 +31,7 @@ use App\Http\Controllers\SpecialDonationController;
 use App\Http\Controllers\UpdateGuideController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\WaqfAssetController;
+use App\Http\Controllers\WhatsappGatewayController;
 use App\Http\Controllers\WhatsappNotificationController;
 use App\Http\Controllers\ZakatController;
 use App\Http\Controllers\ZakatParticipantController;
@@ -73,6 +74,10 @@ Route::middleware('auth')->group(function (): void {
         Route::post('backup-data/restore', [BackupController::class, 'restore'])->name('backups.restore');
 
         Route::get('audit-log', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+
+        Route::get('pengaturan-gateway-wa', [WhatsappGatewayController::class, 'index'])->name('whatsapp-gateway.index');
+        Route::post('pengaturan-gateway-wa/restart', [WhatsappGatewayController::class, 'restart'])->name('whatsapp-gateway.restart');
+        Route::post('pengaturan-gateway-wa/reset-session', [WhatsappGatewayController::class, 'logoutSession'])->name('whatsapp-gateway.logout-session');
     });
 
     Route::middleware('role:admin,bendahara,viewer')->group(function (): void {

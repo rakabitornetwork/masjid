@@ -54,6 +54,85 @@ class WhatsappCloudApiService
 
     /**
      * @return array<string, mixed>
+     */
+    public function gatewayStatus(): array
+    {
+        if ($this->provider() !== 'baileys') {
+            return [
+                'ok' => false,
+                'message' => 'Provider WhatsApp aktif bukan Baileys Gateway.',
+            ];
+        }
+
+        try {
+            $response = Http::baseUrl(rtrim((string) config('services.whatsapp.baileys_base_url'), '/'))
+                ->acceptJson()
+                ->timeout((int) config('services.whatsapp.baileys_timeout', 20))
+                ->get('/health');
+
+            return [
+                'ok' => $response->successful(),
+                'status' => $response->status(),
+                'message' => $response->successful() ? 'Gateway dapat dijangkau.' : 'Gateway merespons HTTP '.$response->status().'.',
+                'data' => $response->json() ?: [],
+            ];
+        } catch (\Throwable $exception) {
+            return [
+                'ok' => false,
+                'message' => $exception->getMessage(),
+                'data' => [],
+            ];
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function gatewayQr(): array
+    {
+        if (! $this->isConfigured() || $this->provider() !== 'baileys') {
+            return [
+                'ok' => false,
+                'message' => 'Baileys Gateway belum aktif atau konfigurasi .env belum lengkap.',
+            ];
+        }
+
+        try {
+            $response = $this->baileysClient()->get('/qr');
+
+            return [
+                'ok' => $response->successful(),
+                'status' => $response->status(),
+                'message' => $response->successful() ? (string) data_get($response->json(), 'message', '') : 'Gateway merespons HTTP '.$response->status().'.',
+                'data' => $response->json() ?: [],
+            ];
+        } catch (\Throwable $exception) {
+            return [
+                'ok' => false,
+                'message' => $exception->getMessage(),
+                'data' => [],
+            ];
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function restartGateway(): array
+    {
+        return $this->postGatewayAction('/restart', 'Perintah restart gateway dikirim.');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function logoutGatewaySession(): array
+    {
+        return $this->postGatewayAction('/logout-session', 'Session gateway dihapus.');
+    }
+
+    /**
+     * @return array<string, mixed>
      *
      * @throws RequestException
      */
@@ -98,11 +177,7 @@ class WhatsappCloudApiService
             throw new RuntimeException('Konfigurasi Baileys Gateway belum lengkap.');
         }
 
-        $payload = Http::baseUrl(rtrim((string) config('services.whatsapp.baileys_base_url'), '/'))
-            ->withToken((string) config('services.whatsapp.baileys_token'))
-            ->acceptJson()
-            ->asJson()
-            ->timeout((int) config('services.whatsapp.baileys_timeout', 20))
+        $payload = $this->baileysClient()
             ->post('/send-message', [
                 'phone' => $this->normalizePhone($phone),
                 'message' => $message,
@@ -116,6 +191,45 @@ class WhatsappCloudApiService
         }
 
         return $payload;
+    }
+
+    private function baileysClient(): \Illuminate\Http\Client\PendingRequest
+    {
+        return Http::baseUrl(rtrim((string) config('services.whatsapp.baileys_base_url'), '/'))
+            ->withToken((string) config('services.whatsapp.baileys_token'))
+            ->acceptJson()
+            ->asJson()
+            ->timeout((int) config('services.whatsapp.baileys_timeout', 20));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function postGatewayAction(string $path, string $fallbackMessage): array
+    {
+        if (! $this->isConfigured() || $this->provider() !== 'baileys') {
+            return [
+                'ok' => false,
+                'message' => 'Baileys Gateway belum aktif atau konfigurasi .env belum lengkap.',
+            ];
+        }
+
+        try {
+            $response = $this->baileysClient()->post($path);
+            $payload = $response->json() ?: [];
+
+            return [
+                'ok' => $response->successful() && (bool) data_get($payload, 'ok', true),
+                'status' => $response->status(),
+                'message' => (string) data_get($payload, 'message', $fallbackMessage),
+                'data' => $payload,
+            ];
+        } catch (\Throwable $exception) {
+            return [
+                'ok' => false,
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     private function normalizePhone(string $phone): string

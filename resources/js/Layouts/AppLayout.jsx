@@ -68,6 +68,7 @@ const navigation = [
     { label: 'User Manajemen', href: '/users', icon: ShieldCheck, permission: 'system' },
     { label: 'Audit Log', href: '/audit-log', icon: History, permission: 'system' },
     { label: 'Backup Data', href: '/backup-data', icon: DatabaseBackup, permission: 'system' },
+    { label: 'Gateway WA', href: '/pengaturan-gateway-wa', icon: MessageCircle, permission: 'system' },
     { label: 'Update Aplikasi', href: '/update-aplikasi', icon: RefreshCw, permission: 'system' },
     { label: 'Tentang Aplikasi', href: '/tentang-aplikasi', icon: Info, permission: null },
 ];

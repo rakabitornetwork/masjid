@@ -164,6 +164,7 @@ curl http://127.0.0.1:3002/health
 ```
 
 Gateway masjid memakai port `3002`, process PM2 `masjid-baileys-gateway`, dan session folder `.baileys_masjid_auth` agar tidak bentrok dengan gateway aplikasi lain.
+Setelah gateway berjalan, admin dapat membuka menu `Gateway WA` untuk melihat status koneksi, scan QR, restart gateway, dan reset session dari panel admin.
 
 Setelah mengubah `.env` di VPS, jalankan:
 
