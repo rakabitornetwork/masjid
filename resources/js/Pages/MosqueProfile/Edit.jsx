@@ -1,0 +1,142 @@
+import { useForm } from '@inertiajs/react';
+import { Building2, Save } from 'lucide-react';
+import { PrimaryButton, TextareaInput, TextInput } from '../../Components/FormControls';
+import AppLayout from '../../Layouts/AppLayout';
+
+export default function Edit({ profile, facilitiesText }) {
+    const { data, setData, put, processing, errors } = useForm({
+        name: profile?.name || 'Masjid Al-Ikhlas',
+        tagline: profile?.tagline || '',
+        address: profile?.address || '',
+        city: profile?.city || '',
+        province: profile?.province || '',
+        postal_code: profile?.postal_code || '',
+        phone: profile?.phone || '',
+        email: profile?.email || '',
+        website: profile?.website || '',
+        bank_name: profile?.bank_name || '',
+        bank_account_number: profile?.bank_account_number || '',
+        bank_account_holder: profile?.bank_account_holder || '',
+        vision: profile?.vision || '',
+        mission: profile?.mission || '',
+        founded_at: profile?.founded_at?.slice(0, 10) || '',
+        capacity: profile?.capacity || '',
+        facilities_text: facilitiesText || '',
+    });
+
+    const submit = (event) => {
+        event.preventDefault();
+        put('/profil-masjid');
+    };
+
+    return (
+        <AppLayout title="Profil Masjid">
+            <form onSubmit={submit} className="grid gap-4 xl:grid-cols-[1fr_0.8fr]">
+                <section className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
+                    <div className="mb-5 flex items-center gap-3">
+                        <div className="rounded-2xl bg-emerald-100 p-3 text-emerald-700">
+                            <Building2 className="h-5 w-5" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Identitas</p>
+                            <h3 className="text-lg font-black text-slate-950">Data Utama Masjid</h3>
+                        </div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <TextInput label="Nama Masjid" value={data.name} onChange={(event) => setData('name', event.target.value)} error={errors.name} />
+                        <TextInput
+                            label="Tagline"
+                            value={data.tagline}
+                            onChange={(event) => setData('tagline', event.target.value)}
+                            error={errors.tagline}
+                        />
+                        <TextInput label="Kota" value={data.city} onChange={(event) => setData('city', event.target.value)} error={errors.city} />
+                        <TextInput
+                            label="Provinsi"
+                            value={data.province}
+                            onChange={(event) => setData('province', event.target.value)}
+                            error={errors.province}
+                        />
+                        <TextInput
+                            label="Kode Pos"
+                            value={data.postal_code}
+                            onChange={(event) => setData('postal_code', event.target.value)}
+                            error={errors.postal_code}
+                        />
+                        <TextInput
+                            label="Kapasitas Jamaah"
+                            type="number"
+                            value={data.capacity}
+                            onChange={(event) => setData('capacity', event.target.value)}
+                            error={errors.capacity}
+                        />
+                        <TextInput
+                            label="Tanggal Berdiri"
+                            type="date"
+                            value={data.founded_at}
+                            onChange={(event) => setData('founded_at', event.target.value)}
+                            error={errors.founded_at}
+                        />
+                        <TextInput label="Website" value={data.website} onChange={(event) => setData('website', event.target.value)} error={errors.website} />
+                        <div className="md:col-span-2">
+                            <TextareaInput
+                                label="Alamat Lengkap"
+                                value={data.address}
+                                onChange={(event) => setData('address', event.target.value)}
+                                error={errors.address}
+                            />
+                        </div>
+                    </div>
+                </section>
+
+                <section className="space-y-4">
+                    <div className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
+                        <h3 className="text-lg font-black text-slate-950">Kontak & Rekening</h3>
+                        <div className="mt-4 grid gap-4">
+                            <TextInput label="Telepon" value={data.phone} onChange={(event) => setData('phone', event.target.value)} error={errors.phone} />
+                            <TextInput label="Email" value={data.email} onChange={(event) => setData('email', event.target.value)} error={errors.email} />
+                            <TextInput
+                                label="Nama Bank"
+                                value={data.bank_name}
+                                onChange={(event) => setData('bank_name', event.target.value)}
+                                error={errors.bank_name}
+                            />
+                            <TextInput
+                                label="Nomor Rekening"
+                                value={data.bank_account_number}
+                                onChange={(event) => setData('bank_account_number', event.target.value)}
+                                error={errors.bank_account_number}
+                            />
+                            <TextInput
+                                label="Atas Nama"
+                                value={data.bank_account_holder}
+                                onChange={(event) => setData('bank_account_holder', event.target.value)}
+                                error={errors.bank_account_holder}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="rounded-[1.75rem] border border-white/70 bg-white/85 p-5 shadow-xl shadow-emerald-950/5">
+                        <h3 className="text-lg font-black text-slate-950">Visi, Misi, Fasilitas</h3>
+                        <div className="mt-4 grid gap-4">
+                            <TextareaInput label="Visi" value={data.vision} onChange={(event) => setData('vision', event.target.value)} error={errors.vision} />
+                            <TextareaInput label="Misi" value={data.mission} onChange={(event) => setData('mission', event.target.value)} error={errors.mission} />
+                            <TextareaInput
+                                label="Fasilitas (pisahkan koma)"
+                                value={data.facilities_text}
+                                onChange={(event) => setData('facilities_text', event.target.value)}
+                                error={errors.facilities_text}
+                            />
+                        </div>
+                    </div>
+
+                    <PrimaryButton disabled={processing} className="w-full gap-2 py-3">
+                        <Save className="h-4 w-4" />
+                        Simpan Profil Masjid
+                    </PrimaryButton>
+                </section>
+            </form>
+        </AppLayout>
+    );
+}

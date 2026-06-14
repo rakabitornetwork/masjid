@@ -2,9 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Models\Announcement;
+use App\Models\CommitteeMember;
+use App\Models\FinancialAccount;
+use App\Models\FinancialCategory;
+use App\Models\MosqueProfile;
+use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +22,126 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $admin = User::updateOrCreate([
+            'email' => 'admin@masjid.com',
+        ], [
+            'name' => 'Administrator Masjid',
+            'role' => 'admin',
+            'password' => Hash::make('12345678'),
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        MosqueProfile::updateOrCreate([
+            'id' => 1,
+        ], [
+            'name' => 'Masjid Al-Ikhlas',
+            'tagline' => 'Makmur, transparan, dan melayani jamaah',
+            'address' => 'Jl. Masjid Raya No. 1',
+            'city' => 'Kota Setempat',
+            'province' => 'Indonesia',
+            'phone' => '0812-3456-7890',
+            'email' => 'info@masjid.com',
+            'bank_name' => 'Bank Syariah Indonesia',
+            'bank_account_number' => '1234567890',
+            'bank_account_holder' => 'DKM Masjid Al-Ikhlas',
+            'vision' => 'Menjadi pusat ibadah, pendidikan, dan layanan sosial yang amanah.',
+            'mission' => 'Memakmurkan masjid, meningkatkan pelayanan jamaah, dan menjaga transparansi keuangan.',
+            'capacity' => 500,
+            'facilities' => ['Ruang utama', 'Tempat wudhu', 'Sound system', 'Area parkir', 'TPA/TPQ'],
+        ]);
+
+        CommitteeMember::updateOrCreate(['name' => 'H. Ahmad Fauzi', 'position' => 'Ketua DKM'], [
+            'phone' => '0812-0000-0001',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        CommitteeMember::updateOrCreate(['name' => 'Siti Aminah', 'position' => 'Bendahara'], [
+            'phone' => '0812-0000-0002',
+            'sort_order' => 2,
+            'is_active' => true,
+        ]);
+
+        $cashAccount = FinancialAccount::updateOrCreate(['name' => 'Kas Tunai Masjid'], [
+            'type' => 'cash',
+            'opening_balance' => 1000000,
+            'is_active' => true,
+        ]);
+
+        FinancialAccount::updateOrCreate(['name' => 'Rekening Operasional'], [
+            'type' => 'bank',
+            'bank_name' => 'Bank Syariah Indonesia',
+            'account_number' => '1234567890',
+            'account_holder' => 'DKM Masjid Al-Ikhlas',
+            'opening_balance' => 5000000,
+            'is_active' => true,
+        ]);
+
+        $infaqCategory = FinancialCategory::updateOrCreate(['name' => 'Infaq Jamaah', 'type' => 'income'], [
+            'color' => 'emerald',
+            'icon' => 'hand-coins',
+            'description' => 'Pemasukan infaq harian, Jumat, dan kotak amal.',
+            'is_active' => true,
+        ]);
+
+        FinancialCategory::updateOrCreate(['name' => 'Donasi Kegiatan', 'type' => 'income'], [
+            'color' => 'sky',
+            'icon' => 'heart-handshake',
+            'is_active' => true,
+        ]);
+
+        $operationalCategory = FinancialCategory::updateOrCreate(['name' => 'Operasional Masjid', 'type' => 'expense'], [
+            'color' => 'rose',
+            'icon' => 'receipt',
+            'description' => 'Listrik, air, kebersihan, konsumsi, dan kebutuhan harian.',
+            'is_active' => true,
+        ]);
+
+        $cashAccount->transactions()->updateOrCreate([
+            'description' => 'Saldo awal infaq Jumat',
+            'transaction_date' => now()->toDateString(),
+        ], [
+            'financial_category_id' => $infaqCategory->id,
+            'recorded_by' => $admin->id,
+            'type' => 'income',
+            'amount' => 750000,
+            'payment_method' => 'cash',
+            'status' => 'posted',
+        ]);
+
+        $cashAccount->transactions()->updateOrCreate([
+            'description' => 'Pembelian perlengkapan kebersihan',
+            'transaction_date' => now()->toDateString(),
+        ], [
+            'financial_category_id' => $operationalCategory->id,
+            'recorded_by' => $admin->id,
+            'type' => 'expense',
+            'amount' => 175000,
+            'payment_method' => 'cash',
+            'status' => 'posted',
+        ]);
+
+        Schedule::updateOrCreate([
+            'title' => 'Shalat Jumat Pekan Ini',
+            'date' => now()->next('Friday')->toDateString(),
+        ], [
+            'type' => 'friday_prayer',
+            'start_time' => '11:45',
+            'end_time' => '13:00',
+            'location' => 'Ruang Utama Masjid',
+            'imam' => 'Ust. Muhammad Hanif',
+            'khatib' => 'Ust. Muhammad Hanif',
+            'muadzin' => 'Ahmad Ridwan',
+            'status' => 'scheduled',
+        ]);
+
+        Announcement::updateOrCreate([
+            'title' => 'Selamat Datang di Sistem Manajemen Masjid',
+        ], [
+            'category' => 'umum',
+            'body' => 'Dashboard awal sudah siap digunakan untuk mengelola profil, pengurus, jadwal, pengumuman, dan keuangan masjid.',
+            'published_at' => now(),
+            'is_pinned' => true,
+            'status' => 'published',
         ]);
     }
 }
