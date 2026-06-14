@@ -5,16 +5,17 @@ import ApplicationLogo from '../Components/ApplicationLogo';
 export default function PublicLayout({ title, children }) {
     const { app = {} } = usePage().props;
     const currentYear = new Date().getFullYear();
+    const mosqueName = app.name || 'Masjid';
 
     return (
         <>
-            <Head title={title} />
+            <Head title={`${title} - ${mosqueName}`} />
             <main className="min-h-dvh bg-[radial-gradient(circle_at_20%_0%,rgba(16,185,129,0.18),transparent_28rem),linear-gradient(135deg,#eff6ff_0%,#f8fafc_48%,#dbeafe_100%)] text-slate-800">
                 <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
                     <Link href="/" className="flex min-w-0 items-center gap-2.5">
                         <ApplicationLogo className="h-9 w-9 shrink-0 rounded-xl" />
                         <div className="min-w-0">
-                            <p className="truncate text-sm font-extrabold text-slate-950">{app.name || 'Masjid'}</p>
+                            <p className="truncate text-sm font-extrabold text-slate-950">{mosqueName}</p>
                             <p className="truncate text-[10px] font-semibold text-teal-700">{app.tagline || 'Manajemen Masjid'}</p>
                         </div>
                     </Link>

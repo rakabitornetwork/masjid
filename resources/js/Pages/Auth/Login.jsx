@@ -27,7 +27,7 @@ export default function Login() {
 
     return (
         <>
-            <Head title="Login Admin" />
+            <Head title={`Login Admin - ${mosqueName}`} />
 
             <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-4">
                 <section className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-white/70 bg-white/90 shadow-2xl shadow-blue-950/15 backdrop-blur lg:grid-cols-[1.05fr_0.95fr]">

@@ -1,4 +1,3 @@
-import { Head } from '@inertiajs/react';
 import { Calendar, Clock, MapPin, Moon, Search, Sun, SunDim, Sunrise, Sunset } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import AppLayout from '../../Layouts/AppLayout';
@@ -229,8 +228,6 @@ export default function Index({ profile }) {
 
     return (
         <AppLayout title="Jadwal Sholat Indonesia">
-            <Head title="Jadwal Sholat Indonesia" />
-
             <div className="min-w-0 space-y-5">
                 {/* Header Widget */}
                 <div className="flex min-w-0 flex-col gap-4 rounded-2xl bg-gradient-to-r from-emerald-800 to-teal-900 p-4 text-white shadow-md sm:flex-row sm:items-center sm:justify-between lg:p-6">

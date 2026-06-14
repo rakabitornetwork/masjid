@@ -118,7 +118,7 @@ export default function AppLayout({ title, children, actions = null }) {
 
     return (
         <>
-            <Head title={title} />
+            <Head title={`${title} - ${mosqueName}`} />
 
             <div className="flex h-dvh overflow-hidden bg-[#052e2b] font-sans text-slate-800 antialiased">
                 {sidebarOpen && (
