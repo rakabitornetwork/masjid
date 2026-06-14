@@ -142,7 +142,7 @@ export default function AppLayout({ title, children, actions = null }) {
                 </aside>
 
                 <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(16,185,129,0.16),transparent_28rem),linear-gradient(135deg,#eff6ff_0%,#f8fafc_46%,#dbeafe_100%)]">
-                    <header className="flex h-14 shrink-0 items-center justify-between border-b border-transparent bg-transparent px-4 shadow-none backdrop-blur-md sm:border-blue-100/70 sm:bg-white/86 sm:shadow-sm sm:shadow-blue-900/5 lg:px-6">
+                    <header className="flex h-14 shrink-0 items-center justify-between border-b border-transparent bg-transparent px-4 shadow-none backdrop-blur-none lg:border-blue-100/70 lg:bg-white/86 lg:shadow-sm lg:shadow-blue-900/5 lg:backdrop-blur-md lg:px-6">
                         <div className="flex min-w-0 items-center">
                             <button
                                 type="button"
