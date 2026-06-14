@@ -54,7 +54,7 @@ export default function AppLayout({ title, children, actions = null }) {
         <>
             <Head title={title} />
 
-            <div className="flex min-h-screen bg-[#061A40] font-sans text-xs text-slate-800 antialiased">
+            <div className="flex min-h-screen bg-[#052e2b] font-sans text-xs text-slate-800 antialiased">
                 {sidebarOpen && (
                     <button
                         type="button"
@@ -65,7 +65,7 @@ export default function AppLayout({ title, children, actions = null }) {
                 )}
 
                 <aside
-                    className={`fixed inset-y-0 left-0 z-40 flex w-56 shrink-0 flex-col justify-between border-r border-white/10 bg-[radial-gradient(circle_at_20%_0%,rgba(16,185,129,0.28),transparent_30%),linear-gradient(180deg,#061A40_0%,#0B2F6B_55%,#075985_100%)] shadow-2xl shadow-blue-950/30 transition-transform duration-200 lg:relative lg:translate-x-0 ${
+                    className={`fixed inset-y-0 left-0 z-40 flex w-56 shrink-0 flex-col justify-between border-r border-emerald-200/10 bg-[radial-gradient(circle_at_16%_0%,rgba(250,204,21,0.22),transparent_28%),radial-gradient(circle_at_82%_22%,rgba(45,212,191,0.22),transparent_30%),linear-gradient(180deg,#064e3b_0%,#065f46_42%,#0f766e_72%,#164e3f_100%)] shadow-2xl shadow-emerald-950/35 transition-transform duration-200 lg:relative lg:translate-x-0 ${
                         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
                 >
@@ -75,13 +75,13 @@ export default function AppLayout({ title, children, actions = null }) {
                                 <ApplicationLogo className="h-8 w-8 rounded-xl" />
                                 <div>
                                     <h1 className="text-xs font-bold leading-tight text-white">Masjid</h1>
-                                    <p className="text-[10px] font-medium tracking-wide text-blue-100/75">Management</p>
+                                    <p className="text-[10px] font-medium tracking-wide text-emerald-50/75">Management</p>
                                 </div>
                             </div>
                             <button
                                 type="button"
                                 onClick={() => setSidebarOpen(false)}
-                                className="rounded-lg border border-white/10 p-1 text-blue-100 hover:bg-white/10 hover:text-white lg:hidden"
+                                className="rounded-lg border border-white/10 p-1 text-emerald-50 hover:bg-white/10 hover:text-white lg:hidden"
                             >
                                 <X className="h-4 w-4" />
                             </button>
@@ -99,11 +99,11 @@ export default function AppLayout({ title, children, actions = null }) {
                                         onClick={() => setSidebarOpen(false)}
                                         className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-xs font-semibold transition-all duration-150 ${
                                             active
-                                                ? 'bg-white/[0.16] text-white shadow-sm shadow-sky-500/10 ring-1 ring-white/10'
-                                                : 'text-blue-100/80 hover:bg-white/10 hover:text-white'
+                                                ? 'bg-gradient-to-r from-emerald-400/25 to-amber-300/20 text-white shadow-sm shadow-emerald-950/15 ring-1 ring-emerald-100/20'
+                                                : 'text-emerald-50/80 hover:bg-white/10 hover:text-white'
                                         }`}
                                     >
-                                        <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-emerald-200' : 'text-blue-200/65'}`} />
+                                        <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-amber-200' : 'text-emerald-100/65'}`} />
                                         {item.label}
                                     </Link>
                                 );
@@ -111,14 +111,14 @@ export default function AppLayout({ title, children, actions = null }) {
                         </nav>
                     </div>
 
-                    <div className="border-t border-white/10 bg-blue-950/25 p-2">
+                    <div className="border-t border-emerald-100/10 bg-emerald-950/25 p-2">
                         <div className="mb-1 flex items-center gap-2 rounded-lg px-2 py-1.5">
                             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/15 text-xs font-bold text-white shadow-inner">
                                 {(auth?.user?.name || 'A').charAt(0).toUpperCase()}
                             </div>
                             <div className="min-w-0">
                                 <p className="mb-0.5 truncate text-[11px] font-bold leading-none text-white">{auth?.user?.name || 'Admin Masjid'}</p>
-                                <p className="truncate text-[9px] leading-none text-blue-100/65">{auth?.user?.email || 'admin@masjid.com'}</p>
+                                <p className="truncate text-[9px] leading-none text-emerald-50/65">{auth?.user?.email || 'admin@masjid.com'}</p>
                             </div>
                         </div>
                         <button
